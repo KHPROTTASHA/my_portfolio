@@ -125,6 +125,61 @@ div[style*="perspective"] > div:hover {
 }
 
 
+
+.edu-card {
+  display:flex;
+  gap:40px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  padding:40px;
+  border-radius:22px;
+  position:relative;
+  margin-bottom:40px;
+  transition:all .35s ease;
+}
+
+/* Accent bar */
+.edu-card .accent-bar {
+  position:absolute;
+  left:0;top:0;width:6px;height:100%;
+  background:linear-gradient(180deg,var(--accent),#6c63ff);
+  border-radius:4px 0 0 4px;
+  box-shadow:0 0 8px var(--accent);
+}
+
+/* Light Mode */
+:root {
+  --card-bg: transparent;
+  --card-border: 1px solid rgba(0,0,0,0.08);
+  --card-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* Dark Mode (deep shadow) */
+[data-theme="dark"] {
+  --card-bg: #1e1e1e;
+  --card-border: none;
+  --card-shadow: 
+    0 12px 30px rgba(0,0,0,0.55),
+    0 4px 12px rgba(0,0,0,0.35);
+}
+
+/* Apply variables */
+.edu-card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+
+
+/* Apply */
+.edu-card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+
   /* Contact */
   .contact-section{padding:80px 20px;background:var(--section);text-align:center;animation:fadeInUp 1s;}
   .contact-section h2{font-size:32px;margin-bottom:25px;display:flex;justify-content:center;align-items:center;gap:12px;color:var(--text);}
@@ -562,6 +617,76 @@ div[style*="perspective"] > div:hover {
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- Skills, Languages & Hobbies -->
+<section class="resume-section" id="skills" style="padding:80px 20px;">
+  <div class="container" style="max-width:1200px;margin:auto;">
+    <h2 style="display:flex;align-items:center;gap:12px;color:var(--text);
+               margin-bottom:50px;font-size:1.9rem;font-weight:700;letter-spacing:0.5px;">
+      <span style="width:18px;height:18px;
+                   background:linear-gradient(135deg,var(--accent),#6c63ff);
+                   border-radius:4px;display:inline-block;
+                   box-shadow:0 0 12px var(--accent);"></span>
+      Skills, Languages & Hobbies
+    </h2>
+
+    <!-- Professional Skillset -->
+    <div class="edu-card">
+      <span class="accent-bar"></span>
+      <div style="flex:1;min-width:220px;z-index:1;">
+        <p style="font-weight:600;color:var(--accent);margin-bottom:6px;">Core Competencies</p>
+        <p style="font-weight:700;font-size:1.25rem;color:var(--text);">Professional Skillset</p>
+      </div>
+      <div style="flex:3;z-index:1;">
+        <ul style="margin:0;padding-left:22px;list-style:disc;line-height:1.85;color:var(--text);">
+          <li>C# (using .NET Framework)</li>
+          <li>JavaScript (ES6)</li>
+          <li>Web Development (HTML & CSS)</li>
+          <li>React (using NodeJS framework)</li>
+          <li>Data Structure</li>
+          <li>Machine Learning</li>
+          <li>Convolutional Neural Network (CNN)</li>
+          <li>Python</li>
+          <li>SQL (Oracle DB)</li>
+          <li>MongoDB</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Languages -->
+    <div class="edu-card">
+      <span class="accent-bar"></span>
+      <div style="flex:1;min-width:220px;z-index:1;">
+        <p style="font-weight:600;color:var(--accent);margin-bottom:6px;">Multilingual</p>
+        <p style="font-weight:700;font-size:1.25rem;color:var(--text);">Languages</p>
+      </div>
+      <div style="flex:3;z-index:1;">
+        <ul style="margin:0;padding-left:22px;list-style:disc;line-height:1.85;color:var(--text);">
+          <li>Bengali</li>
+          <li>English</li>
+          <li>Hindi</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Hobbies -->
+    <div class="edu-card">
+      <span class="accent-bar"></span>
+      <div style="flex:1;min-width:220px;z-index:1;">
+        <p style="font-weight:600;color:var(--accent);margin-bottom:6px;">Personal Interests</p>
+        <p style="font-weight:700;font-size:1.25rem;color:var(--text);">Hobbies</p>
+      </div>
+      <div style="flex:3;z-index:1;">
+        <ul style="margin:0;padding-left:22px;list-style:disc;line-height:1.85;color:var(--text);">
+          <li>Cooking</li>
+          <li>Writing</li>
+          <li>Gardening</li>
+          <li>Travelling</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 

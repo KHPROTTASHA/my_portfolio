@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md Kamrul Hasan - Bio Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px;
+            background: #2c3e50;
+            color: white;
+            flex-wrap: wrap;
+        }
+
+        .header-text {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .profile-name {
+            font-size: 2.8em;
+            font-weight: 600;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+        }
+
+        .profile-title {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+            color: #bdc3c7;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .profile-image {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #ecf0f1;
+            flex-shrink: 0;
+            margin-left: 30px;
+            background: #34495e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .profile-image .fa-user {
+            font-size: 4em;
+            color: #ecf0f1;
+        }
+
+        .section {
+            padding: 35px 40px;
+            border-bottom: 1px solid #ecf0f1;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            color: #8B4513;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .section-title i {
+            color: #D2691E;
+        }
+
+        .section-description {
+            font-size: 1.05em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .personal-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #8B4513;
+        }
+
+        .info-label {
+            font-weight: 600;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+        }
+
+        .family-simple {
+            background: #f8f9fa;
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            border-left: 4px solid #8B4513;
+            margin-top: 15px;
+        }
+
+        .family-simple p {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .family-simple p::before {
+            content: "\f007";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #8B4513;
+        }
+
+        .family-simple p:nth-child(2)::before {
+            content: "\f182";
+        }
+
+        .family-simple p:nth-child(3)::before {
+            content: "\f500";
+        }
+
+        .hobbies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .hobby {
+            background: #8B4513;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .lifestyle-content {
+            line-height: 1.7;
+            color: #555;
+            font-size: 1.05em;
+        }
+
+        .signature {
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: #8B4513;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px dashed #bdc3c7;
+        }
+
+        .contact-info {
+            background: #f8f9fa;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #8B4513;
+        }
+
+        .contact-info i {
+            font-size: 1.3em;
+            color: #8B4513;
+        }
+
+        .religious-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .religious-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-top: 4px solid #8B4513;
+        }
+
+        .career-timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            background: #f8f9fa;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #8B4513;
+        }
+
+        .partner-preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .preference-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #D2691E;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preference-item i {
+            color: #8B4513;
+            font-size: 1.1em;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #8B4513;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #D2691E;
+            color: white;
+        }
+
+        .btn-tertiary {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .profile-container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+
+            .action-buttons {
+                display: none !important;
+            }
+
+            .section {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                padding: 25px 30px !important;
+            }
+
+            .header {
+                padding: 30px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+
+            .profile-image {
+                margin-left: 0;
+                margin-top: 20px;
+                width: 140px;
+                height: 140px;
+            }
+
+            .profile-name {
+                font-size: 2.2em;
+            }
+
+            .personal-info {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 25px 20px;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #8B4513;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            max-width: 300px;
+        }
+        
+        .notification.success {
+            background: #28a745;
+        }
+        
+        .notification.error {
+            background: #dc3545;
+        }
+
+        /* PDF specific styles */
+        .pdf-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container" id="profileContent">
+        <div class="header pdf-section">
+            <div class="header-text">
+                <h1 class="profile-name">Md. Kamrul Hasan</h1>
+                <p class="profile-title">Senior Programmer</p>
+            </div>
+            <div class="profile-image">
+                <img src="khp_img.jpg" alt="Md. Kamrul Hasan"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <i class="fas fa-user" style="display:none;"></i>
+            </div>
+        </div>
+
+        <!-- About Me -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-user-circle"></i> ABOUT ME</h2>
+            <p class="section-description">A dedicated professional with a passion for technology and continuous learning.</p>
+            <p class="lifestyle-content">I enjoy problem-solving, reading, traveling, and exploring new cultures. Friends describe me as honest, reliable, and supportive.</p>
+        </div>
+
+        <!-- Personal Details -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> PERSONAL DETAILS</h2>
+            <p class="section-description">Basic information about my life and preferences.</p>
+            <div class="personal-info">
+                <div class="info-item"><span class="info-label"><i class="fas fa-birthday-cake"></i> Date Of Birth:</span> <span>03/07/1995</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-ruler-vertical"></i> Height:</span> <span>5'9"</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-weight"></i> Weight:</span> <span>77 kg</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-graduation-cap"></i> Education:</span> <span>ME / M.Tech</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-language"></i> Languages:</span> <span>Bangla, English, Hindi</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-heart"></i> Mother Tongue:</span> <span>Bangla</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-map-marker-alt"></i> Present Address:</span> <span>Gazipur, Dhaka, Bangladesh</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-home"></i> Permanent Address:</span> <span>Kaligonj, Jhenaidah, Bangladesh</span></div>
+            </div>
+        </div>
+
+        <!-- Religious Information -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-mosque"></i> RELIGIOUS BACKGROUND</h2>
+            <div class="religious-info">
+                <div class="religious-item">
+                    <i class="fas fa-star-of-david fa-2x" style="color:#8B4513;"></i>
+                    <h3>Religion</h3>
+                    <p>Islam</p>
+                </div>
+                <div class="religious-item">
+                    <i class="fas fa-quran fa-2x" style="color:#8B4513;"></i>
+                    <h3>Sect</h3>
+                    <p>Sunni</p>
+                </div>
+                <div class="religious-item">
+                    <i class="fas fa-pray fa-2x" style="color:#8B4513;"></i>
+                    <h3>Religious Practice</h3>
+                    <p>Moderate</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Family Background -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-users"></i> FAMILY BACKGROUND</h2>
+            <p class="section-description">I come from a loving and supportive family who values education and strong relationships.</p>
+            <div class="family-simple">
+                <p><strong>Father:</strong> Md Sorwar Uddin Biswas</p>
+                <p><strong>Mother:</strong> MST Majeda Sultana</p>
+                <p><strong>Siblings:</strong> 3 Members</p>
+            </div>
+        </div>
+
+        <!-- Career & Education -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-briefcase"></i> CAREER & EDUCATION</h2>
+            <div class="career-timeline">
+                <div class="timeline-item">
+                    <h3><i class="fas fa-graduation-cap"></i> M.Tech in Computer Science</h3>
+                    <p>Aliah University, Kolkata, India</p>
+                    <small>2019-2020</small>
+                </div>
+                <div class="timeline-item">
+                    <h3><i class="fas fa-graduation-cap"></i> B.Sc in Computer Science</h3>
+                    <p>Aliah University, Kolkata, India</p>
+                    <small>2014-2018</small>
+                </div>
+                <div class="timeline-item">
+                    <h3><i class="fas fa-laptop-code"></i> Software Engineer</h3>
+                    <p>Dazzle Soft Ltd. Uttara Dhaka, Bangladesh.</p>
+                    <small>2021-2022</small>
+                </div>
+                <div class="timeline-item">
+                    <h3><i class="fas fa-laptop-code"></i> Senior Programmer</h3>
+                    <p>MM Group, Dhaka</p>
+                    <small>2023-Present</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hobbies & Interests -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-star"></i> HOBBIES & INTERESTS</h2>
+            <p class="section-description">Activities I enjoy in my leisure time to stay motivated and happy.</p>
+            <div class="hobbies-grid">
+                <div class="hobby">Reading</div>
+                <div class="hobby">Traveling</div>
+                <div class="hobby">Coding</div>
+                <div class="hobby">Writing</div>
+                <div class="hobby">Photography</div>
+                <div class="hobby">Gardening</div>
+                <div class="hobby">Cooking</div>
+            </div>
+        </div>
+
+        <!-- Partner Preferences -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-user-friends"></i> PARTNER PREFERENCES</h2>
+            <p class="section-description">Qualities and values I seek in a life partner.</p>
+            <div class="partner-preferences-grid">
+                <div class="preference-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Well Educated</span>
+                </div>
+                <div class="preference-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Kind Hearted</span>
+                </div>
+                <div class="preference-item">
+                    <i class="fas fa-home"></i>
+                    <span>Family Oriented</span>
+                </div>
+                <div class="preference-item">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Good Values</span>
+                </div>
+                <div class="preference-item">
+                    <i class="fas fa-smile"></i>
+                    <span>Positive Nature</span>
+                </div>
+                <div class="preference-item">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>Supportive</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lifestyle -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-heartbeat"></i> LIFESTYLE</h2>
+            <p class="section-description">My daily habits and routines reflect a balanced and healthy lifestyle.</p>
+            <div class="lifestyle-content">
+                I maintain a healthy lifestyle through regular exercise, balanced diet, and mindfulness practices. Believe in maintaining harmony between professional and personal life.
+            </div>
+            <div class="signature">Md. Kamrul Hasan</div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="section pdf-section">
+            <h2 class="section-title"><i class="fas fa-phone-alt"></i> CONTACT INFO</h2>
+            <div class="contact-info">
+                <i class="fas fa-phone-alt"></i> <strong>+88 01911436463</strong>
+                <i class="fas fa-envelope"></i> <strong>prottashakhp@gmail.com</strong>
+            </div>
+
+ 
+</body>
+</html>

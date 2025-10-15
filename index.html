@@ -92,93 +92,121 @@ main{display:flex;min-height:100vh;}
   .card-right img{width:100%;height:220px;object-fit:cover;border-radius:18px;transition: transform 0.5s ease, box-shadow 0.5s ease; transform-style: preserve-3d;}
   .card-right img:hover{transform: perspective(1000px) rotateY(15deg) rotateX(5deg) scale(1.08);box-shadow:0 25px 45px rgba(0,0,0,0.35);}
 
+  /* 3D Hover Effect */
+  div[style*="perspective"] > div:hover {
+    transform: rotateY(15deg) rotateX(5deg) scale(1.05);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.35);
+  }
 
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+  }
+  .modal-content {
+    background: var(--section);
+    margin: 8% auto;
+    padding: 25px;
+    border-radius: 16px;
+    width: 80%; max-width: 600px;
+    color: var(--text);
+    animation: fadeInUp .4s ease;
+  }
+  .close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+  }
 
-/* 3D Hover Effect */
-div[style*="perspective"] > div:hover {
-  transform: rotateY(15deg) rotateX(5deg) scale(1.05);
-  box-shadow: 0 25px 45px rgba(0,0,0,0.35);
-}
+  /* Download Modal */
+  .download-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+  }
+  .download-modal-content {
+    background: var(--section);
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 16px;
+    width: 80%; max-width: 500px;
+    color: var(--text);
+    animation: fadeInUp .4s ease;
+    text-align: center;
+  }
+  .download-options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 25px 0;
+  }
+  .download-option {
+    padding: 15px 25px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex: 1;
+    max-width: 180px;
+  }
+  .download-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
 
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-}
-.modal-content {
-  background: var(--section);
-  margin: 8% auto;
-  padding: 25px;
-  border-radius: 16px;
-  width: 80%; max-width: 600px;
-  color: var(--text);
-  animation: fadeInUp .4s ease;
-}
-.close {
-  float: right;
-  font-size: 24px;
-  cursor: pointer;
-}
+  .edu-card {
+    display:flex;
+    gap:40px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    padding:40px;
+    border-radius:22px;
+    position:relative;
+    margin-bottom:40px;
+    transition:all .35s ease;
+  }
 
+  /* Accent bar */
+  .edu-card .accent-bar {
+    position:absolute;
+    left:0;top:0;width:6px;height:100%;
+    background:linear-gradient(180deg,var(--accent),#6c63ff);
+    border-radius:4px 0 0 4px;
+    box-shadow:0 0 8px var(--accent);
+  }
 
+  /* Light Mode */
+  :root {
+    --card-bg: transparent;
+    --card-border: 1px solid rgba(0,0,0,0.08);
+    --card-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  }
 
-.edu-card {
-  display:flex;
-  gap:40px;
-  align-items:flex-start;
-  flex-wrap:wrap;
-  padding:40px;
-  border-radius:22px;
-  position:relative;
-  margin-bottom:40px;
-  transition:all .35s ease;
-}
+  /* Dark Mode (deep shadow) */
+  body.dark {
+    --card-bg: #1e1e1e;
+    --card-border: none;
+    --card-shadow: 
+      0 12px 30px rgba(0,0,0,0.55),
+      0 4px 12px rgba(0,0,0,0.35);
+  }
 
-/* Accent bar */
-.edu-card .accent-bar {
-  position:absolute;
-  left:0;top:0;width:6px;height:100%;
-  background:linear-gradient(180deg,var(--accent),#6c63ff);
-  border-radius:4px 0 0 4px;
-  box-shadow:0 0 8px var(--accent);
-}
-
-/* Light Mode */
-:root {
-  --card-bg: transparent;
-  --card-border: 1px solid rgba(0,0,0,0.08);
-  --card-shadow: 0 4px 14px rgba(0,0,0,0.08);
-}
-
-/* Dark Mode (deep shadow) */
-[data-theme="dark"] {
-  --card-bg: #1e1e1e;
-  --card-border: none;
-  --card-shadow: 
-    0 12px 30px rgba(0,0,0,0.55),
-    0 4px 12px rgba(0,0,0,0.35);
-}
-
-/* Apply variables */
-.edu-card {
-  background: var(--card-bg);
-  border: var(--card-border);
-  box-shadow: var(--card-shadow);
-}
-
-
-
-/* Apply */
-.edu-card {
-  background: var(--card-bg);
-  border: var(--card-border);
-  box-shadow: var(--card-shadow);
-}
-
+  /* Apply variables */
+  .edu-card {
+    background: var(--card-bg);
+    border: var(--card-border);
+    box-shadow: var(--card-shadow);
+  }
 
   /* Contact */
   .contact-section{padding:80px 20px;background:var(--section);text-align:center;animation:fadeInUp 1s;}
@@ -199,8 +227,6 @@ div[style*="perspective"] > div:hover {
   /* Animations */
   @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
   @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
-
-
 </style>
 </head>
 <body>
@@ -242,7 +268,7 @@ div[style*="perspective"] > div:hover {
     <p class="subtitle">Here's who I am & </p>
     <div class="buttons">
       <button class="active" onclick="switchTab('resume', event)">RESUME</button>
-      <button onclick="switchTab('projects', event)">PROJECTS</button>
+      <button onclick="switchTab('projects', event)">Bio Data</button>
     </div>
     <div class="content" id="tabContent">
       <p>• Cope up with different 
@@ -264,9 +290,9 @@ div[style*="perspective"] > div:hover {
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:50px;">
       <h2>
         <span style="width:16px;height:16px;background:var(--accent);display:inline-block;"></span>
-        Resume
+        About Me
       </h2>
-      <button onclick="downloadCV()">Download CV</button>
+      <button onclick="showDownloadOptions()">Download CV</button>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:30px;">
@@ -680,7 +706,7 @@ div[style*="perspective"] > div:hover {
       </div>
       <div style="flex:3;z-index:1;">
         <ul style="margin:0;padding-left:22px;list-style:disc;line-height:1.85;color:var(--text);">
-          <li>Cooking</li>
+          <li>Coding</li>
           <li>Writing</li>
           <li>Gardening</li>
           <li>Travelling</li>
@@ -720,6 +746,19 @@ div[style*="perspective"] > div:hover {
   </div>
 </footer>
 
+<!-- Download Options Modal -->
+<div id="downloadModal" class="download-modal">
+  <div class="download-modal-content">
+    <span class="close" onclick="closeDownloadModal()">&times;</span>
+    <h2>Download Options</h2>
+    <p>Choose which document you'd like to download:</p>
+    <div class="download-options">
+      <button class="download-option" onclick="downloadResume()">Resume</button>
+      <button class="download-option" onclick="downloadBioData()">Bio Data</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // Tab switch
   function switchTab(tab, event) {
@@ -735,28 +774,92 @@ Adequate professional skills and novel strategies would help your company flouri
 and simultaneously improve my capabilities as a professional. Would like to add my 
 contribution to the betterment of the workplace through accurate skill and hardship.</p>`;
       } else {
-        content.innerHTML=`<p><strong>Project 1:</strong> E-commerce Website Redesign.</p>
-          <p><strong>Project 2:</strong> ERP software Development.</p>
-          <p><strong>Project 3:</strong> CRM System Upgrade.</p>
-          <p><strong>Project 4:</strong> AI-powered Dashboard.</p>
-          <p><strong>Project 5:</strong> web development.</p>`;
+        content.innerHTML=`<!-- About Me -->
+        <div class="section pdf-section">
+            <p class="section-description">A dedicated professional with a passion for technology and continuous learning.
+                I enjoy problem-solving, reading, traveling, and exploring new cultures. Friends describe me as honest, reliable, and supportive.</p>
+        </div>
+        <br>
+        <!-- Personal Details -->
+        <div class="section pdf-section">
+            <p class="section-descriptio"><i class="fas fa-info-circle"></i> Basic information about my life and preferences.</p>
+                <div class="info-item"><span class="info-label"><i class="fas fa-mosque"></i> Religion :</span> <span>Islam</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-birthday-cake"></i> Date Of Birth :</span> <span>23/12/1995</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-ruler-vertical"></i> Height :</span> <span>5'9"</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-graduation-cap"></i> Education :</span> <span>M.Tech(Master of Technology)</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-language"></i> Languages :</span> <span>Bangla, English, Hindi</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-heart"></i> Mother Tongue :</span> <span>Bangla</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-map-marker-alt"></i> Present Address :</span> <span>Gazipur, Dhaka, Bangladesh</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-home"></i> Permanent Address :</span> <span>Kaligonj, Jhenaidah, Bangladesh</span></div>
+                
+           
+        </div>
+        <br>
+        <!-- Family Background -->
+        <div>
+            <p ><i class="fas fa-users"></i> I come from a loving and supportive family who values education and strong relationships.</p>
+            <div class="info-item"><span class="info-label"><i class="fas fa-hear"></i><b>Father :</b></span> <span>Md.Sorwar Uddin Biswas</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-hear"></i><b>Mother :</b></span> <span>MST Majeda Sultana</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-hear"></i><b>Siblings :</b></span> <span>3 Members</span></div>
+        </div>
+        <br>
+        <!-- Lifestyle -->
+        <div class="section pdf-section">
+            <h4 class="section-title"><i class="fas fa-heartbeat"></i> LIFESTYLE</h4>
+            <p class="section-description">My daily habits and routines reflect a balanced and healthy lifestyle.</p>
+            <div class="lifestyle-content">
+                I maintain a healthy lifestyle through regular exercise, balanced diet, and mindfulness practices. Believe in maintaining harmony between professional and personal life.
+            </div>
+            <div style="
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: #8B4513;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px dashed #bdc3c7;
+        ">Md. Kamrul Hasan</div>
+        </div>
+          
+          `;
       }
       content.style.opacity=1;
     },300);
   }
 
-  // Download CV
-  function downloadCV() {
-  
-  const cvPath = "my_cv.pdf";  
+  // Show download options
+  function showDownloadOptions() {
+    document.getElementById("downloadModal").style.display = "block";
+  }
 
-  const link = document.createElement("a");
-  link.href = cvPath;
-  link.download = "khp_cv.pdf"; 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+  // Close download modal
+  function closeDownloadModal() {
+    document.getElementById("downloadModal").style.display = "none";
+  }
+
+  // Download Resume
+  function downloadResume() {
+    const resumePath = "my_cv.pdf";  
+    const link = document.createElement("a");
+    link.href = resumePath;
+    link.download = "khp_resume.pdf"; 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    closeDownloadModal();
+  }
+
+  // Download Bio Data
+  function downloadBioData() {
+    const bioDataPath = "bio_data.pdf";  
+    const link = document.createElement("a");
+    link.href = bioDataPath;
+    link.download = "khp_bio_data.pdf"; 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    closeDownloadModal();
+  }
 
   // Hamburger
   const hamburger=document.getElementById("hamburger");
@@ -774,11 +877,22 @@ contribution to the betterment of the workplace through accurate skill and hards
   });
 
   function openModal(id){
-  document.getElementById(id).style.display = "block";
-}
-function closeModal(id){
-  document.getElementById(id).style.display = "none";
-}
+    document.getElementById(id).style.display = "block";
+  }
+  
+  function closeModal(id){
+    document.getElementById(id).style.display = "none";
+  }
+  
+  // Close modal if clicked outside
+  window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal, .download-modal');
+    modals.forEach(modal => {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
 </script>
 </body>
 </html>

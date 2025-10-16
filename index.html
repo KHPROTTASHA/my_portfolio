@@ -26,6 +26,7 @@ body.dark {
   --accent: #d9a066;
   --accent2: #a3c9a8;
   --gradient: linear-gradient(135deg, #d9a066, #a3c9a8);
+  --button-text: #ffffff; /* Ensure white text in dark mode too */
 }
 
   *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
@@ -65,8 +66,8 @@ main{display:flex;min-height:100vh;}
 .right h1{font-size:64px;font-weight:800;margin-bottom:12px;}
 .right p.subtitle{font-size:20px;margin-bottom:35px;color:var(--muted);}
 .buttons{margin-bottom:35px;}
-.buttons button{padding:12px 24px;border:2px solid var(--accent);background:transparent;margin-right:12px;cursor:pointer;border-radius:30px;font-weight:600;transition:.3s;}
-.buttons button.active,.buttons button:hover{background:var(--accent);color:#fff;}
+.buttons button{padding:12px 24px;border:2px solid var(--accent);background:transparent;margin-right:12px;cursor:pointer;border-radius:30px;font-weight:600;transition:.3s;color:var(--accent);}
+.buttons button.active,.buttons button:hover{background:var(--accent);color:var(--button-text);}
 .content p{color:var(--muted);max-width:520px;margin-bottom:12px;}
   @media(max-width:900px){
     main{flex-direction:column;}
@@ -779,14 +780,14 @@ contribution to the betterment of the workplace through accurate skill and hards
             <p class="section-description">A dedicated professional with a passion for technology and continuous learning.
                 I enjoy problem-solving, reading, traveling, and exploring new cultures. Friends describe me as honest, reliable, and supportive.</p>
         </div>
-        <br>
+        
         <!-- Personal Details -->
         <div class="section pdf-section">
-            <p class="section-descriptio"><i class="fas fa-info-circle"></i> Basic information about my life and preferences.</p>
+            <h4 class="section-descriptio"><i class="fas fa-info-circle"></i> Basic information about my life and preferences.</h4>
                 <div class="info-item"><span class="info-label"><i class="fas fa-mosque"></i> Religion :</span> <span>Islam</span></div>
                 <div class="info-item"><span class="info-label"><i class="fas fa-birthday-cake"></i> Date Of Birth :</span> <span>23/12/1995</span></div>
                 <div class="info-item"><span class="info-label"><i class="fas fa-ruler-vertical"></i> Height :</span> <span>5'9"</span></div>
-                <div class="info-item"><span class="info-label"><i class="fas fa-graduation-cap"></i> Education :</span> <span>M.Tech(Master of Technology)</span></div>
+                <div class="info-item"><span class="info-label"><i class="fas fa-graduation-cap"></i> Education :</span> <span>M.Tech in Computer Science and Engineering (CSE) </span></div>
                 <div class="info-item"><span class="info-label"><i class="fas fa-language"></i> Languages :</span> <span>Bangla, English, Hindi</span></div>
                 <div class="info-item"><span class="info-label"><i class="fas fa-heart"></i> Mother Tongue :</span> <span>Bangla</span></div>
                 <div class="info-item"><span class="info-label"><i class="fas fa-map-marker-alt"></i> Present Address :</span> <span>Gazipur, Dhaka, Bangladesh</span></div>
@@ -796,12 +797,15 @@ contribution to the betterment of the workplace through accurate skill and hards
         </div>
         <br>
         <!-- Family Background -->
-        <div>
-            <p ><i class="fas fa-users"></i> I come from a loving and supportive family who values education and strong relationships.</p>
-            <div class="info-item"><span class="info-label"><i class="fas fa-hear"></i><b>Father :</b></span> <span>Md.Sorwar Uddin Biswas</span></div>
-                <div class="info-item"><span class="info-label"><i class="fas fa-hear"></i><b>Mother :</b></span> <span>MST Majeda Sultana</span></div>
-                <div class="info-item"><span class="info-label"><i class="fas fa-hear"></i><b>Siblings :</b></span> <span>3 Members</span></div>
-        </div>
+        <div class="section pdf-section">
+    <h4 class="section-title"><i class="fas fa-home"></i> FAMILY BACKGROUND</h4>
+    <p class="section-description">I come from a loving and supportive family who values education and strong relationships.</p>
+    <div class="family-simple">
+        <p><i class="fas fa-user-tie"></i> <strong>Father:</strong> Md Sorwar Uddin Biswas</p>
+        <p><i class="fas fa-user-graduate"></i> <strong>Mother:</strong> MST Majeda Sultana</p>
+        <p><i class="fas fa-user-friends"></i> <strong>Siblings:</strong> 3 Members</p>
+    </div>
+</div>
         <br>
         <!-- Lifestyle -->
         <div class="section pdf-section">

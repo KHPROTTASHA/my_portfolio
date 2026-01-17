@@ -35,7 +35,12 @@ body.dark {
   /* Navbar */
   header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px clamp(18px,5vw,60px);background:var(--section);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);}
   .brand{font-weight:bold;display:flex;align-items:center;gap:8px;font-size:18px;}
-  .dot{width:14px;height:14px;background:var(--accent);border-radius:50%;}
+  .dot{width:14px;height:14px;background:#00ff00;border-radius:50%;animation: blink 1.5s infinite;}
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
   nav{display:flex;gap:26px;transition:.3s;}
   nav a{text-decoration:none;color:var(--muted);font-size:15px;font-weight:500;position:relative;}
   nav a::after{content:"";position:absolute;width:0;height:2px;background:var(--accent);left:0;bottom:-4px;transition:.3s;}
@@ -252,7 +257,7 @@ main{display:flex;min-height:100vh;}
   <div class="left">
     <div class="card">
       <div>
-        <img src="khp_img.jpg" alt="Profile" class="profile-pic">
+        <img src="https://via.placeholder.com/130" alt="Profile" class="profile-pic">
         <h2>Md Kamrul Hasan</h2>
         <p class="role">Sr. Programmer</p>
       </div>
@@ -374,7 +379,7 @@ main{display:flex;min-height:100vh;}
   <div style="flex:1;min-width:300px;perspective:1000px;">
     <div onclick="openModal('project1')" 
          style="width:100%;height:220px;border-radius:18px;overflow:hidden;transition:transform .6s ease, box-shadow .6s ease;transform-style:preserve-3d;cursor:pointer;">
-      <img src="E-commerce Redesign.png" alt="Project Image" 
+      <img src="https://via.placeholder.com/600x400" alt="Project Image" 
            style="width:100%;height:100%;object-fit:cover;display:block;">
     </div>
   </div>
@@ -408,7 +413,7 @@ main{display:flex;min-height:100vh;}
     <div style="flex:1;min-width:300px;perspective:1000px;">
       <div onclick="openModal('project2')" 
            style="width:100%;height:220px;border-radius:18px;overflow:hidden;transition:transform .6s ease, box-shadow .6s ease;transform-style:preserve-3d;cursor:pointer;">
-        <img src="erp-image.png" alt="Project Image" 
+        <img src="https://via.placeholder.com/600x400" alt="Project Image" 
              style="width:100%;height:100%;object-fit:cover;display:block;">
       </div>
     </div>
@@ -459,7 +464,7 @@ main{display:flex;min-height:100vh;}
   <div style="flex:1;min-width:300px;perspective:1000px;">
     <div onclick="openModal('project3')" 
          style="width:100%;height:220px;border-radius:18px;overflow:hidden;transition:transform .6s ease, box-shadow .6s ease;transform-style:preserve-3d;cursor:pointer;">
-      <img src="Website-Banner-AI.png" alt="Project Image" 
+      <img src="https://via.placeholder.com/600x400" alt="Project Image" 
            style="width:100%;height:100%;object-fit:cover;display:block;">
     </div>
   </div>
@@ -499,7 +504,7 @@ main{display:flex;min-height:100vh;}
     <div style="flex:1;min-width:300px;perspective:1000px;">
       <div onclick="openModal('project4')" 
            style="width:100%;height:220px;border-radius:18px;overflow:hidden;transition:transform .6s ease, box-shadow .6s ease;transform-style:preserve-3d;cursor:pointer;">
-        <img src="crm-image.webp" alt="Project Image" 
+        <img src="https://via.placeholder.com/600x400" alt="Project Image" 
              style="width:100%;height:100%;object-fit:cover;display:block;">
       </div>
     </div>
@@ -546,7 +551,7 @@ main{display:flex;min-height:100vh;}
   <div style="flex:1;min-width:300px;perspective:1000px;">
     <div onclick="openModal('project5')" 
          style="width:100%;height:220px;border-radius:18px;overflow:hidden;transition:transform .6s ease, box-shadow .6s ease;transform-style:preserve-3d;cursor:pointer;">
-      <img src="web-developer.avif" alt="Project Image" 
+      <img src="https://via.placeholder.com/600x400" alt="Project Image" 
            style="width:100%;height:100%;object-fit:cover;display:block;">
     </div>
   </div>
@@ -855,7 +860,7 @@ contribution to the betterment of the workplace through accurate skill and hards
 
   // Download Bio Data
   function downloadBioData() {
-    const bioDataPath = "Bio_data.pdf";  
+    const bioDataPath = "bio_data.pdf";  
     const link = document.createElement("a");
     link.href = bioDataPath;
     link.download = "khp_bio_data.pdf"; 

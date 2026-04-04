@@ -25,9 +25,6 @@
     --hero-button-text: #1c1c1c;
     --modal-text: #1c1c1c;
     --modal-bg: #ffffff;
-    --form-bg: #ffffff;
-  --form-input-bg: #f8f8f8;
-  --form-border: #e0d6cf;
   }
 
   body.dark {
@@ -41,9 +38,6 @@
     --hero-button-text: #ffffff;
     --modal-text: #f5f5f5;
     --modal-bg: #2a2725;
-    --form-bg: #2a2725;
-  --form-input-bg: #1c1a18;
-  --form-border: #3a3532;
   }
 
   body {
@@ -1523,40 +1517,22 @@
     .center { width: 100%; }
   }
 
-/* Premium WhatsApp Widget - Messenger Style */
+/* Premium Floating WhatsApp Widget - Fixed (No underline, smooth drag) */
 .whatsapp-widget {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 99999;
+  z-index: 9999;
   cursor: grab;
   user-select: none;
+  transition: transform 0.1s ease;
   display: block;
-  transition: transform 0.05s linear;
-}
-
-/* Drag Handle - পুরো widget ড্র্যাগযোগ্য */
-.whatsapp-drag-handle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  cursor: grab;
-  z-index: 100;
-  background: transparent;
-}
-
-.whatsapp-drag-handle:active {
-  cursor: grabbing;
 }
 
 .whatsapp-widget:active {
   cursor: grabbing;
 }
 
-/* Main Button */
 .whatsapp-button {
   width: 65px;
   height: 65px;
@@ -1567,28 +1543,52 @@
   justify-content: center;
   box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
   transition: all 0.3s ease;
+  position: relative;
   overflow: hidden;
-  z-index: 50;
-  pointer-events: auto;
   text-decoration: none !important;
   border: none !important;
   outline: none !important;
-  position: relative;
+}
+
+.whatsapp-button::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+
+.whatsapp-button:hover::before {
+  transform: scale(2);
+}
+
+.whatsapp-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6);
 }
 
 .whatsapp-button i {
   font-size: 38px;
   color: white;
   transition: transform 0.3s ease;
-  pointer-events: none;
-}
-
-.whatsapp-button:hover {
-  transform: scale(1.1);
 }
 
 .whatsapp-button:hover i {
   transform: scale(1.1);
+}
+
+/* Remove any underline from link */
+.whatsapp-button,
+.whatsapp-button:link,
+.whatsapp-button:visited,
+.whatsapp-button:hover,
+.whatsapp-button:active,
+.whatsapp-button:focus {
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 /* Pulse Animation */
@@ -1599,7 +1599,7 @@
   border-radius: 50%;
   background: rgba(37, 211, 102, 0.6);
   animation: pulse 2s infinite;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
 }
 
@@ -1633,7 +1633,6 @@
   pointer-events: none;
   font-family: 'Poppins', sans-serif;
   backdrop-filter: blur(10px);
-  z-index: 1000;
 }
 
 .whatsapp-tooltip::after {
@@ -1655,16 +1654,14 @@
 
 /* Dragging State */
 .whatsapp-widget.dragging {
+  cursor: grabbing;
   opacity: 0.9;
   transition: none;
 }
 
-.whatsapp-widget.dragging .whatsapp-drag-handle {
-  cursor: grabbing;
-}
-
 .whatsapp-widget.dragging .whatsapp-button {
   transform: scale(0.95);
+  cursor: grabbing;
 }
 
 /* Responsive */
@@ -1686,7 +1683,6 @@
   .whatsapp-tooltip {
     display: none;
   }
-
 }
 </style>
 </head>
@@ -1702,7 +1698,7 @@
   <div class="left">
     <div class="card">
       <div>
-        <img src="khp_img.jpg" alt="Profile" class="profile-pic" id="heroProfilePic" onerror="this.src='https://via.placeholder.com/130'">
+        <img src="pc.png" alt="Profile" class="profile-pic" id="heroProfilePic" onerror="this.src='https://via.placeholder.com/130'">
         <h2 class="roleName">Md Kamrul Hasan</h2>
         <p class="role">Sr. Programmer</p>
       </div>
@@ -1727,6 +1723,21 @@
     <button id="heroCvBtn" onclick="showDownloadOptions()">Download CV</button>
   </div>
 </main>
+
+<!-- Carousel Section: Directional click navigation + CLICK & HOLD to pause -->
+<!-- <div class="carousel-container" id="carouselContainer">
+  <div class="carousel-wrapper" id="carouselWrapper">
+    <div class="slide" data-index="0"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>Md Kamrul Hasan // Senior Programmer</div><div>ERP // .NET // Oracle</div></div><div class="main"><div class="side-img" style="background-image: url('photo.jpg');"></div><div class="center center-bg" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80');"><div class="overlay"></div><h1>Md Kamrul<br><span>Hasan</span></h1><div class="name">Senior Programmer & ERP Architect</div><div style="margin-top: 20px; font-size: clamp(12px, 3vw, 14px); color: #aaa; letter-spacing: 1px;">.NET Framework | Oracle DB | Full Stack Innovation</div></div><div class="side-img" style="background-image: url('photo_graf01.jpg');"></div></div><div class="bottom-bar"><div>M.M. Knitwear Ltd. // Gazipur</div><div>EST. 2025 // DHAKA</div></div></div></div>
+    <div class="slide" data-index="1"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>INTRODUCING // ENGINEER & LEADER</div><div>Md Kamrul Hasan // STORY</div></div><div class="main"><div class="side-img" style="background-image: url('photo_graf01.jpg');"></div><div class="center"><div class="section-title">✦ INTRODUCING ✦</div><h2>Md Kamrul<br><span>Hasan</span></h2><p>Senior Programmer with 5+ years of experience in ERP development, Oracle DB management, and full-stack web solutions. Currently leading .NET-based ERP initiatives at M.M. Knitwear Ltd. Passionate about machine learning, CNN architectures, and driving digital transformation.</p><ul class="content-list"><li><strong style="color: #fff;">FOCUS</strong> — ERP Systems · Oracle 11.5c/ XE · Full Stack Web · CNN/ML</li><li><strong style="color: #fff;">PHILOSOPHY</strong> — Scalable code, intuitive interfaces, continuous innovation</li><li><strong style="color: #fff;">LOCATION</strong> — Gazipur, Dhaka, Bangladesh</li><li><strong style="color: #fff;">CONTACT</strong> — kamrul@mmknitwear.com</li></ul><div class="skills-grid"><span class="skill-tag">C# / .NET</span><span class="skill-tag">Oracle DB</span><span class="skill-tag">JavaScript/React</span><span class="skill-tag">Python/ML</span><span class="skill-tag">ERP Architecture</span></div></div><div class="side-img" style="background-image: url('cse01.jpg');"></div></div><div class="bottom-bar"><div>since 2020 // 15+ enterprise modules</div><div>✦ strong leadership ✦</div></div></div></div>
+    <div class="slide" data-index="2"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>EDUCATION // RESEARCH & INNOVATION</div><div>Aliah University // M.Tech</div></div><div class="main"><div class="side-img" style="background-image: url('convocation_0.jpg');"></div><div class="center"><div class="section-title">✦ ACADEMIC JOURNEY ✦</div><h2>Education &<br><span>Research</span></h2><ul class="content-list"><li><div class="item-title">M.Tech in Computer Science & Engineering</div><div class="item-sub">Aliah University, Kolkata | CGPA 7.36 | 2018 - 2020</div><div class="item-desc">Specialized in Machine Learning, Deep Learning, CNN for image recognition.</div></li><li><div class="item-title">B.Tech in Computer Science & Engineering</div><div class="item-sub">Aliah University, Kolkata | CGPA 6.93 | 2014 - 2018</div><div class="item-desc">Dynamic website development using HTML, CSS, JS, MySQL.</div></li></ul><div class="stats-grid"><div class="stat-item"><div class="stat-number">2</div><div class="stat-label">Research Publications</div></div><div class="stat-item"><div class="stat-number">3+</div><div class="stat-label">Academic Honors</div></div></div></div><div class="side-img" style="background-image: url('convocation.jpg');"></div></div><div class="bottom-bar"><div>Machine Learning // CNN // Image Recognition</div><div>✦ academic excellence ✦</div></div></div></div>
+    <div class="slide" data-index="3"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>EXPERIENCE // ENTERPRISE & WEB</div><div>Career Timeline</div></div><div class="main"><div class="side-img" style="background-image: url('cse02.jpg');"></div><div class="center"><div class="section-title">✦ PROFESSIONAL JOURNEY ✦</div><h2>Work<br><span>Experience</span></h2><ul class="content-list"><li><div class="item-title">Senior Programmer</div><div class="item-sub">M.M. Knitwear Ltd. | Mar 2023 – Present</div><div class="item-desc">ERP Software Developer using .NET Framework, Oracle 11.5c Database Management.</div></li><li><div class="item-title">Software Engineer</div><div class="item-sub">Dazzle Soft Ltd. | Jan 2021 – Mar 2023</div><div class="item-desc">Full Stack Web Developer (React, NodeJS, Oracle XE).</div></li></ul><div class="stats-grid"><div class="stat-item"><div class="stat-number">5+</div><div class="stat-label">Years Experience</div></div><div class="stat-item"><div class="stat-number">12+</div><div class="stat-label">ERP Modules Shipped</div></div></div></div><div class="side-img" style="background-image: url('style.jpg');"></div></div><div class="bottom-bar"><div>.NET // Oracle // React // Leadership</div><div>✦ enterprise ready ✦</div></div></div></div>
+    <div class="slide" data-index="4"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>PROJECTS // KEY DELIVERABLES</div><div>Lead Manager & Architect</div></div><div class="main"><div class="side-img" style="background-image: url('project01.jpg');"></div><div class="center"><div class="section-title">✦ IMPACTFUL SOLUTIONS ✦</div><h2>Featured<br><span>Projects</span></h2><div class="project-cards"><div class="project-card"><div class="project-title">E-commerce Redesign <span class="project-year">2024</span></div><div class="project-desc">Boosted conversion rate by 35% through UX revamp.</div></div><div class="project-card"><div class="project-title">ERP Software Suite <span class="project-year">2023-Present</span></div><div class="project-desc">End-to-end ERP solution for knitwear industry.</div></div><div class="project-card"><div class="project-title">Machine Learning Prototype <span class="project-year">2022</span></div><div class="project-desc">Color image recognition using CNN.</div></div></div></div><div class="side-img" style="background-image: url('project-0 (1).jpg');"></div></div><div class="bottom-bar"><div>35% conversion lift // 12+ enterprise modules</div><div>✦ scalable impact ✦</div></div></div></div>
+    <div class="slide" data-index="5"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>SKILLS // LANGUAGES // INTERESTS</div><div>Toolkit & Mindset</div></div><div class="main"><div class="side-img" style="background-image: url('portfolio1.png');"></div><div class="center"><div class="section-title">✦ COMPETENCIES & CULTURE ✦</div><h2>Skills &<br><span>Personal</span></h2><div class="skills-grid" style="margin-bottom: 20px;"><span class="skill-tag">C# (.NET)</span><span class="skill-tag">React/Node.js</span><span class="skill-tag">Oracle DB/SQL</span><span class="skill-tag">Python/ML</span><span class="skill-tag">MongoDB</span></div><div class="stats-grid" style="grid-template-columns: 1fr 1fr;"><div class="stat-item"><div class="stat-number">Language</div><div class="stat-label">Bengali · English · Hindi</div></div><div class="stat-item"><div class="stat-number">📸🌱✈️</div><div class="stat-label">Coding · photography · Gardening</div></div></div></div><div class="side-img" style="background-image: url('portfolio4.png');"></div></div><div class="bottom-bar"><div>multilingual // creative problem solver</div><div>✦ continuous learner ✦</div></div></div></div>
+    <div class="slide" data-index="6"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>CONCLUSION // THE PATH AHEAD</div><div>Md Kamrul Hasan // VISION</div></div><div class="main"><div class="side-img" style="background-image: url('CONCLUSION.png');"></div><div class="center center-bg" style="background-image: url('MMK01.png');"><div class="overlay"></div><div><div style="font-size: 30px; font-family: 'Playfair Display', serif; color: #fff; margin-bottom: 20px;">CONCLUSION</div><p style="font-style: italic;">"Technology is not just about writing code — it's about creating solutions that empower people."</p><div style="margin-top: 15px; color: #fff;">— Md Kamrul Hasan</div><ul class="content-list"><li><strong style="color:#fff;">MISSION</strong> — Deliver scalable, intelligent systems.</li><li><strong style="color:#fff;">NEXT CHAPTER</strong> — Exploring AI-integrated ERP.</li></ul></div></div><div class="side-img" style="background-image: url('CONCLUSION2.png');"></div></div><div class="bottom-bar"><div>always iterating // always learning</div><div>✦ start again ✦</div></div></div></div>
+    <div class="slide" data-index="7"><div class="page-container"><div class="film-border"></div><div class="top-bar"><div>THANK YOU // DOWNLOAD CV</div><div>Md Kamrul Hasan // CONNECT</div></div><div class="main"><div class="side-img" style="background-image: url('thank_you (7).jpg');"></div><div class="center center-bg" style="background-image: url('Untitled (4)-1.png');"><div class="overlay"></div><div class="thankyou-container"><div class="thankyou-title">THANK<br><span style="font-style: italic;">YOU</span></div><div class="thankyou-sub">for exploring my professional journey</div><div style="margin-top: 30px;"><a href="#" id="carouselDownloadBtn" style="color: white; border: 1px solid white; padding: 12px 28px; text-decoration: none; font-family: monospace; letter-spacing: 2px; display: inline-block;" onmouseover="this.style.background='white';this.style.color='black';" onmouseout="this.style.background='transparent';this.style.color='white';">📄 DOWNLOAD CV</a></div></div></div><div class="side-img" style="background-image: url('thank_you (4).jpg');"></div></div><div class="bottom-bar"><div>Let's innovate together // Open for collaboration</div><div>✦ scroll again ✦</div></div></div></div>
+  </div>
+  <div class="nav-dots" id="navDots"></div>
+</div> -->
 
 <div class="carousel-container" id="carouselContainer">
     <div class="carousel-wrapper" id="carouselWrapper">
@@ -1925,7 +1936,7 @@
                 </div>
               </div>
             </div>
-            <div class="side-img" style="background-image: url('project-01.jpg');"></div>
+            <div class="side-img" style="background-image: url('project-0\ \(1\).jpg');"></div>
           </div>
           <div class="bottom-bar">
             <div>35% conversion lift // 12+ enterprise modules</div>
@@ -2029,8 +2040,8 @@
             <div>Md Kamrul Hasan // CONNECT</div>
           </div>
           <div class="main">
-            <div class="side-img" style="background-image: url('thank_you01.jpg');"></div>
-            <div class="center center-bg" style="background-image: url('Untitled04.png');">
+            <div class="side-img" style="background-image: url('thank_you\ \(7\).jpg');"></div>
+            <div class="center center-bg" style="background-image: url('Untitled\ \(4\)-1.png');">
               <div class="overlay"></div>
               <div class="thankyou-container">
                 <div class="thankyou-title">THANK<br><span style="font-style: italic;">YOU</span></div>
@@ -2053,7 +2064,7 @@
                 <div style="margin-top: 20px; font-size: clamp(11px, 2.8vw, 14px); color: #aaa;">kamrul.hasan@mmknitwear.com · +880 17XXXXXXXX</div>
               </div>
             </div>
-            <div class="side-img" style="background-image: url('thank_you04.jpg');"></div>
+            <div class="side-img" style="background-image: url('thank_you\ \(4\).jpg');"></div>
           </div>
           <div class="bottom-bar">
             <div>Let's innovate together // Open for collaboration</div>
@@ -2148,429 +2159,440 @@
 <!-- Download Modal -->
 <div id="downloadModal" class="download-modal"><div class="download-modal-content"><span class="close" onclick="closeDownloadModal()">&times;</span><h2>Download Options</h2><p>Choose which document you'd like to download:</p><div class="download-options"><button class="download-option" onclick="downloadResume()">📄 Resume</button><button class="download-option" onclick="downloadBioData()">📋 Bio Data</button></div></div></div>
 
-<!-- Premium WhatsApp Widget - Messenger Style (Fully Draggable) -->
+<!-- Premium WhatsApp Widget HTML - Fixed (No underline) -->
 <div class="whatsapp-widget" id="whatsappWidget">
-  <!-- Drag Handle - পুরো widget ড্র্যাগ করা যাবে -->
-  <div class="whatsapp-drag-handle" id="whatsappDragHandle"></div>
-  
-  <!-- Pulse Effect -->
-  <div class="whatsapp-pulse"></div>
-  
-  <!-- Main Button -->
-  <a href="https://wa.me/8801911636463?text=Hi%20Md%20Kamrul%20Hasan%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20connect%20with%20you." 
-     target="_blank" 
-     class="whatsapp-button"
-     id="whatsappButton">
-    <i class="fab fa-whatsapp"></i>
-  </a>
-  
-  <!-- Tooltip -->
-  <div class="whatsapp-tooltip">হাতে ধরে সরান 💬</div>
-</div>
-  <div id="toast" class="toast">Message sent successfully!</div>
+    <div class="whatsapp-pulse"></div>
+    <a href="https://wa.me/8801911636463?text=Hi%20Md%20Kamrul%20Hasan%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20connect%20with%20you." 
+       target="_blank" 
+       class="whatsapp-button"
+       id="whatsappButton"
+       style="text-decoration: none; border: none; outline: none;">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <div class="whatsapp-tooltip">Chat with me 💬</div>
+  </div>
+
 <script>
   // Hero tab switching
-function switchTab(tab, event) {
-  document.querySelectorAll('.buttons button').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-  const content = document.getElementById('tabContent');
-  content.style.opacity = 0;
-  setTimeout(() => {
-    if (tab === 'resume') {
-      content.innerHTML = `<p>A highly motivated and organized individual, with a master's degree who is capable of working under pressure in all environments, seeking a position in your company. Adequate professional skills and novel strategies would help your company flourish and simultaneously improve my capabilities as a professional.</p>`;
-    } else {
-      content.innerHTML = `<div><p>Religion: Islam | DOB: 23/12/1995 | Height: 5'9"<br>Education: M.Tech in CSE | Languages: Bangla, English, Hindi<br>Present Address: Konabari Gazipur, Dhaka, Bangladesh</p><p>Father: Md Sorwar Uddin Biswas | Mother: MST Majeda Sultana</p><p style="margin-top:10px;">Md. Kamrul Hasan</p></div>`;
-    }
-    content.style.opacity = 1;
-  }, 300);
-}
-
-function showDownloadOptions() { document.getElementById("downloadModal").style.display = "flex"; }
-function closeDownloadModal() { document.getElementById("downloadModal").style.display = "none"; }
-
-function downloadResume() {
-  const resumePath = "my_cv.pdf";  
-  const link = document.createElement("a");
-  link.href = resumePath;
-  link.download = "khp_resume.pdf"; 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  closeDownloadModal();
-}
-
-function downloadBioData() {
-  const bioDataPath = "Bio_data.pdf";  
-  const link = document.createElement("a");
-  link.href = bioDataPath;
-  link.download = "khp_bio_data.pdf"; 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  closeDownloadModal();
-}
-
-// Theme toggle
-const themeToggle = document.getElementById("themeToggle");
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  themeToggle.innerHTML = document.body.classList.contains("dark") ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-regular fa-moon"></i>';
-});
-
-const profilePic = document.getElementById('heroProfilePic');
-if(profilePic) profilePic.addEventListener('click', () => { profilePic.style.transform = 'scale(1.08)'; setTimeout(() => { profilePic.style.transform = ''; }, 300); });
-
-// ---------- CAROUSEL ----------
-const carouselWrapper = document.getElementById('carouselWrapper');
-const slides = document.querySelectorAll('.slide');
-const totalSlides = slides.length;
-const navDots = document.getElementById('navDots');
-const carouselContainerDiv = document.getElementById('carouselContainer');
-let currentIndex = 0;
-let isAnimating = false;
-let autoScrollInterval = null;
-let isAutoScrollActive = true;
-let isMouseDown = false;
-let isPausedByHold = false;
-
-for (let i = 0; i < totalSlides; i++) {
-  const dot = document.createElement('div');
-  dot.className = 'dot-nav' + (i === 0 ? ' active' : '');
-  dot.dataset.index = i;
-  dot.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (!isAnimating && i !== currentIndex) {
-      goToSlide(i);
-      resetAutoTimer();
-    }
-  });
-  navDots.appendChild(dot);
-}
-const dots = document.querySelectorAll('.dot-nav');
-
-function updateCarousel(index) {
-  currentIndex = index;
-  const offset = -currentIndex * 100;
-  carouselWrapper.style.transform = `translateX(${offset}%)`;
-  dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
-}
-
-function goToSlide(index) {
-  if (!isAnimating && index !== currentIndex) {
-    isAnimating = true;
-    updateCarousel(index);
-    setTimeout(() => { isAnimating = false; }, 600);
+  function switchTab(tab, event) {
+    document.querySelectorAll('.buttons button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    const content = document.getElementById('tabContent');
+    content.style.opacity = 0;
+    setTimeout(() => {
+      if (tab === 'resume') {
+        content.innerHTML = `<p>A highly motivated and organized individual, with a master's degree who is capable of working under pressure in all environments, seeking a position in your company. Adequate professional skills and novel strategies would help your company flourish and simultaneously improve my capabilities as a professional.</p>`;
+      } else {
+        content.innerHTML = `<div><p>Religion: Islam | DOB: 23/12/1995 | Height: 5'9"<br>Education: M.Tech in CSE | Languages: Bangla, English, Hindi<br>Present Address: Konabari Gazipur, Dhaka, Bangladesh</p><p>Father: Md Sorwar Uddin Biswas | Mother: MST Majeda Sultana</p><p style="margin-top:10px;">Md. Kamrul Hasan</p></div>`;
+      }
+      content.style.opacity = 1;
+    }, 300);
   }
-}
+  
+  function showDownloadOptions() { document.getElementById("downloadModal").style.display = "flex"; }
+  function closeDownloadModal() { document.getElementById("downloadModal").style.display = "none"; }
+  function downloadResume() { alert("Resume download would start. (PDF placeholder)"); closeDownloadModal(); }
+  function downloadBioData() { alert("Bio Data download would start. (PDF placeholder)"); closeDownloadModal(); }
+  
+  // Theme toggle
+  const themeToggle = document.getElementById("themeToggle");
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    themeToggle.innerHTML = document.body.classList.contains("dark") ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-regular fa-moon"></i>';
+  });
 
-function nextSlide() { 
-  if (!isAnimating && isAutoScrollActive && !isPausedByHold) { 
-    isAnimating = true; 
-    let next = currentIndex + 1; 
-    if (next >= totalSlides) next = 0; 
-    updateCarousel(next); 
-    setTimeout(() => { isAnimating = false; }, 600); 
-  } 
-}
+  const profilePic = document.getElementById('heroProfilePic');
+  if(profilePic) profilePic.addEventListener('click', () => { profilePic.style.transform = 'scale(1.08)'; setTimeout(() => { profilePic.style.transform = ''; }, 300); });
 
-function startAutoScroll() { 
-  if (autoScrollInterval) clearInterval(autoScrollInterval); 
-  autoScrollInterval = setInterval(() => { 
-    if (isAutoScrollActive && !isAnimating && !isPausedByHold) nextSlide(); 
-  }, 5000); 
-}
+  // ---------- CAROUSEL with CLICK & HOLD PAUSE ----------
+  const carouselWrapper = document.getElementById('carouselWrapper');
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const navDots = document.getElementById('navDots');
+  const carouselContainerDiv = document.getElementById('carouselContainer');
+  let currentIndex = 0;
+  let isAnimating = false;
+  let autoScrollInterval = null;
+  let isAutoScrollActive = true;
+  
+  let isMouseDown = false;
+  let isPausedByHold = false;
 
-function stopAutoScroll() { 
-  if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; } 
-}
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot-nav' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!isAnimating && i !== currentIndex) {
+        goToSlide(i);
+        resetAutoTimer();
+      }
+    });
+    navDots.appendChild(dot);
+  }
+  const dots = document.querySelectorAll('.dot-nav');
 
-function resetAutoTimer() { 
-  if (isAutoScrollActive && !isPausedByHold) { 
-    stopAutoScroll(); 
-    startAutoScroll(); 
-  } else if (isAutoScrollActive && isPausedByHold) {
+  function updateCarousel(index) {
+    currentIndex = index;
+    const offset = -currentIndex * 100;
+    carouselWrapper.style.transform = `translateX(${offset}%)`;
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+  }
+
+  function goToSlide(index) {
+    if (!isAnimating && index !== currentIndex) {
+      isAnimating = true;
+      updateCarousel(index);
+      setTimeout(() => { isAnimating = false; }, 600);
+    }
+  }
+
+  function nextSlide() { 
+    if (!isAnimating && isAutoScrollActive && !isPausedByHold) { 
+      isAnimating = true; 
+      let next = currentIndex + 1; 
+      if (next >= totalSlides) next = 0; 
+      updateCarousel(next); 
+      setTimeout(() => { isAnimating = false; }, 600); 
+    } 
+  }
+  
+  function startAutoScroll() { 
+    if (autoScrollInterval) clearInterval(autoScrollInterval); 
+    autoScrollInterval = setInterval(() => { 
+      if (isAutoScrollActive && !isAnimating && !isPausedByHold) nextSlide(); 
+    }, 5000); 
+  }
+  
+  function stopAutoScroll() { 
+    if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; } 
+  }
+  
+  function resetAutoTimer() { 
+    if (isAutoScrollActive && !isPausedByHold) { 
+      stopAutoScroll(); 
+      startAutoScroll(); 
+    } else if (isAutoScrollActive && isPausedByHold) {
+      stopAutoScroll();
+    }
+  }
+  
+  function pauseAutoScrollByHold() {
+    if (!isAutoScrollActive) return;
+    isPausedByHold = true;
     stopAutoScroll();
   }
-}
-
-function pauseAutoScrollByHold() {
-  if (!isAutoScrollActive) return;
-  isPausedByHold = true;
-  stopAutoScroll();
-}
-
-function resumeAutoScrollAfterHold() {
-  if (!isAutoScrollActive) return;
-  isPausedByHold = false;
-  startAutoScroll();
-}
-
-carouselContainerDiv.addEventListener('mousedown', (e) => {
-  if (e.target.closest('.dot-nav') || e.target.closest('.download-option') || e.target.closest('#heroCvBtn') || e.target.closest('#carouselDownloadBtn') || e.target.closest('.theme-toggle') || e.target.closest('.buttons button') || e.target.closest('.social a') || e.target.closest('.skill-tag') || e.target.closest('.project-card') || e.target.closest('.close') || e.target.closest('.download-option')) return;
-  isMouseDown = true;
-  pauseAutoScrollByHold();
-});
-
-window.addEventListener('mouseup', () => {
-  if (isMouseDown) {
-    isMouseDown = false;
-    resumeAutoScrollAfterHold();
+  
+  function resumeAutoScrollAfterHold() {
+    if (!isAutoScrollActive) return;
+    isPausedByHold = false;
+    startAutoScroll();
   }
-});
-
-carouselContainerDiv.addEventListener('touchstart', (e) => {
-  if (e.target.closest('.dot-nav') || e.target.closest('.download-option') || e.target.closest('#heroCvBtn') || e.target.closest('#carouselDownloadBtn') || e.target.closest('.theme-toggle') || e.target.closest('.buttons button') || e.target.closest('.social a') || e.target.closest('.skill-tag') || e.target.closest('.project-card')) return;
-  isMouseDown = true;
-  pauseAutoScrollByHold();
-});
-
-window.addEventListener('touchend', () => {
-  if (isMouseDown) {
-    isMouseDown = false;
-    resumeAutoScrollAfterHold();
-  }
-});
-
-carouselContainerDiv.addEventListener('click', (e) => {
-  if (e.target.closest('.dot-nav') || e.target.closest('.download-option') || e.target.closest('#heroCvBtn') || e.target.closest('#carouselDownloadBtn') || e.target.closest('.theme-toggle') || e.target.closest('.buttons button') || e.target.closest('.social a') || e.target.closest('.skill-tag') || e.target.closest('.project-card')) return;
-  const rect = carouselContainerDiv.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const mid = rect.width / 2;
-  if (clickX < mid) {
-    if (!isAnimating) {
-      let prevIdx = currentIndex - 1;
-      if (prevIdx < 0) prevIdx = totalSlides - 1;
-      goToSlide(prevIdx);
-      resetAutoTimer();
+  
+  carouselContainerDiv.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.dot-nav') || e.target.closest('.download-option') || e.target.closest('#heroCvBtn') || e.target.closest('#carouselDownloadBtn') || e.target.closest('.theme-toggle') || e.target.closest('.buttons button') || e.target.closest('.social a') || e.target.closest('.skill-tag') || e.target.closest('.project-card') || e.target.closest('.close') || e.target.closest('.download-option')) return;
+    isMouseDown = true;
+    pauseAutoScrollByHold();
+  });
+  
+  window.addEventListener('mouseup', () => {
+    if (isMouseDown) {
+      isMouseDown = false;
+      resumeAutoScrollAfterHold();
     }
-  } else {
-    if (!isAnimating) {
-      let nextIdx = currentIndex + 1;
-      if (nextIdx >= totalSlides) nextIdx = 0;
-      goToSlide(nextIdx);
-      resetAutoTimer();
+  });
+  
+  carouselContainerDiv.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.dot-nav') || e.target.closest('.download-option') || e.target.closest('#heroCvBtn') || e.target.closest('#carouselDownloadBtn') || e.target.closest('.theme-toggle') || e.target.closest('.buttons button') || e.target.closest('.social a') || e.target.closest('.skill-tag') || e.target.closest('.project-card')) return;
+    isMouseDown = true;
+    pauseAutoScrollByHold();
+  });
+  
+  window.addEventListener('touchend', () => {
+    if (isMouseDown) {
+      isMouseDown = false;
+      resumeAutoScrollAfterHold();
     }
+  });
+  
+  carouselContainerDiv.addEventListener('click', (e) => {
+    if (e.target.closest('.dot-nav') || e.target.closest('.download-option') || e.target.closest('#heroCvBtn') || e.target.closest('#carouselDownloadBtn') || e.target.closest('.theme-toggle') || e.target.closest('.buttons button') || e.target.closest('.social a') || e.target.closest('.skill-tag') || e.target.closest('.project-card')) return;
+    const rect = carouselContainerDiv.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const mid = rect.width / 2;
+    if (clickX < mid) {
+      if (!isAnimating) {
+        let prevIdx = currentIndex - 1;
+        if (prevIdx < 0) prevIdx = totalSlides - 1;
+        goToSlide(prevIdx);
+        resetAutoTimer();
+      }
+    } else {
+      if (!isAnimating) {
+        let nextIdx = currentIndex + 1;
+        if (nextIdx >= totalSlides) nextIdx = 0;
+        goToSlide(nextIdx);
+        resetAutoTimer();
+      }
+    }
+    e.stopPropagation();
+  });
+
+    // Animated Counter
+    function animateCounter(element, target) {
+    let current = 0;
+    let increment = target / 50;
+    let interval = setInterval(() => {
+      current += increment;
+      if (current >= target) { current = target; clearInterval(interval); }
+      element.innerText = Math.floor(current);
+    }, 30);
   }
-  e.stopPropagation();
-});
+  animateCounter(document.getElementById("yearsExp"), 5);
+  animateCounter(document.getElementById("projectsDone"), 15);
+  animateCounter(document.getElementById("happyClients"), 25);
+  animateCounter(document.getElementById("certificates"), 8);
 
-// Animated Counter
-function animateCounter(element, target) {
-  let current = 0;
-  let increment = target / 50;
-  let interval = setInterval(() => {
-    current += increment;
-    if (current >= target) { current = target; clearInterval(interval); }
-    element.innerText = Math.floor(current);
-  }, 30);
-}
-animateCounter(document.getElementById("yearsExp"), 5);
-animateCounter(document.getElementById("projectsDone"), 15);
-animateCounter(document.getElementById("happyClients"), 25);
-animateCounter(document.getElementById("certificates"), 8);
+  // Progress Bars
+  function animateProgress(id, val, textId) {
+    let progress = document.getElementById(id);
+    let width = 0;
+    let interval = setInterval(() => {
+      width += 2;
+      if (width >= val) { width = val; clearInterval(interval); }
+      progress.style.width = width + "%";
+      document.getElementById(textId).innerText = width + "%";
+    }, 20);
+  }
+  animateProgress("skill1", 90, "skill1Val");
+  animateProgress("skill2", 85, "skill2Val");
+  animateProgress("skill3", 80, "skill3Val");
+  animateProgress("skill4", 75, "skill4Val");
+  animateProgress("skill5", 88, "skill5Val");
+  animateProgress("skill6", 82, "skill6Val");
 
-// Progress Bars
-function animateProgress(id, val, textId) {
-  let progress = document.getElementById(id);
-  let width = 0;
-  let interval = setInterval(() => {
-    width += 2;
-    if (width >= val) { width = val; clearInterval(interval); }
-    progress.style.width = width + "%";
-    document.getElementById(textId).innerText = width + "%";
-  }, 20);
-}
-animateProgress("skill1", 90, "skill1Val");
-animateProgress("skill2", 85, "skill2Val");
-animateProgress("skill3", 80, "skill3Val");
-animateProgress("skill4", 75, "skill4Val");
-animateProgress("skill5", 88, "skill5Val");
-animateProgress("skill6", 82, "skill6Val");
-
-// Project Filter
-const filterBtns = document.querySelectorAll('.filter-btn');
-const projects = document.querySelectorAll('.project-item');
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filter = btn.dataset.filter;
-    projects.forEach(project => {
-      if (filter === 'all' || project.dataset.cat === filter) project.classList.add('show');
-      else project.classList.remove('show');
+  // Project Filter
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projects = document.querySelectorAll('.project-item');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      projects.forEach(project => {
+        if (filter === 'all' || project.dataset.cat === filter) project.classList.add('show');
+        else project.classList.remove('show');
+      });
     });
   });
-});
 
-// Testimonials Slider
-let testimonialIndex = 0;
-const testimonialWrapper = document.getElementById('testimonialWrapper');
-const testimonialCards = document.querySelectorAll('.testimonial-card');
-const dotsContainer = document.getElementById('testimonialDots');
-testimonialCards.forEach((_, i) => { let dot = document.createElement('div'); dot.classList.add('slider-dot'); if(i===0) dot.classList.add('active'); dot.addEventListener('click', () => goToTestimonial(i)); dotsContainer.appendChild(dot); });
-function goToTestimonial(index) { testimonialIndex = index; testimonialWrapper.style.transform = `translateX(-${index * 100}%)`; document.querySelectorAll('.slider-dot').forEach((dot, i) => dot.classList.toggle('active', i === index)); }
-setInterval(() => { let next = (testimonialIndex + 1) % testimonialCards.length; goToTestimonial(next); }, 5000);
+  // Testimonials Slider
+  let testimonialIndex = 0;
+  const testimonialWrapper = document.getElementById('testimonialWrapper');
+  const testimonialCards = document.querySelectorAll('.testimonial-card');
+  const dotsContainer = document.getElementById('testimonialDots');
+  testimonialCards.forEach((_, i) => { let dot = document.createElement('div'); dot.classList.add('slider-dot'); if(i===0) dot.classList.add('active'); dot.addEventListener('click', () => goToTestimonial(i)); dotsContainer.appendChild(dot); });
+  function goToTestimonial(index) { testimonialIndex = index; testimonialWrapper.style.transform = `translateX(-${index * 100}%)`; document.querySelectorAll('.slider-dot').forEach((dot, i) => dot.classList.toggle('active', i === index)); }
+  setInterval(() => { let next = (testimonialIndex + 1) % testimonialCards.length; goToTestimonial(next); }, 5000);
 
-// Contact Form
-const toast = document.getElementById('toast');
-if (toast) {
+  // Contact Form
+  const toast = document.getElementById('toast');
   document.getElementById('contactForm').addEventListener('submit', (e) => { e.preventDefault(); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); e.target.reset(); });
   document.getElementById('newsletterForm').addEventListener('submit', (e) => { e.preventDefault(); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); e.target.reset(); });
-}
 
-// ========== হোয়াটসঅ্যাপ উইজেট - সম্পূর্ণ নতুন ও স্থির ভার্সন ==========
+
+  // সম্পূর্ণ ড্র্যাগেবল হোয়াটসঅ্যাপ উইজেট - JavaScript
 (function() {
-  console.log('Starting WhatsApp Widget...');
-  
-  const widget = document.getElementById('whatsappWidget');
-  if (!widget) {
-    console.error('Widget not found!');
-    return;
-  }
-  
-  // পুরানো localStorage ডাটা ক্লিয়ার করুন
-  localStorage.removeItem('whatsapp_position');
-  localStorage.removeItem('whatsapp_position_messenger');
-  
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let currentX = 0, currentY = 0;
-  
-  // ডিফল্ট পজিশন - ডান পাশে নিচের দিকে
-  function setDefaultPosition() {
-    currentX = window.innerWidth - 85;
-    currentY = window.innerHeight - 85;
-    widget.style.transform = `translate(${currentX}px, ${currentY}px)`;
-    widget.style.bottom = 'auto';
-    widget.style.right = 'auto';
-    widget.style.top = 'auto';
-    widget.style.left = 'auto';
-    widget.style.display = 'block';
-    widget.style.visibility = 'visible';
-    widget.style.opacity = '1';
-    console.log('Default position set:', currentX, currentY);
-  }
-  
-  // সীমানা নির্ধারণ
-  function getBounds() {
-    const w = widget.offsetWidth;
-    const h = widget.offsetHeight;
-    return {
-      minX: 10,
-      maxX: window.innerWidth - w - 10,
-      minY: 10,
-      maxY: window.innerHeight - h - 10
-    };
-  }
-  
-  // পজিশন সেট করুন
-  function setPosition(x, y) {
-    const bounds = getBounds();
-    currentX = Math.min(bounds.maxX, Math.max(bounds.minX, x));
-    currentY = Math.min(bounds.maxY, Math.max(bounds.minY, y));
-    widget.style.transform = `translate(${currentX}px, ${currentY}px)`;
-  }
-  
-  // মাউস ড্র্যাগ
-  function onMouseDown(e) {
-    if (e.target.closest('.whatsapp-button')) return;
-    e.preventDefault();
-    isDragging = true;
-    startX = e.clientX - currentX;
-    startY = e.clientY - currentY;
-    widget.style.transition = 'none';
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  }
-  
-  function onMouseMove(e) {
-    if (!isDragging) return;
-    e.preventDefault();
-    let newX = e.clientX - startX;
-    let newY = e.clientY - startY;
-    setPosition(newX, newY);
-  }
-  
-  function onMouseUp() {
-    if (!isDragging) return;
-    isDragging = false;
-    widget.style.transition = '';
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
-  
-  // টাচ ড্র্যাগ
-  function onTouchStart(e) {
-    if (e.target.closest('.whatsapp-button')) return;
-    e.preventDefault();
-    isDragging = true;
-    const touch = e.touches[0];
-    startX = touch.clientX - currentX;
-    startY = touch.clientY - currentY;
-    widget.style.transition = 'none';
-    document.addEventListener('touchmove', onTouchMove);
-    document.addEventListener('touchend', onTouchEnd);
-  }
-  
-  function onTouchMove(e) {
-    if (!isDragging) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-    let newX = touch.clientX - startX;
-    let newY = touch.clientY - startY;
-    setPosition(newX, newY);
-  }
-  
-  function onTouchEnd() {
-    if (!isDragging) return;
-    isDragging = false;
-    widget.style.transition = '';
-    document.removeEventListener('touchmove', onTouchMove);
-    document.removeEventListener('touchend', onTouchEnd);
-  }
-  
-  // ডাবল ক্লিক রিসেট
-  function onDoubleClick(e) {
-    e.stopPropagation();
-    setDefaultPosition();
-  }
-  
-  // উইন্ডো রিসাইজ
-  function onResize() {
-    const bounds = getBounds();
-    if (currentX < bounds.minX || currentX > bounds.maxX || 
-        currentY < bounds.minY || currentY > bounds.maxY) {
-      setDefaultPosition();
-    } else {
-      setPosition(currentX, currentY);
+    const widget = document.getElementById('whatsappWidget');
+    const dragHandle = document.getElementById('whatsappDragHandle');
+    const whatsappLink = document.getElementById('whatsappButton');
+    
+    if (!widget || !dragHandle) return;
+    
+    let isDragging = false;
+    let dragStarted = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+    let rafId = null;
+    let pressTimer = null;
+    let isLongPress = false;
+    
+    // লোকাল স্টোরেজ থেকে সংরক্ষিত পজিশন লোড করুন
+    const savedPos = localStorage.getItem('whatsapp_position');
+    if (savedPos) {
+        try {
+            const pos = JSON.parse(savedPos);
+            translateX = pos.x;
+            translateY = pos.y;
+            widget.style.transform = `translate(${translateX}px, ${translateY}px)`;
+        } catch(e) {
+            console.log('Error loading position');
+        }
     }
-  }
-  
-  // ইভেন্ট লিসেনার
-  widget.addEventListener('mousedown', onMouseDown);
-  widget.addEventListener('touchstart', onTouchStart);
-  widget.addEventListener('dblclick', onDoubleClick);
-  window.addEventListener('resize', onResize);
-  
-  // ডিফল্ট পজিশন সেট করুন
-  setDefaultPosition();
-  
-  console.log('✅ WhatsApp widget ready - stable and draggable!');
+    
+    // পজিশন সেভ করুন
+    function savePosition() {
+        localStorage.setItem('whatsapp_position', JSON.stringify({
+            x: translateX,
+            y: translateY
+        }));
+    }
+    
+    // সীমানা নির্ধারণ করুন
+    function getBoundaries() {
+        const widgetWidth = widget.offsetWidth;
+        const widgetHeight = widget.offsetHeight;
+        return {
+            maxX: window.innerWidth - widgetWidth - 20,
+            maxY: window.innerHeight - widgetHeight - 20,
+            minX: 20,
+            minY: 20
+        };
+    }
+    
+    // সীমানার মধ্যে পজিশন আনার ফাংশন
+    function applyBoundaries(x, y) {
+        const bounds = getBoundaries();
+        let newX = x;
+        let newY = y;
+        
+        if (newX > bounds.maxX) newX = bounds.maxX;
+        if (newX < bounds.minX) newX = bounds.minX;
+        if (newY > bounds.maxY) newY = bounds.maxY;
+        if (newY < bounds.minY) newY = bounds.minY;
+        
+        return { x: newX, y: newY };
+    }
+    
+    // পজিশন আপডেট করুন
+    function updatePosition(x, y, save = true) {
+        const bounded = applyBoundaries(x, y);
+        translateX = bounded.x;
+        translateY = bounded.y;
+        widget.style.transform = `translate(${translateX}px, ${translateY}px)`;
+        if (save) savePosition();
+    }
+    
+    // ড্র্যাগ শুরু
+    function onStart(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // লং প্রেস ডিটেক্ট করার জন্য টাইমার
+        pressTimer = setTimeout(() => {
+            isLongPress = true;
+        }, 200);
+        
+        let clientX, clientY;
+        if (e.type === 'mousedown') {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        } else {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        
+        startX = clientX - translateX;
+        startY = clientY - translateY;
+        
+        isDragging = true;
+        dragStarted = false;
+        widget.classList.add('dragging');
+        
+        // গ্লোবাল ইভেন্ট লিসেনার যোগ করুন
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+    }
+    
+    // ড্র্যাগ মুভ
+    function onMove(e) {
+        if (!isDragging) return;
+        
+        dragStarted = true;
+        e.preventDefault();
+        
+        let clientX, clientY;
+        if (e.type === 'mousemove') {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        } else {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        
+        let newX = clientX - startX;
+        let newY = clientY - startY;
+        
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            updatePosition(newX, newY, false);
+        });
+    }
+    
+    // ড্র্যাগ শেষ
+    function onEnd(e) {
+        clearTimeout(pressTimer);
+        
+        if (!isDragging) return;
+        
+        isDragging = false;
+        widget.classList.remove('dragging');
+        
+        savePosition();
+        
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+        
+        // ড্র্যাগ না হলে (শুধু ক্লিক) হোয়াটসঅ্যাপ খুলুন
+        if (!dragStarted && !isLongPress) {
+            setTimeout(() => {
+                if (whatsappLink && whatsappLink.href) {
+                    window.open(whatsappLink.href, '_blank');
+                }
+            }, 50);
+        }
+        
+        dragStarted = false;
+        isLongPress = false;
+        if (rafId) cancelAnimationFrame(rafId);
+    }
+    
+    // ড্র্যাগ হ্যান্ডেলে ইভেন্ট লিসেনার যোগ করুন
+    dragHandle.addEventListener('mousedown', onStart);
+    dragHandle.addEventListener('touchstart', onStart);
+    
+    // ডাবল ক্লিক করলে পজিশন রিসেট করুন
+    dragHandle.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        updatePosition(20, window.innerHeight - widget.offsetHeight - 30);
+        savePosition();
+    });
+    
+    // উইন্ডো রিসাইজ হলে পজিশন অ্যাডজাস্ট করুন
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const bounded = applyBoundaries(translateX, translateY);
+            if (bounded.x !== translateX || bounded.y !== translateY) {
+                updatePosition(bounded.x, bounded.y);
+            }
+        }, 100);
+    });
+    
+    // প্রাথমিক কার্সার স্টাইল সেট করুন
+    dragHandle.style.cursor = 'grab';
+    
+    console.log('✅ WhatsApp widget ready - Fully draggable anywhere!');
 })();
-
-// Carousel Download Button
-const carouselDownloadBtn = document.getElementById('carouselDownloadBtn');
-if (carouselDownloadBtn) {
-  carouselDownloadBtn.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    e.stopPropagation(); 
-    showDownloadOptions(); 
-  });
-}
-
-// Start Carousel
-updateCarousel(0);
-startAutoScroll();
+  document.getElementById('carouselDownloadBtn')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); showDownloadOptions(); });
+  updateCarousel(0);
+  startAutoScroll();
 </script>
 </body>
 </html>

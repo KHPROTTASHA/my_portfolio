@@ -196,7 +196,8 @@
     cursor: pointer;
     border-radius: 30px;
     font-weight: 600;
-    transition: .3s;
+    transition: transform 0.3s ease, background 0.3s, box-shadow 0.3s;
+    animation: slideX 1.2s ease-in-out infinite alternate; /* horizontal animation */
     color: var(--hero-accent);
   }
   .buttons button.active,
@@ -220,24 +221,37 @@
     margin-top: 10px;
     width: fit-content;
     transition: transform 0.4s ease-in-out, background 0.3s;
-    animation: gentleSlide 1.2s ease-in-out infinite alternate;
+    animation: floatY 1.2s ease-in-out infinite alternate; /* vertical animation */
   }
-  @keyframes gentleSlide {
-    0% { transform: translateX(0px); }
+  /* Horizontal sliding animation */
+@keyframes slideX {
+    0% { transform: translateX(0); }
     100% { transform: translateX(12px); }
-  }
-  @media (max-width: 900px) {
+}
+
+/* Vertical floating animation */
+@keyframes floatY {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-8px); }
+}
+@media (max-width: 900px) {
     .hero-main { flex-direction: column; }
     .left, .right { width: 100%; }
     .right { padding: 50px 25px; text-align: center; align-items: center; }
     .right h1 { font-size: 42px; }
-    #heroCvBtn { margin: 10px auto 0; animation: gentleSlideMobile 1s ease-in-out infinite alternate; }
-    @keyframes gentleSlideMobile {
-      0% { transform: translateX(0px); }
-      100% { transform: translateX(8px); }
+    #heroCvBtn { 
+        margin: 10px auto 0; 
+        animation: floatYMobile 1s ease-in-out infinite alternate; /* new mobile animation */
     }
     .buttons { justify-content: center; }
-  }
+}
+
+/* Mobile-specific vertical floating animation */
+@keyframes floatYMobile {
+    0% { transform: translateY(0); }
+    /* 50% { transform: translateY(-6px); }  slightly less float for mobile */
+    100% { transform: translateY(-12px); }
+}
 
   /* Download Modal - FIXED for light mode visibility */
   .download-modal {
@@ -2382,7 +2396,7 @@
         if (tab === 'resume') {
           content.innerHTML = `<p>A highly motivated and organized individual, with a master's degree who is capable of working under pressure in all environments, seeking a position in your company. Adequate professional skills and novel strategies would help your company flourish and simultaneously improve my capabilities as a professional.</p>`;
         } else {
-          content.innerHTML = `<div><p>Religion: Islam | DOB: 23/12/1995 | Height: 5'9"<br>Education: M.Tech in CSE | Languages: Bangla, English, Hindi<br>Present Address: Konabari Gazipur, Dhaka, Bangladesh</p><p>Father: Md Sorwar Uddin Biswas | Mother: MST Majeda Sultana</p><p style="margin-top:10px;">Md. Kamrul Hasan</p></div>`;
+          content.innerHTML = `<div><p><b>Religion:</b> Islam | <b>DOB:</b> 23/12/1995 | <b>Height:</b> 5'9"<br><b>Education:</b> M.Tech in CSE | <b>Languages:</b> Bangla, English, Hindi<br><b>Present Address:</b> Konabari Gazipur, Dhaka, Bangladesh</p><p><b>Father:</b> Md Sorwar Uddin Biswas | <b>Mother:</b> MST Majeda Sultana</p><p style="margin-top:10px;"><b>Md. Kamrul Hasan</b></p></div>`;
         }
         content.style.opacity = 1;
       }, 300);

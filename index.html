@@ -328,61 +328,75 @@
   /* ========== CAROUSEL SECTION ========== */
   .carousel-container {
     position: relative;
-    width: 100%;
-    min-height: 100vh;
-    background: #000000;
-    overflow: hidden;
-    cursor: pointer;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  background: #000000;
+  overflow: hidden;
+  cursor: pointer;
   }
 
   .carousel-wrapper {
-    display: flex;
-    width: 100%;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .slide {
-    flex: 0 0 100%;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #000000;
-    padding: 15px;
-    pointer-events: auto;
-  }
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  padding: 0;
+  pointer-events: auto;
+}
 
-  .page-container {
-    position: relative;
-    width: 100%;
-    max-width: 1400px;
-    height: 92vh;
-    min-height: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-  }
+.page-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
 
-  .film-border::before,
-  .film-border::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: clamp(35px, 6vh, 60px);
-    background: repeating-linear-gradient(
-      to right,
-      #000000 0px,
-      #000000 clamp(18px, 3vw, 28px),
-      #ffffff clamp(18px, 3vw, 28px),
-      #ffffff clamp(28px, 4.5vw, 42px)
-    );
-    z-index: 10;
-    pointer-events: none;
-  }
-  .film-border::before { top: 0; left: 0; }
-  .film-border::after { bottom: 0; left: 0; }
+.film-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.film-border::before,
+.film-border::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: clamp(35px, 6vh, 60px);
+  background: repeating-linear-gradient(
+    to right,
+    #000000 0px,
+    #000000 clamp(18px, 3vw, 28px),
+    #ffffff clamp(18px, 3vw, 28px),
+    #ffffff clamp(28px, 4.5vw, 42px)
+  );
+  z-index: 10;
+  pointer-events: none;
+}
+
+.film-border::before { top: 0; left: 0; }
+.film-border::after { bottom: 0; left: 0; }
 
   .main {
     width: 95%;
@@ -418,22 +432,35 @@
     overflow-y: auto;
     background: #0a0a0a;
   }
-  .center::-webkit-scrollbar { width: 3px; }
-  .center::-webkit-scrollbar-track { background: #222; }
-  .center::-webkit-scrollbar-thumb { background: #fff; }
+  .center::-webkit-scrollbar { 
+  width: 4px; 
+}
+.center::-webkit-scrollbar-track { 
+  background: #1a1a1a; 
+}
 
-  .center-bg {
-    background-size: cover;
-    background-position: center;
-    position: relative;
-  }
-  .center-bg .overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1;
-  }
-  .center-bg > *:not(.overlay) { z-index: 2; position: relative; }
+.center::-webkit-scrollbar-thumb { 
+  background: #c08457; 
+  border-radius: 2px;
+}
+
+.center.center-bg {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.center.center-bg .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1;
+}
+
+.center.center-bg > *:not(.overlay) { 
+  z-index: 2; 
+  position: relative; 
+}
 
   h1 {
     font-family: 'Playfair Display', serif;
@@ -614,24 +641,32 @@
     margin-top: 15px;
   }
   .top-bar, .bottom-bar {
-    position: absolute;
-    width: 95%;
-    display: flex;
-    justify-content: space-between;
-    font-size: clamp(8px, 2vw, 12px);
-    z-index: 15;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-family: monospace;
-    color: #ffffff;
-    background: rgba(0, 0, 0, 0.6);
-    padding: clamp(5px, 1.5vh, 8px) clamp(12px, 3vw, 20px);
-    backdrop-filter: blur(4px);
-    flex-wrap: wrap;
-    gap: 8px;
+  position: absolute;
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(10px, 2.2vw, 13px);
+  z-index: 15;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-family: monospace;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: clamp(6px, 1.5vh, 10px) clamp(15px, 3vw, 25px);
+  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+  gap: 8px;
   }
-  .top-bar { top: 12px; left: 2.5%; }
-  .bottom-bar { bottom: 12px; left: 2.5%; }
+  .top-bar { 
+  top: clamp(8px, 2vh, 15px); 
+  left: 2.5%; 
+  border-radius: 4px;
+  }
+  .bottom-bar { 
+  bottom: clamp(8px, 2vh, 15px); 
+  left: 2.5%; 
+  border-radius: 4px;
+}
   .nav-dots {
     position: absolute;
     right: clamp(12px, 3vw, 30px);
@@ -1432,75 +1467,52 @@
     .newsletter-form { flex-direction: column; }
   }
 
-  /* Carousel (compact) */
-  /* .carousel-container {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    background: #000000;
-    overflow: hidden;
-    cursor: pointer;
-  } */
+
   .carousel-wrapper {
     display: flex;
     width: 100%;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  /* .slide {
-    flex: 0 0 100%;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #000000;
-    padding: 15px;
-  } */
-  /* .page-container {
-    position: relative;
-    width: 100%;
-    max-width: 1400px;
-    height: 92vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  } */
-  /* .film-border::before, .film-border::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: clamp(35px, 6vh, 60px);
-    background: repeating-linear-gradient(to right, #000000 0px, #000000 28px, #ffffff 28px, #ffffff 42px);
-    z-index: 10;
-    pointer-events: none;
-  } */
   .film-border::before { top: 0; left: 0; }
   .film-border::after { bottom: 0; left: 0; }
   .main {
-    width: 95%;
-    height: 88%;
-    display: flex;
-    background: #0a0a0a;
-    overflow: hidden;
-    position: relative;
-  }
-  .side-img {
-    width: 22%;
-    background-size: cover;
-    background-position: center;
-    filter: grayscale(100%);
-    transition: 0.5s;
-  }
-  .side-img:hover {
-    filter: grayscale(0%);
-    transform: scale(1.02);
-  }
-  .center {
-    width: 56%;
-    padding: 50px;
-    overflow-y: auto;
-    background: #0a0a0a;
-  }
+  width: 95%;
+  height: calc(100vh - 120px);
+  min-height: 480px;
+  max-height: 850px;
+  display: flex;
+  background: #0a0a0a;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid #222;
+  margin: 60px auto;
+}
+.side-img {
+  width: 22%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.side-img:hover {
+  filter: grayscale(0%);
+  transform: scale(1.02);
+}
+.center {
+  width: 56%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(25px, 5vw, 50px);
+  overflow-y: auto;
+  background: #0a0a0a;
+}
   .center-bg {
     background-size: cover;
     background-position: center;
@@ -1540,7 +1552,6 @@
   }
 
 /* Premium WhatsApp Widget - Messenger Style */
-/* ========== WHATSAPP BUTTON - PREMIUM WITH BLING EFFECT ========== */
 .wa {
     position: fixed;
     bottom: 25px;
@@ -1575,7 +1586,6 @@
 }
 
 /* ===== BLING EFFECT - Green Flash from all sides ===== */
-/* Main pulse ring that creates bling effect */
 .wa::before {
     content: '';
     position: absolute;
@@ -1931,10 +1941,10 @@
         <p class="role">Sr. Programmer</p>
       </div>
       <div class="social">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/share/14dT4U8TRnE/"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/kamrulXhasan"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.linkedin.com/in/md-kamrul-hasan-518091224?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.instagram.com/kh_prottasha?igsh=MWc4emw1eDV3bjQ0Yg=="><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </div>
@@ -2176,10 +2186,6 @@
                 <span class="skill-tag">Oracle DB/SQL</span><span class="skill-tag">Python/ML/CNN</span><span class="skill-tag">MongoDB</span>
                 <span class="skill-tag">Data Structures</span><span class="skill-tag">Web Dev (HTML/CSS)</span><span class="skill-tag">Oracle Report Builder</span>
               </div>
-              <!-- <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-top: 10px;">
-                <div class="stat-item"><div class="stat-number">Language</div><div class="stat-label">Bengali · English · Hindi</div></div>
-                <div class="stat-item"><div class="stat-number">📸🌱✈️</div><div class="stat-label">Coding · photography · Gardening · Travelling</div></div>
-              </div> -->
               <div class="stats-grid">
                 <div class="stat-item">
                   <div class="stat-number">Language</div>
@@ -2274,7 +2280,7 @@
                       📄 DOWNLOAD CV
                     </a>
                   </div>
-                <div style="margin-top: 20px; font-size: clamp(11px, 2.8vw, 14px); color: #aaa;">kamrul.hasan@mmknitwear.com · +880 17XXXXXXXX</div>
+                <div style="margin-top: 20px; font-size: clamp(11px, 2.8vw, 14px); color: #aaa;">iamkhprottasha@gmail.com · +880 1711667451</div>
               </div>
             </div>
             <div class="side-img" style="background-image: url('thank_you04.jpg');"></div>
@@ -2363,7 +2369,7 @@
 <!-- Premium Footer -->
 <footer class="premium-footer">
   <div class="footer-inner">
-    <div class="footer-brand"><h3>Md Kamrul Hasan</h3><p>Senior Programmer & ERP Architect with 5+ years of expertise in .NET, Oracle, and full-stack innovation. Crafting enterprise solutions that drive digital transformation.</p><div class="social-links-footer"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-github"></i></a></div></div>
+    <div class="footer-brand"><h3>Md Kamrul Hasan</h3><p>Senior Programmer & ERP Architect with 5+ years of expertise in .NET, Oracle, and full-stack innovation. Crafting enterprise solutions that drive digital transformation.</p><div class="social-links-footer"><a href="https://www.facebook.com/share/14dT4U8TRnE/"><i class="fab fa-facebook-f"></i></a><a href="https://x.com/kamrulXhasan"><i class="fab fa-twitter"></i></a><a href="https://www.linkedin.com/in/md-kamrul-hasan-518091224?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin-in"></i></a><a href="https://www.instagram.com/kh_prottasha?igsh=MWc4emw1eDV3bjQ0Yg=="><i class="fab fa-instagram"></i></a><a href="https://github.com/KHPROTTASHA"><i class="fab fa-github"></i></a></div></div>
     <div class="footer-links"><div class="footer-col"><h4>Explore</h4><ul><li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li><li><a href="#"><i class="fas fa-chevron-right"></i> About Me</a></li><li><a href="#" onclick="showDownloadOptions(); return false;"><i class="fas fa-chevron-right"></i> Download CV</a></li><li><a href="#"><i class="fas fa-chevron-right"></i> Portfolio</a></li></ul></div><div class="footer-col"><h4>Contact</h4><ul><li><a href="tel:+8801911636463"><i class="fas fa-phone-alt"></i> +880 1911636463</a></li><li><a href="mailto:iamxmrkh@gmail.com"><i class="fas fa-envelope"></i> iamxmrkh@gmail.com</a></li><li><a href="#"><i class="fas fa-map-marker-alt"></i> Gazipur, Dhaka, BD</a></li></ul></div><div class="footer-col"><h4>Legal</h4><ul><li><a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li><li><a href="#"><i class="fas fa-file-contract"></i> Terms of Use</a></li><li><a href="#"><i class="fas fa-copyright"></i> 2025 License</a></li></ul></div></div>
   </div>
   <div class="footer-bottom"><p>© 2025 <strong>Md Kamrul Hasan</strong> — Built with <i class="fas fa-heart" style="color:#c08457;"></i> for innovation. All rights reserved.</p></div>

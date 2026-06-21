@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>ERROR — Luxury Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --gold: #c9a96e;
+    --gold-light: #d4b87a;
+    --gold-dark: #a6844a;
+    --cream: #f5f0e8;
+    --dark: #0d0d0d;
+    --darker: #050505;
+    --page-bg: #fafaf8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family:'Inter',sans-serif;
+    background:var(--darker);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+/* ============ DRAGGABLE HOME BUTTON ============ */
+.home-btn {
+    position:fixed;
+    top:25px;
+    left:25px;
+    z-index:99999;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    background:rgba(10,10,10,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    color:var(--gold);
+    font-size:20px;
+    cursor:grab;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.3s;
+    text-decoration:none;
+    font-family:'Inter',sans-serif;
+    touch-action:none;
+    user-select:none;
+}
+.home-btn:active {
+    cursor:grabbing;
+    transform:scale(1.1);
+}
+.home-btn:hover {
+    background:var(--gold);
+    color:#000;
+    box-shadow:0 0 30px rgba(201,169,110,0.5);
+}
+@media(max-width:950px){
+    .home-btn{width:44px;height:44px;font-size:18px;}
+}
+
+/* ============ PROGRESS BAR ============ */
+.progress-container {
+    position:fixed;top:0;left:0;right:0;height:2px;z-index:10000;pointer-events:none;
+}
+.progress-bar {
+    height:100%;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    transition:0.6s ease-out;width:0%;
+}
+
+/* ============ CURSOR (Desktop) ============ */
+@media(min-width:951px){
+    body{cursor:none;}
+    .cursor-outer {
+        width:50px;height:50px;border:1.5px solid var(--gold);border-radius:50%;
+        position:fixed;pointer-events:none;z-index:99998;transition:0.15s ease-out;mix-blend-mode:difference;
+    }
+    .cursor-inner {
+        width:8px;height:8px;background:var(--gold);border-radius:50%;
+        position:fixed;pointer-events:none;z-index:99998;transition:0.05s ease-out;
+    }
+    .cursor-glow {
+        width:120px;height:120px;border-radius:50%;
+        background:radial-gradient(circle, rgba(201,169,110,0.12), transparent 70%);
+        position:fixed;pointer-events:none;z-index:99997;transform:translate(-50%,-50%);transition:0.1s ease-out;
+    }
+}
+
+/* ============ PARTICLES ============ */
+.particles-container { position:fixed;inset:0;pointer-events:none;z-index:0; }
+.particle {
+    position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;
+    animation:floatUp 8s infinite;opacity:0;
+}
+@keyframes floatUp {
+    0%{opacity:0;transform:translateY(100vh) scale(0);}
+    10%{opacity:0.8;}90%{opacity:0.2;}
+    100%{opacity:0;transform:translateY(-100px) scale(1.5);}
+}
+
+/* ============ BURST ============ */
+.burst-particle {
+    position:fixed;width:4px;height:4px;background:var(--gold);border-radius:50%;
+    pointer-events:none;z-index:9999;animation:burstOut 1.2s ease-out forwards;
+}
+@keyframes burstOut {
+    0%{opacity:1;transform:translate(0,0) scale(1);}
+    100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(0);}
+}
+
+/* ============ VIGNETTE & GRAIN ============ */
+.vignette {
+    position:fixed;inset:0;
+    background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+    pointer-events:none;z-index:2;
+}
+.grain {
+    position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:3;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size:200px 200px;
+}
+
+/* ============ AMBIENT GLOW ============ */
+.ambient-glow {
+    position:fixed;width:1200px;height:1200px;border-radius:50%;
+    background:radial-gradient(circle, rgba(201,169,110,0.05) 0%, transparent 70%);
+    pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:0.3s ease-out;
+}
+
+/* ============ CLICK HINTS ============ */
+.click-zone-indicator {
+    position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
+    z-index:1000;display:flex;gap:20px;pointer-events:none;
+}
+.click-hint {
+    color:rgba(201,169,110,0.5);font-family:'Cormorant Garamond',serif;
+    font-size:13px;letter-spacing:4px;font-style:italic;transition:0.5s;
+}
+.double-click-hint {
+    position:fixed;top:28px;left:50%;transform:translateX(-50%);
+    z-index:1000;pointer-events:none;
+    color:rgba(201,169,110,0.3);font-family:'Cormorant Garamond',serif;
+    font-size:10px;letter-spacing:3px;font-style:italic;transition:0.5s;
+}
+@media(max-width:950px){
+    .double-click-hint{top:auto;bottom:80px;}
+}
+
+/* ============ SCENE ============ */
+.scene {
+    width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;
+    perspective:6000px;position:relative;z-index:4;
+}
+.book {
+    position:relative;
+    width:clamp(320px, 92vw, 1700px);
+    height:clamp(480px, 58vw, 950px);
+    transform-style:preserve-3d;
+    transition:transform 0.2s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+/* ============ BOOK SHADOW ============ */
+.book-shadow {
+    position:absolute;bottom:-8%;left:50%;transform:translateX(-50%);
+    width:90%;height:12%;
+    background:radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+    filter:blur(30px);z-index:-1;
+}
+
+/* ============ GOLD EDGES ============ */
+.gold-edge {
+    position:absolute;
+    background:linear-gradient(180deg,var(--gold-light),var(--gold),var(--gold-dark));
+    z-index:998;pointer-events:none;opacity:0.5;
+}
+.gold-edge-top{top:0;left:0;right:0;height:2px;}
+.gold-edge-bottom{bottom:0;left:0;right:0;height:2px;}
+.gold-edge-right{right:0;top:0;bottom:0;width:2px;}
+
+/* ============ BOOKMARK ============ */
+.bookmark-ribbon {
+    position:absolute;top:-15px;right:clamp(30px,6vw,70px);
+    width:clamp(20px,2.5vw,35px);height:clamp(120px,16vw,220px);
+    background:linear-gradient(180deg,var(--gold-light),var(--gold-dark));
+    z-index:997;pointer-events:none;
+    clip-path:polygon(0 0,100% 0,100% 85%,50% 100%,0 85%);
+    box-shadow:0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* ============ LEATHER ============ */
+.leather-texture {
+    position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px),
+               repeating-linear-gradient(90deg,transparent,transparent 5px,rgba(0,0,0,0.02) 5px,rgba(0,0,0,0.02) 6px);
+    pointer-events:none;z-index:1;opacity:0.4;
+}
+
+/* ============ SHIMMER ============ */
+.shimmer-sweep {
+    position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+    background:linear-gradient(105deg,transparent 40%,rgba(201,169,110,0.06) 45%,rgba(201,169,110,0.12) 50%,rgba(201,169,110,0.06) 55%,transparent 60%);
+    pointer-events:none;z-index:3;animation:shimmerSweep 6s ease-in-out infinite;
+}
+@keyframes shimmerSweep {
+    0%{transform:translateX(-100%) translateY(-100%) rotate(45deg);}
+    100%{transform:translateX(100%) translateY(100%) rotate(45deg);}
+}
+
+/* ============ WATERMARK ============ */
+.watermark {
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;z-index:2;opacity:0.02;
+}
+.watermark-text {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(50px,10vw,120px);letter-spacing:clamp(10px,2vw,25px);
+    color:#000;transform:rotate(-30deg);
+}
+
+/* ============ PAGE ============ */
+.page {
+    position:absolute;width:50%;height:100%;top:0;overflow:hidden;transform-origin:left;
+    transition:1.8s cubic-bezier(0.645,0.045,0.355,1);
+    box-shadow:0 30px 80px rgba(0,0,0,0.4),0 10px 30px rgba(0,0,0,0.2);
+}
+.right { right:0; border-radius:0 18px 18px 0; }
+.page::before {
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(0,0,0,0.015) 0%,transparent 50%,rgba(0,0,0,0.015) 100%);
+    pointer-events:none;z-index:5;
+}
+.page-curl {
+    position:absolute;bottom:0;right:0;
+    width:clamp(30px,4vw,60px);height:clamp(30px,4vw,60px);
+    pointer-events:none;z-index:6;
+    background:linear-gradient(135deg,rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.04) 30%,transparent 50%);
+    border-radius:0 0 18px 0;
+}
+.crease-line {
+    position:absolute;left:0;top:0;bottom:0;width:1px;
+    background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.06) 20%,rgba(0,0,0,0.06) 80%,transparent);
+    z-index:7;pointer-events:none;
+}
+.spine-line {
+    position:absolute;left:50%;top:3%;width:1px;height:94%;
+    background:linear-gradient(to bottom,transparent,rgba(201,169,110,0.3) 15%,rgba(201,169,110,0.3) 85%,transparent);
+    z-index:999;pointer-events:none;
+}
+
+/* ============ CONTENT ============ */
+.content {
+    width:100%;height:100%;
+    padding:clamp(30px,5vw,100px) clamp(30px,5vw,90px);
+    position:relative;display:flex;flex-direction:column;
+}
+
+/* ============ COVER ============ */
+.cover-masterpiece {
+    background:linear-gradient(160deg,#0a0a0a 0%,#111 30%,#0d0d0d 60%,#050505 100%);
+    justify-content:center;align-items:center;position:relative;
+}
+.cover-ornament {
+    position:absolute;border:1px solid rgba(201,169,110,0.1);border-radius:50%;
+    top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+}
+.cover-ornament-1{width:clamp(180px,35vw,600px);height:clamp(180px,35vw,600px);}
+.cover-ornament-2{width:clamp(140px,28vw,500px);height:clamp(140px,28vw,500px);border-color:rgba(201,169,110,0.07);transform:translate(-50%,-50%) rotate(30deg);border-style:dashed;}
+.cover-ornament-3{width:clamp(100px,22vw,400px);height:clamp(100px,22vw,400px);border-color:rgba(201,169,110,0.05);}
+.cover-ornament-4{width:clamp(70px,16vw,300px);height:clamp(70px,16vw,300px);border-color:rgba(201,169,110,0.03);}
+
+.logo-ensemble { position:relative;z-index:2;text-align:center; }
+.logo-crown { font-size:clamp(22px,3vw,45px);margin-bottom:clamp(15px,2vw,30px);opacity:0.5;letter-spacing:clamp(12px,2vw,25px); }
+.logo-main {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(50px,11vw,200px);font-weight:900;
+    letter-spacing:clamp(6px,1.5vw,22px);
+    color:transparent;
+    background:linear-gradient(180deg,var(--gold-light) 0%,var(--gold) 40%,var(--gold-dark) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    line-height:0.8;
+    animation:goldShimmer 3s ease-in-out infinite;
+}
+@keyframes goldShimmer {
+    0%,100%{filter:drop-shadow(0 0 15px rgba(201,169,110,0.3));}
+    50%{filter:drop-shadow(0 0 40px rgba(201,169,110,0.5));}
+}
+.logo-divider { display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,30px);margin:clamp(18px,3vw,45px) 0; }
+.logo-divider::before,.logo-divider::after { content:"";width:clamp(30px,5vw,90px);height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent); }
+.logo-divider-diamond { width:clamp(4px,0.5vw,8px);height:clamp(4px,0.5vw,8px);background:var(--gold);transform:rotate(45deg); }
+.logo-subtitle { font-size:clamp(9px,1vw,14px);font-weight:300;letter-spacing:clamp(6px,1vw,14px);color:rgba(201,169,110,0.5);text-transform:uppercase; }
+
+/* ============ PAGE NUMBER ============ */
+.page-num {
+    position:absolute;bottom:clamp(22px,4vw,60px);right:clamp(28px,5vw,85px);
+    font-family:'Cormorant Garamond',serif;font-size:clamp(13px,1.5vw,22px);
+    color:var(--gold);letter-spacing:clamp(3px,0.5vw,7px);font-style:italic;pointer-events:none;
+}
+
+/* ============ HERO ============ */
+.hero-luxury { background:var(--cream); }
+.hero-badge {
+    display:inline-flex;align-items:center;gap:clamp(8px,1vw,18px);
+    padding:clamp(8px,1vw,14px) clamp(14px,2vw,32px);
+    border:1px solid var(--gold);font-size:clamp(8px,0.7vw,11px);
+    letter-spacing:clamp(5px,0.7vw,10px);
+    text-transform:uppercase;color:var(--gold-dark);
+    margin-bottom:clamp(22px,4vw,60px);font-weight:500;
+}
+.hero-headline {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(30px,6vw,100px);line-height:0.9;
+    font-weight:900;letter-spacing:-2px;color:#1a1a1a;
+    margin-bottom:clamp(18px,3vw,45px);
+}
+.hero-accent { width:clamp(30px,4vw,70px);height:2px;background:var(--gold);margin-bottom:clamp(18px,3vw,40px); }
+.hero-description { font-size:clamp(12px,1.1vw,18px);line-height:2;color:#888;max-width:100%;font-weight:300;margin-bottom:clamp(22px,4vw,60px); }
+.gallery-luxury { display:flex;gap:clamp(12px,2vw,35px);flex-wrap:wrap; }
+.card-luxury {
+    width:clamp(75px,10vw,180px);height:clamp(105px,15vw,250px);
+    position:relative;overflow:hidden;
+    box-shadow:0 15px 30px rgba(0,0,0,0.1);transition:0.7s cubic-bezier(0.23,1,0.32,1);cursor:pointer;
+}
+@media(min-width:951px){
+    .card-luxury:nth-child(1){transform:rotate(-14deg)}
+    .card-luxury:nth-child(2){transform:rotate(10deg);margin-top:-25px}
+    .card-luxury:nth-child(3){transform:rotate(-6deg)}
+}
+.card-luxury:hover { transform:translateY(-20px) rotate(0deg) scale(1.08)!important;box-shadow:0 35px 70px rgba(0,0,0,0.2);z-index:10; }
+.card-luxury img { width:100%;height:100%;object-fit:cover;transition:0.7s; }
+
+/* ============ FULL IMAGE ============ */
+.full-visual { position:relative;width:100%;height:100%; }
+.full-visual img { width:100%;height:100%;object-fit:cover; }
+.visual-caption {
+    position:absolute;bottom:0;left:0;right:0;
+    padding:clamp(25px,5vw,90px);
+    background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);
+    color:white;font-family:'Cormorant Garamond',serif;
+    font-size:clamp(12px,1.5vw,22px);
+    letter-spacing:clamp(4px,0.7vw,10px);font-weight:300;font-style:italic;
+}
+.visual-caption-small {
+    display:block;font-family:'Inter',sans-serif;
+    font-size:clamp(8px,0.7vw,11px);letter-spacing:clamp(3px,0.4vw,6px);
+    font-style:normal;opacity:0.7;margin-bottom:clamp(5px,0.5vw,10px);text-transform:uppercase;
+}
+
+/* ============ EDITORIAL ============ */
+.editorial-luxury { background:var(--page-bg); }
+.editorial-label { font-size:clamp(8px,0.7vw,11px);letter-spacing:clamp(6px,0.8vw,12px);text-transform:uppercase;color:var(--gold);margin-bottom:clamp(18px,3vw,45px);font-weight:500; }
+.editorial-heading {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(28px,5vw,88px);line-height:0.9;font-weight:900;
+    letter-spacing:-2px;color:#1a1a1a;margin-bottom:clamp(15px,2vw,35px);
+}
+.editorial-accent { width:clamp(25px,3vw,60px);height:2px;background:var(--gold);margin-bottom:clamp(18px,3vw,45px); }
+.editorial-body { font-size:clamp(12px,1.1vw,18px);line-height:2;color:#888;max-width:100%;font-weight:300;margin-bottom:clamp(22px,4vw,60px); }
+.editorial-quote {
+    padding:clamp(15px,2vw,35px) clamp(18px,2.5vw,45px);
+    border-left:clamp(2px,0.3vw,5px) solid var(--gold);
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(14px,1.6vw,26px);font-style:italic;color:#555;
+    font-weight:400;background:rgba(201,169,110,0.04);position:relative;
+}
+.editorial-quote::before {
+    content:""";position:absolute;
+    top:clamp(-8px,-1vw,-20px);left:clamp(6px,0.8vw,15px);
+    font-size:clamp(40px,6vw,100px);color:rgba(201,169,110,0.12);
+    font-family:'Playfair Display',serif;line-height:1;
+}
+
+/* ============ SPLIT PAGE ============ */
+.split-page { display:flex;height:100%;padding:0!important; }
+.split-left { width:50%;padding:clamp(22px,4vw,90px) clamp(22px,4vw,70px);display:flex;flex-direction:column;justify-content:center;background:#fff; }
+.split-right { width:50%;overflow:hidden; }
+.split-right img { width:100%;height:100%;object-fit:cover; }
+.split-label { font-size:clamp(8px,0.7vw,11px);letter-spacing:clamp(5px,0.7vw,10px);text-transform:uppercase;color:var(--gold);margin-bottom:clamp(15px,2vw,35px);font-weight:500; }
+.split-heading { font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,56px);line-height:0.95;font-weight:900;letter-spacing:-2px;color:#1a1a1a;margin-bottom:clamp(12px,1.5vw,30px); }
+.split-accent { width:clamp(20px,2.5vw,50px);height:2px;background:var(--gold);margin-bottom:clamp(15px,2vw,35px); }
+.split-text { font-size:clamp(11px,1vw,16px);line-height:2;color:#999;font-weight:300; }
+
+/* ============ STATS ============ */
+.stats-page { background:#fff;justify-content:center; }
+.stats-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(15px,3vw,50px);margin-top:clamp(18px,4vw,55px); }
+.stat-item { text-align:center; }
+.stat-number { font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,80px);font-weight:900;color:var(--gold);line-height:1;margin-bottom:clamp(5px,0.6vw,12px); }
+.stat-label { font-size:clamp(7px,0.6vw,11px);letter-spacing:clamp(4px,0.5vw,8px);text-transform:uppercase;color:#999;font-weight:500; }
+
+/* ============ FLIP ============ */
+@media(min-width:951px){
+    .flipped { transform:rotateY(-180deg);z-index:1!important; }
+}
+@media(max-width:950px){
+    .flipped { opacity:0.2;pointer-events:none;filter:grayscale(0.3); }
+}
+
+/* ============ STACKING ============ */
+#p1{z-index:28}#p2{z-index:27}#p3{z-index:26}#p4{z-index:25}#p5{z-index:24}#p6{z-index:23}#p7{z-index:22}#p8{z-index:21}#p9{z-index:20}#p10{z-index:19}#p11{z-index:18}#p12{z-index:17}#p13{z-index:16}#p14{z-index:15}#p15{z-index:14}#p16{z-index:13}#p17{z-index:12}#p18{z-index:11}#p19{z-index:10}#p20{z-index:9}
+
+/* ============ RESPONSIVE - MOBILE (BIG PAGES) ============ */
+@media(max-width:950px){
+    body{overflow-x:hidden;overflow-y:auto;}
+    .scene{height:auto;min-height:100vh;padding:20px 8px 60px;perspective:none;align-items:flex-start;}
+    .book{width:96%;max-width:600px;height:auto;display:flex;flex-direction:column;gap:20px;transform:none!important;margin:0 auto;}
+    .page{position:relative;width:100%!important;height:auto;min-height:500px;margin:0 auto;transform:none!important;border-radius:16px!important;right:auto!important;left:auto!important;box-shadow:0 25px 60px rgba(0,0,0,0.35);}
+    .spine-line{display:none;}
+    .click-zone-indicator{bottom:22px;gap:14px;}
+    .click-hint{font-size:11px;letter-spacing:3px;}
+    .split-page{flex-direction:column!important;}
+    .split-left{width:100%!important;order:1;min-height:auto;}
+    .split-right{width:100%!important;height:280px;order:2;}
+    .hero-badge{margin-bottom:28px;}
+    .gallery-luxury{justify-content:center;}
+}
+
+@media(max-width:480px){
+    .scene{padding:15px 5px 50px;}
+    .book{width:98%;gap:16px;}
+    .page{min-height:440px;border-radius:14px!important;}
+    .content{padding:28px 22px;min-height:440px;}
+    .click-zone-indicator{bottom:18px;gap:10px;}
+    .click-hint{font-size:10px;}
+    .split-right{height:230px;}
+    .card-luxury{width:80px;height:115px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- DRAGGABLE HOME BUTTON -->
+<a href="index.html" class="home-btn" id="homeBtn" title="Drag me anywhere! ⌂">⌂</a>
+
+<!-- PROGRESS BAR -->
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- EFFECTS -->
+<div class="particles-container" id="particles"></div>
+<div class="ambient-glow" id="ambientGlow"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<!-- CURSOR -->
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-outer" id="cursorOuter"></div>
+<div class="cursor-inner" id="cursorInner"></div>
+
+<!-- HINTS -->
+<div class="click-zone-indicator">
+    <span class="click-hint">← Prev</span>
+    <span class="click-hint" style="opacity:0.3">◆</span>
+    <span class="click-hint">Next →</span>
+</div>
+<div class="double-click-hint" id="doubleClickHint">Double-click to reset</div>
+
+<!-- SCENE -->
+<div class="scene" id="sceneContainer">
+    <div class="book" id="bookContainer">
+        <div class="book-shadow"></div>
+        <div class="spine-line"></div>
+
+        <!-- PAGE 1 - COVER -->
+        <div class="page right" id="p1">
+            <div class="leather-texture"></div><div class="shimmer-sweep"></div>
+            <div class="gold-edge gold-edge-top"></div><div class="gold-edge gold-edge-bottom"></div><div class="gold-edge gold-edge-right"></div>
+            <div class="bookmark-ribbon"></div>
+            <div class="content cover-masterpiece">
+                <div class="watermark"><span class="watermark-text">ERROR</span></div>
+                <div class="cover-ornament cover-ornament-1"></div><div class="cover-ornament cover-ornament-2"></div><div class="cover-ornament cover-ornament-3"></div><div class="cover-ornament cover-ornament-4"></div>
+                <div class="logo-ensemble">
+                    <div class="logo-crown">✧ ✦ ✧</div>
+                    <div class="logo-main">ERROR<br>!</div>
+                    <div class="logo-divider"><span class="logo-divider-diamond"></span></div>
+                    <div class="logo-subtitle">ERROR.404 Portfolio • Volume One</div>
+                </div>
+                <div class="page-num"></div>
+            </div>
+            <div class="page-curl"></div><div class="crease-line"></div>
+        </div>
+
+        <!-- PAGE 2 - HERO -->
+        <div class="page right" id="p2">
+            <div class="content hero-luxury">
+                <div class="hero-badge">◆ Est. 2025 • BD</div>
+                <h1 class="hero-headline">ERROR.<br>404</h1>
+                <div class="hero-accent"></div>
+                <p class="hero-description">“My biggest system error is saying, ‘I’m okay.”</p>
+                <div class="gallery-luxury">
+                    <div class="card-luxury"><img src="ERROR/i1.jpg.jpeg" alt="1"></div>
+                    <div class="card-luxury"><img src="ERROR/i39.jpg.jpeg" alt="2"></div>
+                    <div class="card-luxury"><img src="ERROR/i10.jpg.jpeg" alt="3"></div> 
+                </div>
+                <div class="page-num">Ⅱ</div>
+            </div>
+            <div class="page-curl"></div><div class="crease-line"></div>
+        </div>
+
+        <!-- PAGES 3-20 -->
+        <div class="page right" id="p3"><div class="full-visual"><img src="ERROR/i4.jpg.jpeg" alt="3"><div class="visual-caption"><span class="visual-caption-small">Editorial</span>The Art of .404</div></div><div class="page-num" style="color:var(--gold)">Ⅲ</div></div>
+        <div class="page right" id="p4"><div class="content editorial-luxury"><div class="editorial-label">Philosophy</div><h2 class="editorial-heading">Vision.<br>Style.<br>404.</h2><div class="editorial-accent"></div><p class="editorial-body">“Meghalaya’র ঝর্ণার পানির মতোই তুমি —</p><div class="editorial-quote">ঠান্ডা, শান্ত, অথচ গভীর।”</div><div class="page-num">Ⅳ</div></div></div>
+        <div class="page right" id="p5"><div class="full-visual"><img src="ERROR/i47.JPG.jpeg" alt="5"><div class="visual-caption"><span class="visual-caption-small">Portraiture</span>Light & Shadow</div></div><div class="page-num" style="color:var(--gold)">Ⅴ</div></div>
+        <div class="page right" id="p6"><div class="content split-page" style="padding:0"><div class="split-left"><div class="split-label">The Craft</div><h3 class="split-heading">pebble<br>stone</h3><div class="split-accent"></div><p class="split-text">“ভাঙা-গড়ার এই খেলাতেই হয়তো জীবনের সবচেয়ে সুন্দর অনুভূতিগুলো লুকিয়ে আছে।”</p></div><div class="split-right"><img src="ERROR/i2.jpg.jpeg" alt="6"></div></div><div class="page-num">Ⅵ</div></div>
+        <div class="page right" id="p7"><div class="full-visual"><img src="ERROR/i11.jpg.jpeg" alt="7"><div class="visual-caption"><span class="visual-caption-small">Haute Couture</span>Avant-Garde</div></div><div class="page-num" style="color:var(--gold)">Ⅶ</div></div>
+        <div class="page right" id="p8"><div class="content stats-page"><div class="editorial-label">Numbers</div><h2 class="editorial-heading">Our<br>Impact</h2><div class="editorial-accent"></div><div class="stats-grid"><div class="stat-item"><div class="stat-number">250+</div><div class="stat-label">Projects</div></div><div class="stat-item"><div class="stat-number">45</div><div class="stat-label">Countries</div></div><div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">Satisfaction</div></div><div class="stat-item"><div class="stat-number">15</div><div class="stat-label">Awards</div></div></div><div class="page-num">Ⅷ</div></div></div>
+        <div class="page right" id="p9"><div class="full-visual"><img src="ERROR/i48.JPG.jpeg" alt="9"><div class="visual-caption"><span class="visual-caption-small">Runway</span>Milano</div></div><div class="page-num" style="color:var(--gold)">Ⅸ</div></div>
+        <div class="page right" id="p10"><div class="content editorial-luxury"><div class="editorial-label">Promise</div><h2 class="editorial-heading">Timeless<br>escape</h2><div class="editorial-accent"></div><p class="editorial-body">“The open blue and the silent wind—this is my escape.”</p><div class="editorial-quote">“খোলা নীল আর নীরব বাতাস—এটাই আমার escape.”</div><div class="page-num">Ⅹ</div></div></div>
+        <div class="page right" id="p11"><div class="content split-page" style="padding:0"><div class="split-left"><div class="split-label">Process</div><h3 class="split-heading">Behind<br>The Lens</h3><div class="split-accent"></div><p class="split-text">Intimate glimpses into our creative sanctuary.</p></div><div class="split-right"><img src="ERROR/i15.jpg.jpeg" alt="11"></div></div><div class="page-num">Ⅺ</div></div>
+        <div class="page right" id="p12"><div class="full-visual"><img src="ERROR/i50.JPG.jpeg" alt="12"><div class="visual-caption"><span class="visual-caption-small">Beauty</span>Pure Form</div></div><div class="page-num" style="color:var(--gold)">Ⅻ</div></div>
+        <div class="page right" id="p13"><div class="content editorial-luxury"><div class="editorial-label">Services</div><h2 class="editorial-heading">"affect, <br>stones—"</h2><div class="editorial-accent"></div><p class="editorial-body">"Feelings, stones, stories, words - they break, they build, and yet they remain."</p><div class="editorial-quote">''অনুভূতি, পাথর, গল্প,কথা— ভাঙে, গড়ে, তবুও থেকে যায়।''</div><div class="page-num">ⅩⅢ</div></div></div>
+        <div class="page right" id="p14"><div class="full-visual"><img src="ERROR/i17.jpg.jpeg" alt="14"><div class="visual-caption"><span class="visual-caption-small">Campaign</span>Global Reach</div></div><div class="page-num" style="color:var(--gold)">ⅩⅣ</div></div>
+        <div class="page right" id="p15"><div class="content split-page" style="padding:0"><div class="split-left"><div class="split-label">Clients</div><h3 class="split-heading">"Green <br>and silence"</h3><div class="split-accent"></div><p class="split-text">“Greenery and silence are my most beloved refuge.”</p></div><div class="split-right"><img src="ERROR/i7.jpg.jpeg" alt="15"></div></div><div class="page-num">ⅩⅤ</div></div>
+        <div class="page right" id="p16"><div class="full-visual"><img src="ERROR/i5.jpg.jpeg" alt="16"><div class="visual-caption"><span class="visual-caption-small">Street</span>Urban Elegance</div></div><div class="page-num" style="color:var(--gold)">ⅩⅥ</div></div>
+        <div class="page right" id="p17"><div class="content stats-page"><div class="editorial-label">Excellence</div><h2 class="editorial-heading">Global<br>ERROR.404</h2><div class="editorial-accent"></div><div class="stats-grid"><div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">Publications</div></div><div class="stat-item"><div class="stat-number">50K+</div><div class="stat-label">Images</div></div><div class="stat-item"><div class="stat-number">30</div><div class="stat-label">Exhibitions</div></div><div class="stat-item"><div class="stat-number">∞</div><div class="stat-label">Creativity</div></div></div><div class="page-num">ⅩⅦ</div></div></div>
+        <div class="page right" id="p18"><div class="full-visual"><img src="ERROR/i12.jpg.jpeg" alt="18"><div class="visual-caption"><span class="visual-caption-small">Final Frame</span>Meghalaya dawki-Jaflong</div></div><div class="page-num" style="color:var(--gold)">ⅩⅧ</div></div>
+        <div class="page right" id="p19"><div class="content editorial-luxury"><div class="editorial-label">Contact</div><h2 class="editorial-heading">Begin Your<br>Journey</h2><div class="editorial-accent"></div><p class="editorial-body">Transform your vision into extraordinary narrative.</p><div class="editorial-quote">"The first step towards greatness."</div><div class="page-num">ⅩⅨ</div></div></div>
+        
+        <!-- PAGE 20 - CLOSING -->
+        <div class="page right" id="p20">
+            <div class="leather-texture"></div><div class="shimmer-sweep"></div>
+            <div class="content cover-masterpiece" style="background:linear-gradient(160deg,#050505 0%,#0a0a0a 50%,#050505 100%)">
+                <div class="cover-ornament cover-ornament-1" style="border-color:rgba(201,169,110,0.06)"></div>
+                <div class="logo-ensemble">
+                    <div class="logo-crown">✧ ✦ ✧</div>
+                    <div class="logo-main" style="font-size:clamp(40px,8vw,120px)">ERROR</div>
+                    <div class="logo-divider"><span class="logo-divider-diamond"></span></div>
+                    <div class="logo-subtitle">End of Experience • Thank You</div>
+                </div>
+                <div class="page-num"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============ DRAGGABLE HOME BUTTON ============
+const homeBtn = document.getElementById('homeBtn');
+let isDragging = false, startX, startY, startLeft, startTop;
+
+homeBtn.addEventListener('mousedown', function(e) {
+    if(e.button !== 0) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+    startTop = parseInt(window.getComputedStyle(homeBtn).top);
+    homeBtn.style.cursor = 'grabbing';
+    homeBtn.style.transition = 'none';
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+    if(!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+    homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+});
+
+document.addEventListener('mouseup', function() {
+    if(isDragging) {
+        isDragging = false;
+        homeBtn.style.cursor = 'grab';
+        homeBtn.style.transition = '0.3s';
+    }
+});
+
+// Touch support for mobile
+let moved = false;
+
+homeBtn.addEventListener('touchstart', function(e) {
+    isDragging = true;
+    moved = false;
+
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+
+    startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+    startTop = parseInt(window.getComputedStyle(homeBtn).top);
+
+    homeBtn.style.transition = 'none';
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+
+    moved = true;
+
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    homeBtn.style.left =
+        Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+
+    homeBtn.style.top =
+        Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+}, { passive: true });
+
+document.addEventListener('touchend', function() {
+    isDragging = false;
+    homeBtn.style.transition = '0.3s';
+});
+
+homeBtn.addEventListener('click', function(e) {
+    if (moved) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('touchmove', function(e) {
+    if(!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+    homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+}, {passive: false});
+
+document.addEventListener('touchend', function() {
+    if(isDragging) {
+        isDragging = false;
+        homeBtn.style.transition = '0.3s';
+    }
+});
+
+// Prevent click when dragging
+homeBtn.addEventListener('click', function(e) {
+    if(Math.abs(parseInt(homeBtn.style.left) - startLeft) > 5 || Math.abs(parseInt(homeBtn.style.top) - startTop) > 5) {
+        e.preventDefault();
+    }
+});
+
+// ============ PARTICLES ============
+const pc=document.getElementById('particles');
+for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.classList.add('particle');
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDelay=Math.random()*10+'s';
+    p.style.animationDuration=(Math.random()*8+6)+'s';
+    pc.appendChild(p);
+}
+
+// ============ BURST ============
+function spawnBurst(x,y){const count=window.innerWidth<951?12:30;for(let i=0;i<count;i++){const b=document.createElement('div');b.classList.add('burst-particle');const a=(Math.PI*2*i)/count;const d=50+Math.random()*100;b.style.setProperty('--bx',Math.cos(a)*d+'px');b.style.setProperty('--by',Math.sin(a)*d+'px');b.style.left=x+'px';b.style.top=y+'px';b.style.animationDuration=(0.6+Math.random()*0.8)+'s';document.body.appendChild(b);setTimeout(()=>b.remove(),1400);}}
+
+// ============ AUDIO ============
+let audioCtx=null;
+function playFlip(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator();const g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(500,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(100,audioCtx.currentTime+0.1);g.gain.setValueAtTime(0.04,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.15);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.15);}catch(e){}}
+
+// ============ CURSOR ============
+if(window.innerWidth>950){
+    const co=document.getElementById('cursorOuter'),ci=document.getElementById('cursorInner'),cg=document.getElementById('cursorGlow'),ag=document.getElementById('ambientGlow');
+    document.addEventListener('mousemove',e=>{co.style.left=e.clientX-25+'px';co.style.top=e.clientY-25+'px';ci.style.left=e.clientX-4+'px';ci.style.top=e.clientY-4+'px';cg.style.left=e.clientX+'px';cg.style.top=e.clientY+'px';ag.style.left=e.clientX+'px';ag.style.top=e.clientY+'px';});
+}
+
+// ============ NAVIGATION ============
+const pages=document.querySelectorAll('.page'),totalPages=pages.length;
+let currentPage=0;
+const pb=document.getElementById('progressBar'),dch=document.getElementById('doubleClickHint');
+
+function updateUI(){
+    pb.style.width=(currentPage/totalPages*100)+'%';
+    dch.style.opacity=currentPage>0?'1':'0.3';
+    const hints=document.querySelectorAll('.click-hint');
+    if(hints.length>=3){
+        if(currentPage===0){hints[0].style.opacity='0.2';hints[2].style.opacity='1';}
+        else if(currentPage>=totalPages){hints[0].style.opacity='1';hints[2].style.opacity='0.2';}
+        else{hints[0].style.opacity='1';hints[2].style.opacity='1';}
+    }
+}
+
+function goNext(){if(currentPage<totalPages){pages[currentPage].classList.add('flipped');currentPage++;updateUI();playFlip();spawnBurst(window.innerWidth*0.65,window.innerHeight*0.5);}}
+function goPrev(){if(currentPage>0){currentPage--;pages[currentPage].classList.remove('flipped');updateUI();playFlip();}}
+function resetBook(){pages.forEach(p=>p.classList.remove('flipped'));currentPage=0;updateUI();spawnBurst(window.innerWidth/2,window.innerHeight/2);}
+
+// ============ CLICK ============
+document.getElementById('sceneContainer').addEventListener('click',e=>{
+    const cx=e.clientX,w=window.innerWidth;
+    if(cx<w/2)goPrev();else goNext();
+});
+
+// ============ DOUBLE CLICK ============
+document.addEventListener('dblclick',e=>{e.preventDefault();resetBook();});
+
+// ============ KEYBOARD ============
+document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();goNext();}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();goPrev();}
+    else if(e.key==='Home'){e.preventDefault();resetBook();}
+});
+
+// ============ 3D TILT ============
+const book=document.getElementById('bookContainer');
+document.addEventListener('mousemove',e=>{
+    if(window.innerWidth>950){const x=(window.innerWidth/2-e.pageX)/50;const y=(window.innerHeight/2-e.pageY)/50;book.style.transform=`rotateY(${x}deg) rotateX(${-y}deg)`;}
+});
+
+// ============ TOUCH ============
+let tsx=0,tsy=0;
+document.addEventListener('touchstart',e=>{tsx=e.changedTouches[0].screenX;tsy=e.changedTouches[0].screenY;});
+document.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].screenX-tsx,dy=e.changedTouches[0].screenY-tsy;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>30){if(dx<0)goNext();else goPrev();}
+});
+
+// ============ SCROLL ============
+let lst=0;
+document.addEventListener('wheel',e=>{
+    const n=Date.now();
+    if(n-lst>800&&window.innerWidth>950){if(e.deltaY>0)goNext();else if(e.deltaY<0)goPrev();lst=n;}
+},{passive:true});
+
+// ============ INIT ============
+updateUI();
+setTimeout(()=>spawnBurst(window.innerWidth/2,window.innerHeight/2),400);
+</script>
+</body>
+</html>

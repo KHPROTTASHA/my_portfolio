@@ -498,7 +498,7 @@ body {
                 <div class="gallery-luxury">
                     <div class="card-luxury"><img src="ERROR/i1.jpg.jpeg" alt="1"></div>
                     <div class="card-luxury"><img src="ERROR/i39.jpg.jpeg" alt="2"></div>
-                    <div class="card-luxury"><img src="ERROR/i10.jpg.jpeg" alt="3"></div>
+                    <div class="card-luxury"><img src="ERROR/i10.jpg.jpeg" alt="3"></div> 
                 </div>
                 <div class="page-num">Ⅱ</div>
             </div>
@@ -640,7 +640,14 @@ homeBtn.addEventListener('click', function(e) {
 
 // ============ PARTICLES ============
 const pc=document.getElementById('particles');
-for(let i=0;i<40;i++){const p=document.createElement('div');p.classList.add('particle');p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*10+'s';p.style.animationDuration=(Math.random()*8+6)+'s';pc.appendChild(p);}
+for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.classList.add('particle');
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDelay=Math.random()*10+'s';
+    p.style.animationDuration=(Math.random()*8+6)+'s';
+    pc.appendChild(p);
+}
 
 // ============ BURST ============
 function spawnBurst(x,y){const count=window.innerWidth<951?12:30;for(let i=0;i<count;i++){const b=document.createElement('div');b.classList.add('burst-particle');const a=(Math.PI*2*i)/count;const d=50+Math.random()*100;b.style.setProperty('--bx',Math.cos(a)*d+'px');b.style.setProperty('--by',Math.sin(a)*d+'px');b.style.left=x+'px';b.style.top=y+'px';b.style.animationDuration=(0.6+Math.random()*0.8)+'s';document.body.appendChild(b);setTimeout(()=>b.remove(),1400);}}

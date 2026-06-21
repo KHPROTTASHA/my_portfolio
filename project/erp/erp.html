@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GourmetERP - Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+    --primary:#2c3e50;
+    --secondary:#c9902c;
+    --light:#f5f7fa;
+    --dark:#1e272e;
+    --success:#27ae60;
+    --danger:#e74c3c;
+}
+/* ============ DRAGGABLE HOME BUTTON ============ */
+.home-btn {
+    position:fixed;
+    top:25px;
+    left:25px;
+    z-index:99999;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    background:rgba(212, 210, 210, 0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    color:var(--gold);
+    font-size:20px;
+    cursor:grab;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.3s;
+    text-decoration:none;
+    font-family:'Inter',sans-serif;
+    touch-action:none;
+    user-select:none;
+}
+.home-btn:active {
+    cursor:grabbing;
+    transform:scale(1.1);
+}
+.home-btn:hover {
+    background:var(--gold);
+    color:#000;
+    box-shadow:0 0 30px rgba(201,169,110,0.5);
+}
+@media(max-width:950px){
+    .home-btn{width:44px;height:44px;font-size:18px;}
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#2c3e50,#c9902c);transition:0.3s;}
+.login-container{background:white;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.2);width:350px;max-width:90%;padding:30px;display:flex;flex-direction:column;gap:20px;}
+.login-container h2{text-align:center;color:var(--primary);}
+.login-container .input-group{display:flex;flex-direction:column;}
+.login-container .input-group label{margin-bottom:5px;color:var(--dark);font-weight:500;}
+.login-container .input-group input{padding:10px;border:1px solid #ccc;border-radius:8px;outline:none;transition:0.3s;}
+.login-container .input-group input:focus{border-color:var(--secondary);box-shadow:0 0 5px rgba(201,144,44,0.5);}
+.login-container button{padding:10px;background:var(--secondary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:0.3s;}
+.login-container button:hover{background:#b87f1f;transform:translateY(-2px);}
+.login-container .error{color:var(--danger);font-size:14px;text-align:center;display:none;}
+.login-container .logo{text-align:center;margin-bottom:10px;}
+.login-container .logo h1{color:var(--primary);font-size:32px;}
+</style>
+</head>
+<body>
+    <a href="../../index.html" class="home-btn" id="homeBtn" title="Drag me anywhere! ⌂"><i class="fas fa-home"></i></a>
+<div class="login-container">
+    <div class="logo"><h1>G<span style="color:var(--secondary)">ERP</span></h1></div>
+    <h2>Login to your account</h2>
+    <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter Username">
+    </div>
+    <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter Password">
+    </div>
+    <button onclick="login()">Login</button>
+    <div class="error" id="errorMsg">Invalid credentials</div>
+</div>
+
+<script>
+    // ============ DRAGGABLE HOME BUTTON ============
+const homeBtn = document.getElementById('homeBtn');
+let isDragging = false, startX, startY, startLeft, startTop;
+
+homeBtn.addEventListener('mousedown', function(e) {
+    if(e.button !== 0) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+    startTop = parseInt(window.getComputedStyle(homeBtn).top);
+    homeBtn.style.cursor = 'grabbing';
+    homeBtn.style.transition = 'none';
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+    if(!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+    homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+});
+
+document.addEventListener('mouseup', function() {
+    if(isDragging) {
+        isDragging = false;
+        homeBtn.style.cursor = 'grab';
+        homeBtn.style.transition = '0.3s';
+    }
+});
+
+// Touch support for mobile
+let moved = false;
+
+homeBtn.addEventListener('touchstart', function(e) {
+    isDragging = true;
+    moved = false;
+
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+
+    startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+    startTop = parseInt(window.getComputedStyle(homeBtn).top);
+
+    homeBtn.style.transition = 'none';
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+
+    moved = true;
+
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    homeBtn.style.left =
+        Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+
+    homeBtn.style.top =
+        Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+}, { passive: true });
+
+document.addEventListener('touchend', function() {
+    isDragging = false;
+    homeBtn.style.transition = '0.3s';
+});
+
+homeBtn.addEventListener('click', function(e) {
+    if (moved) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('touchmove', function(e) {
+    if(!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+    homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+}, {passive: false});
+
+document.addEventListener('touchend', function() {
+    if(isDragging) {
+        isDragging = false;
+        homeBtn.style.transition = '0.3s';
+    }
+});
+
+// Prevent click when dragging
+homeBtn.addEventListener('click', function(e) {
+    if(Math.abs(parseInt(homeBtn.style.left) - startLeft) > 5 || Math.abs(parseInt(homeBtn.style.top) - startTop) > 5) {
+        e.preventDefault();
+    }
+});
+function login(){
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const error = document.getElementById('errorMsg');
+
+    // Valid credentials
+    const validUser = "admin";
+    const validPass = "123";
+
+    if(user === validUser && pass === validPass){
+        // Save session
+        localStorage.setItem('gERP_loggedIn', 'true');
+        window.location.href = "menu.html";
+    } else{
+        error.style.display = "block";
+    }
+}
+
+// Check session
+if(localStorage.getItem('gERP_loggedIn')==='true'){
+    window.location.href='menu.html';
+}
+</script>
+</body>
+</html>

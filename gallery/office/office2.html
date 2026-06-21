@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Office Gala · Luxury Photo Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #07070c;
+      color: #e0e0e0;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :root {
+      --gold: #d4af37;
+      --gold-light: #f5e7c8;
+      --gold-dark: #b4942e;
+      --bg-dark: #07070c;
+      --surface: rgba(255, 255, 255, 0.02);
+      --border: rgba(255, 255, 255, 0.06);
+    }
+
+    /* Preloader */
+    #preloader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: #07070c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+    .loader {
+      width: 70px;
+      height: 70px;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Header */
+    .hero-gallery {
+      text-align: center;
+      padding: 60px 24px 40px;
+      position: relative;
+    }
+    .hero-gallery::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #f5e7c8, #d4af37, #b4942e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: #a0a0b0;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 40px auto 50px;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+    .filter-btn {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: #b0b0c0;
+      padding: 10px 26px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(12px);
+      letter-spacing: 0.5px;
+      background: rgba(20,20,28,0.5);
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--gold);
+      color: #f5e7c8;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Masonry Gallery Grid */
+    .gallery-masonry {
+      columns: 4 280px;
+      column-gap: 24px;
+      padding: 0 24px 80px;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) {
+      .gallery-masonry {
+        columns: 2 200px;
+        column-gap: 16px;
+      }
+    }
+
+    .gallery-card {
+      break-inside: avoid;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      background: #0d0d14;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1), box-shadow 0.4s;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.7s ease forwards;
+      animation-delay: calc(0.05s * var(--i, 0));
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .gallery-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(212, 175, 55, 0.3);
+      z-index: 2;
+    }
+    .gallery-card img {
+      width: 100%;
+      display: block;
+      transition: transform 0.7s ease, filter 0.5s;
+      filter: brightness(0.9);
+    }
+    .gallery-card:hover img {
+      transform: scale(1.08);
+      filter: brightness(1.05);
+    }
+    .card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+      padding: 24px 18px;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .gallery-card:hover .card-overlay {
+      opacity: 1;
+    }
+    .card-category {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+    .card-caption {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5,5,10,0.96);
+      backdrop-filter: blur(25px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      flex-direction: column;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox-image-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 80vh;
+      transition: transform 0.3s;
+    }
+    .lightbox-caption {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #d1d1d1;
+      letter-spacing: 0.5px;
+      font-family: 'Playfair Display', serif;
+    }
+    .close-lightbox {
+      position: absolute;
+      top: 25px;
+      right: 35px;
+      font-size: 2.8rem;
+      color: #fff;
+      cursor: pointer;
+      background: none;
+      border: none;
+      z-index: 2001;
+      transition: all 0.3s;
+    }
+    .close-lightbox:hover {
+      color: var(--gold);
+      transform: rotate(90deg);
+    }
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2.2rem;
+      color: #fff;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.15);
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+      backdrop-filter: blur(10px);
+      z-index: 2001;
+    }
+    .nav-btn:hover {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: var(--gold);
+    }
+    .prev-btn { left: 30px; }
+    .next-btn { right: 30px; }
+    .image-counter {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #999;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.6rem;
+      }
+      .prev-btn { left: 12px; }
+      .next-btn { right: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="preloader"><div class="loader"></div></div>
+
+  <!-- Hero Header -->
+  <div class="hero-gallery">
+    <h1 class="hero-title">Gala <span>Moments</span></h1>
+    <p class="hero-sub">Captured in Gold</p>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All Frames</button>
+    <button class="filter-btn" data-filter="team">Team</button>
+    <button class="filter-btn" data-filter="awards">Awards</button>
+    <button class="filter-btn" data-filter="celebration">Celebration</button>
+    <button class="filter-btn" data-filter="candid">Candid</button>
+  </div>
+
+  <!-- Masonry Gallery -->
+  <div class="gallery-masonry" id="galleryContainer">
+    <!-- Gallery items with different heights and categories -->
+    <div class="gallery-card" data-category="team" style="--i:1;">
+      <img src="https://picsum.photos/seed/team1/600/750" alt="Team collaboration">
+      <div class="card-overlay"><div class="card-category">Team</div><div class="card-caption">Morning huddle</div></div>
+    </div>
+    <div class="gallery-card" data-category="awards" style="--i:2;">
+      <img src="https://picsum.photos/seed/award1/600/500" alt="Award ceremony">
+      <div class="card-overlay"><div class="card-category">Awards</div><div class="card-caption">Star performer</div></div>
+    </div>
+    <div class="gallery-card" data-category="celebration" style="--i:3;">
+      <img src="https://picsum.photos/seed/party1/600/800" alt="Celebration toast">
+      <div class="card-overlay"><div class="card-category">Celebration</div><div class="card-caption">Champagne wishes</div></div>
+    </div>
+    <div class="gallery-card" data-category="candid" style="--i:4;">
+      <img src="https://picsum.photos/seed/candid1/600/600" alt="Candid laugh">
+      <div class="card-overlay"><div class="card-category">Candid</div><div class="card-caption">Pure joy</div></div>
+    </div>
+    <div class="gallery-card" data-category="team" style="--i:5;">
+      <img src="https://picsum.photos/seed/team2/600/650" alt="Team activity">
+      <div class="card-overlay"><div class="card-category">Team</div><div class="card-caption">Workshop synergy</div></div>
+    </div>
+    <div class="gallery-card" data-category="awards" style="--i:6;">
+      <img src="https://picsum.photos/seed/award2/600/700" alt="Award speech">
+      <div class="card-overlay"><div class="card-category">Awards</div><div class="card-caption">Inspirational words</div></div>
+    </div>
+    <div class="gallery-card" data-category="celebration" style="--i:7;">
+      <img src="https://picsum.photos/seed/party2/600/550" alt="Dance moment">
+      <div class="card-overlay"><div class="card-category">Celebration</div><div class="card-caption">Dance floor magic</div></div>
+    </div>
+    <div class="gallery-card" data-category="candid" style="--i:8;">
+      <img src="https://picsum.photos/seed/candid2/600/720" alt="Group selfie">
+      <div class="card-overlay"><div class="card-category">Candid</div><div class="card-caption">Memory lane</div></div>
+    </div>
+    <div class="gallery-card" data-category="team" style="--i:9;">
+      <img src="https://picsum.photos/seed/team3/600/580" alt="Team building">
+      <div class="card-overlay"><div class="card-category">Team</div><div class="card-caption">Stronger together</div></div>
+    </div>
+    <div class="gallery-card" data-category="awards" style="--i:10;">
+      <img src="https://picsum.photos/seed/award3/600/620" alt="Trophy moment">
+      <div class="card-overlay"><div class="card-category">Awards</div><div class="card-caption">Top achiever</div></div>
+    </div>
+    <div class="gallery-card" data-category="celebration" style="--i:11;">
+      <img src="https://picsum.photos/seed/party3/600/850" alt="Confetti">
+      <div class="card-overlay"><div class="card-category">Celebration</div><div class="card-caption">Confetti dreams</div></div>
+    </div>
+    <div class="gallery-card" data-category="candid" style="--i:12;">
+      <img src="https://picsum.photos/seed/candid3/600/530" alt="Behind the scenes">
+      <div class="card-overlay"><div class="card-category">Candid</div><div class="card-caption">Unfiltered smiles</div></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="close-lightbox" id="closeLightbox">&times;</button>
+    <button class="nav-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+    <button class="nav-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+    <div class="lightbox-image-wrapper">
+      <img src="" alt="" id="lightboxImg">
+    </div>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <div class="image-counter" id="imageCounter"></div>
+  </div>
+
+  <script>
+    // Preloader
+    window.addEventListener('load', () => {
+      document.getElementById('preloader').style.opacity = '0';
+      document.getElementById('preloader').style.visibility = 'hidden';
+    });
+
+    // Filter functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const galleryCards = document.querySelectorAll('.gallery-card');
+    let currentFilter = 'all';
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+
+        galleryCards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          if (currentFilter === 'all' || category === currentFilter) {
+            card.style.display = 'block';
+            // restart animation
+            card.style.animation = 'none';
+            card.offsetHeight;
+            card.style.animation = 'fadeInUp 0.7s ease forwards';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        // reset lightbox index
+        updateVisibleCards();
+        currentIndex = 0;
+      });
+    });
+
+    let visibleCards = [];
+    let currentIndex = 0;
+
+    function updateVisibleCards() {
+      visibleCards = Array.from(galleryCards).filter(card => card.style.display !== 'none');
+    }
+    updateVisibleCards();
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const imageCounter = document.getElementById('imageCounter');
+    const closeBtn = document.getElementById('closeLightbox');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function openLightbox(index) {
+      updateVisibleCards();
+      if (visibleCards.length === 0) return;
+      currentIndex = index;
+      const card = visibleCards[currentIndex];
+      const img = card.querySelector('img');
+      const caption = card.querySelector('.card-caption')?.innerText || '';
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightboxCaption.textContent = caption;
+      imageCounter.textContent = `${currentIndex + 1} / ${visibleCards.length}`;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    galleryCards.forEach((card, idx) => {
+      card.addEventListener('click', (e) => {
+        updateVisibleCards();
+        const visibleIdx = visibleCards.indexOf(card);
+        if (visibleIdx !== -1) {
+          openLightbox(visibleIdx);
+        }
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    function navigate(direction) {
+      updateVisibleCards();
+      if (visibleCards.length === 0) return;
+      currentIndex = (currentIndex + direction + visibleCards.length) % visibleCards.length;
+      const card = visibleCards[currentIndex];
+      const img = card.querySelector('img');
+      const caption = card.querySelector('.card-caption')?.innerText || '';
+      lightboxImg.src = img.src;
+      lightboxCaption.textContent = caption;
+      imageCounter.textContent = `${currentIndex + 1} / ${visibleCards.length}`;
+    }
+
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigate(-1);
+    });
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigate(1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+</body>
+</html>

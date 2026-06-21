@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GourmetERP - Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --primary:#2c3e50; --secondary:#c9902c; --light:#f5f7fa; --dark:#1e272e;
+  --success:#27ae60; --warning:#f39c12; --danger:#e74c3c; --gray:#95a5a6;
+}
+[data-theme="dark"]{
+  --light:#1e272e; --dark:#f5f7fa; --primary:#111827; --secondary:#fbbf24; --gray:#9ca3af;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{display:flex;min-height:100vh;background:var(--light);color:var(--dark);transition:0.3s;}
+.sidebar{width:250px;background:var(--primary);color:white;padding:20px 0;display:flex;flex-direction:column;box-shadow:2px 0 10px rgba(0,0,0,0.1);}
+.logo{text-align:center;margin-bottom:20px;}
+.logo h1{color:white;font-size:28px;font-weight:bold;letter-spacing:1px;}
+.menu-item{padding:16px 20px;cursor:pointer;color:#ddd;font-weight:500;transition:all 0.3s;font-size:16px;}
+.menu-item:hover{background:rgba(255,255,255,0.1);color:white;border-left:4px solid var(--secondary);}
+.menu-item.active{background:rgba(255,255,255,0.15);color:white;border-left:4px solid var(--secondary);}
+.main-content{flex:1;display:flex;flex-direction:column;padding:25px;gap:25px;overflow-y:auto;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.header h2{font-size:26px;color:var(--primary);}
+.header .actions{display:flex;gap:12px;align-items:center;margin-top:10px;}
+.header input{padding:8px 12px;border-radius:8px;border:1px solid #ccc;width:220px;transition:0.3s;}
+.header button{padding:10px 16px;border:none;border-radius:10px;background:var(--secondary);color:white;cursor:pointer;transition:0.3s;font-weight:600;}
+.header button:hover{background:#b57f1b;}
+.stats-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:25px;}
+.stat-card{background:white;border-radius:16px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.08);text-align:center;transition:0.4s;position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:150px;height:150px;background:var(--secondary);opacity:0.05;border-radius:50%;}
+.stat-card h3{font-size:22px;margin-bottom:8px;}
+.table-container{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.08);}
+th,td{padding:12px;text-align:left;}
+th{background:var(--primary);color:white;}
+tr:hover{background:rgba(201,144,44,0.1);}
+button.invoice-btn{padding:8px 14px;border:none;border-radius:8px;background:var(--secondary);color:white;cursor:pointer;transition:0.3s;}
+button.invoice-btn:hover{background:#b57f1b;}
+.date-filter{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.date-filter input, .date-filter button{padding:8px 12px;border-radius:8px;border:1px solid #ccc;cursor:pointer;}
+.logout-btn{padding:8px 14px;border:none;border-radius:8px;background:#e74c3c;color:white;cursor:pointer;transition:0.3s;}
+.logout-btn:hover{background:#c0392b;}
+.charts-wrapper{display:flex;gap:30px;flex-wrap:wrap;margin-top:20px;}
+.chart-container{flex:1;background:white;border-radius:20px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.08);position:relative;}
+.chart-container h3{margin-bottom:20px;color:var(--primary);}
+.chart-container canvas{height:400px !important;}
+[data-theme="dark"] body{background:#1e272e;color:white;}
+[data-theme="dark"] .stat-card{background:#1f2937;color:white;}
+[data-theme="dark"] table{background:#1f2937;color:white;}
+[data-theme="dark"] th{background:#111827;color:white;}
+[data-theme="dark"] tr:hover{background:rgba(255,255,255,0.1);}
+[data-theme="dark"] .header h2{color:white;}
+[data-theme="dark"] .header button{background:#fbbf24;color:#111827;}
+[data-theme="dark"] .header button:hover{background:#d1a92f;}
+[data-theme="dark"] .header input{background:#374151;color:white;border:1px solid #555;}
+[data-theme="dark"] .chart-container{background:#1f2937;}
+[data-theme="dark"] .chart-container h3{color:white;}
+@media(max-width:1024px){.charts-wrapper{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo"><h1>G<span style="color:var(--secondary)">ERP</span></h1></div>
+  <div class="menu-item" onclick="location.href='menu.html'">Menu</div>
+  <div class="menu-item" onclick="location.href='chef.html'">Cooking</div>
+  <div class="menu-item active" onclick="location.href='dashboard.html'">Dashboard</div>
+</div>
+
+<div class="main-content">
+  <div class="header">
+    <h2>Dashboard</h2>
+    <div class="actions">
+      <input type="text" placeholder="Search Booking/Customer..." id="searchInput">
+      <button onclick="toggleTheme()">🌙 Theme</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="stats-cards">
+    <div class="stat-card"><h3 id="totalCustomers">0</h3><p>Customers</p></div>
+    <div class="stat-card"><h3 id="totalRevenue">$0</h3><p>Revenue</p></div>
+    <div class="stat-card"><h3 id="totalProfit">$0</h3><p>Profit</p></div>
+  </div>
+
+  <!-- Charts Section -->
+<div class="charts-wrapper">
+  <div class="chart-container">
+    <h3>Revenue Trend</h3>
+    <canvas id="revenueChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <h3>Top Items</h3>
+    <canvas id="itemsChart"></canvas>
+  </div>
+</div>
+ <!-- Date Range Filter -->
+ <div class="date-filter">
+  <input type="date" id="fromDate">
+  <input type="date" id="toDate">
+  <button onclick="applyDateFilter()">Apply Date Range</button>
+  <button onclick="resetFilter()">Reset</button>
+</div>
+  <!-- Booking Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr><th>Booking ID</th><th>Customer</th><th>Date</th><th>Total</th><th>Action</th></tr>
+      </thead>
+      <tbody id="bookingTable"></tbody>
+    </table>
+  </div>
+
+ 
+
+</div>
+
+<script>
+let bookings = JSON.parse(localStorage.getItem('gERP_bookings')||'[]');
+let currentFilteredData = []; // current visible bookings (today or date range)
+
+// Render Table
+function renderTable(filtered, useToday=true){
+  let data;
+  if(filtered) data = filtered;
+  else if(useToday){
+    const today = new Date().toISOString().split('T')[0];
+    data = bookings.filter(b=>b.status==='Confirmed' && b.date===today);
+  } else data = bookings.filter(b=>b.status==='Confirmed');
+
+  currentFilteredData = data;
+
+  const tbody = document.getElementById('bookingTable');
+  tbody.innerHTML='';
+  let totalRevenue=0;
+
+  data.forEach(b=>{
+    let total = b.items.reduce((sum,i)=>sum+i.qty*i.price,0);
+    totalRevenue+=total;
+    const row=tbody.insertRow();
+    row.insertCell(0).innerHTML=`<a href="#" onclick="viewDetails('${b.id}')">${b.id}</a>`;
+    row.insertCell(1).innerText=b.customer;
+    row.insertCell(2).innerText=b.date;
+    row.insertCell(3).innerText='$'+total;
+    row.insertCell(4).innerHTML=`<button class="invoice-btn" onclick="generateInvoice('${b.id}')">Invoice</button>`;
+  });
+
+  document.getElementById('totalCustomers').innerText=data.length;
+  document.getElementById('totalRevenue').innerText='$'+totalRevenue;
+  document.getElementById('totalProfit').innerText='$'+Math.floor(totalRevenue*0.7);
+
+  updateCharts(data);
+}
+
+// Search within currently displayed data
+document.getElementById('searchInput').addEventListener('input', ()=>{
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = currentFilteredData.filter(b => 
+    b.id.toLowerCase().includes(q) || b.customer.toLowerCase().includes(q)
+  );
+  renderTable(filtered, false);
+});
+
+// View booking details
+function viewDetails(id){
+  const b = bookings.find(b=>b.id===id);
+  if(b){
+    let msg=`Booking ${b.id}\nCustomer: ${b.customer}\nDate: ${b.date}\n\nItems:\n`;
+    b.items.forEach(i=>msg+=`${i.name} x${i.qty} ($${i.price*i.qty})\n`);
+    alert(msg);
+  }
+}
+
+// Generate Invoice
+function generateInvoice(id){
+  const b = bookings.find(b=>b.id===id);
+  if(!b) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt',format:'a4'});
+  let margin=40, y=40;
+  const imgUrl='https://source.unsplash.com/80x50/?restaurant,logo';
+  doc.addImage(imgUrl,'JPEG',margin,y,80,50);
+  y+=60; doc.setFontSize(22); doc.setTextColor('#2c3e50');
+  doc.text('GourmetERP Invoice',margin,y);
+  y+=30; doc.setFontSize(12); doc.setTextColor('#000');
+  doc.text(`Booking ID: ${b.id}`,margin,y);
+  doc.text(`Customer: ${b.customer}`,margin+250,y);
+  y+=18; doc.text(`Date: ${b.date}`,margin,y); y+=20;
+  doc.setFillColor(201,144,44); doc.setTextColor(255,255,255);
+  doc.rect(margin,y,500,20,'F'); 
+  doc.text('Item',margin+5,y+14); doc.text('Qty',margin+220,y+14);
+  doc.text('Price',margin+300,y+14); doc.text('Total',margin+400,y+14); y+=20; doc.setTextColor(0,0,0);
+  let grandTotal=0; b.items.forEach(i=>{
+    const rowTotal=i.price*i.qty; grandTotal+=rowTotal;
+    doc.rect(margin,y,500,20); 
+    doc.text(i.name,margin+5,y+14); doc.text(i.qty.toString(),margin+220,y+14);
+    doc.text(`$${i.price}`,margin+300,y+14); doc.text(`$${rowTotal}`,margin+400,y+14); y+=20;
+  }); y+=10; doc.setFontSize(14); doc.text(`Grand Total: $${grandTotal}`,margin,y);
+  doc.save(`${b.id}_invoice.pdf`);
+}
+
+// Date filter
+function applyDateFilter(){
+  const from = document.getElementById('fromDate').value;
+  const to = document.getElementById('toDate').value;
+  if(!from || !to) return;
+  const filtered = bookings.filter(b=>b.status==='Confirmed' && b.date>=from && b.date<=to);
+  renderTable(filtered, false);
+}
+
+function resetFilter(){
+  document.getElementById('fromDate').value='';
+  document.getElementById('toDate').value='';
+  document.getElementById('searchInput').value='';
+  renderTable(null, true);
+}
+
+// Theme toggle
+function toggleTheme(){
+  if(document.documentElement.getAttribute('data-theme')==='dark'){
+    document.documentElement.removeAttribute('data-theme');
+  } else { document.documentElement.setAttribute('data-theme','dark'); }
+}
+
+// Logout
+function logout(){
+  localStorage.removeItem('gERP_loggedIn');
+  window.location.href='erp.html';
+}
+
+// Charts
+let revenueChart, itemsChart;
+function updateCharts(filtered){
+  const revenueByDate={}, itemCount={};
+  filtered.forEach(b=>{
+    if(b.status!=='Confirmed') return;
+    b.items.forEach(i=>{
+      itemCount[i.name]=(itemCount[i.name]||0)+i.qty;
+      revenueByDate[b.date]=(revenueByDate[b.date]||0)+i.qty*i.price;
+    });
+  });
+
+  // Revenue Chart
+  const revLabels = Object.keys(revenueByDate).sort();
+  const revData = revLabels.map(d => revenueByDate[d]);
+  if(revenueChart) revenueChart.destroy();
+  const ctxR = document.getElementById('revenueChart').getContext('2d');
+  const gradientFill = ctxR.createLinearGradient(0,0,0,400);
+  gradientFill.addColorStop(0,'rgba(201,144,44,0.4)');
+  gradientFill.addColorStop(1,'rgba(201,144,44,0)');
+  revenueChart = new Chart(ctxR,{
+    type:'line',
+    data:{labels:revLabels,datasets:[{label:'Revenue',data:revData,borderColor:'#c9902c',backgroundColor:gradientFill,fill:true,tension:0.4,pointRadius:6,pointBackgroundColor:'#fbbf24',pointBorderColor:'#2c3e50',pointHoverRadius:10,pointHoverBackgroundColor:'#fff',pointHoverBorderColor:'#c9902c',pointHoverBorderWidth:3}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{y:{beginAtZero:true},x:{beginAtZero:true}},animation:{duration:1500,easing:'easeOutQuart'}}
+  });
+
+  // Top Items Chart
+  const itemLabels = Object.keys(itemCount);
+  const itemData = Object.values(itemCount);
+  if(itemsChart) itemsChart.destroy();
+  const ctxI = document.getElementById('itemsChart').getContext('2d');
+  const bgColors = itemLabels.map((_,i)=>{ const colors=['#fbbf24','#27ae60','#9b59b6','#e74c3c','#95a5a6','#3498db']; return colors[i%colors.length]; });
+  itemsChart = new Chart(ctxI,{type:'polarArea',data:{labels:itemLabels,datasets:[{data:itemData,backgroundColor:bgColors,borderColor:'#fff',borderWidth:2}]},options:{responsive:true,plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} sold`}}},animation:{animateRotate:true,animateScale:true,duration:1500,easing:'easeOutCubic'}}});
+}
+
+// Initial render
+renderTable();
+</script>
+</body>
+</html>

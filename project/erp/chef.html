@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GourmetERP - Chef Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --primary:#2c3e50; --secondary:#c9902c; --light:#f5f7fa; --dark:#1e272e;
+  --success:#27ae60; --warning:#f39c12; --danger:#e74c3c; --gray:#95a5a6;
+}
+[data-theme="dark"]{
+  --light:#1e272e; --dark:#f5f7fa; --primary:#111827; --secondary:#fbbf24; --gray:#9ca3af;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{display:flex;min-height:100vh;background:var(--light);color:var(--dark);transition:0.3s;}
+.sidebar{width:250px;background:var(--primary);color:white;padding:20px 0;display:flex;flex-direction:column;}
+.logo{text-align:center;margin-bottom:20px;}
+.logo h1{color:white;font-size:26px;font-weight:bold;}
+.menu-item{padding:14px 20px;cursor:pointer;color:#ddd;font-weight:500;transition:all 0.3s;font-size:16px;}
+.menu-item:hover{background:rgba(255,255,255,0.1);color:white;border-left:4px solid var(--secondary);}
+.menu-item.active{background:rgba(255,255,255,0.15);color:white;border-left:4px solid var(--secondary);}
+.main-content{flex:1;display:flex;flex-direction:column;padding:20px;gap:20px;overflow-y:auto;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.header h2{font-size:24px;color:var(--primary);}
+.header button{padding:8px 14px;border:none;border-radius:8px;background:var(--secondary);color:white;cursor:pointer;transition:0.3s;}
+.header button:hover{background:#b57f1b;}
+.booking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.booking-card{background:white;border-radius:15px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,0.08);transition:0.3s;position:relative;}
+.booking-card:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(0,0,0,0.12);}
+.booking-card h3{margin-bottom:8px;font-size:18px;color:var(--primary);}
+.booking-card p{margin:4px 0;font-size:14px;color:var(--dark);}
+.booking-card ul{margin:5px 0 10px 20px;}
+.booking-card li{margin-bottom:4px;}
+.booking-card button{margin-top:5px;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;color:white;font-weight:500;transition:0.3s;}
+.confirm-btn{background:var(--success);}
+.confirm-btn:hover{background:#1f8447;}
+.cancel-btn{background:var(--danger);}
+.cancel-btn:hover{background:#c0392b;}
+.status-badge{position:absolute;top:15px;right:15px;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:bold;color:white;}
+.status-Pending{background:var(--warning);}
+.status-Confirmed{background:var(--success);}
+.status-Cancelled{background:var(--danger);}
+[data-theme="dark"] body{background:#1e272e;color:white;}
+[data-theme="dark"] .booking-card{background:#1f2937;color:white;}
+[data-theme="dark"] .booking-card h3{color:white;}
+[data-theme="dark"] .booking-card p, [data-theme="dark"] .booking-card li{color:#d1d5db;}
+[data-theme="dark"] .header h2{color:white;}
+[data-theme="dark"] .header button{background:#fbbf24;color:#111827;}
+[data-theme="dark"] .header button:hover{background:#d1a92f;}
+@media(max-width:768px){.main-content{padding:10px;}.booking-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo"><h1>G<span style="color:var(--secondary)">ERP</span></h1></div>
+  <div class="menu-item" onclick="location.href='menu.html'">Menu</div>
+  <div class="menu-item active">Cooking</div>
+  <div class="menu-item" onclick="location.href='dashboard.html'">Dashboard</div>
+</div>
+
+<div class="main-content">
+  <div class="header">
+    <h2>Pending Bookings</h2>
+    <button onclick="toggleTheme()">🌙 Theme</button>
+  </div>
+  <div class="booking-grid" id="bookingList"></div>
+</div>
+
+<script>
+// Load bookings
+let bookings = JSON.parse(localStorage.getItem('gERP_bookings')||'[]');
+
+function renderBookings(){
+  const list = document.getElementById('bookingList');
+  list.innerHTML='';
+  let pending = bookings.filter(b=>b.status==='Pending');
+  if(pending.length===0){ list.innerHTML='<p>No pending bookings.</p>'; return; }
+
+  pending.forEach(b=>{
+    const card = document.createElement('div');
+    card.className='booking-card';
+    card.innerHTML=`
+      <h3>Booking ID: ${b.id}</h3>
+      <p>Customer: ${b.customer}</p>
+      <p>Date: ${b.date}</p>
+      <p>Items:</p>
+      <ul>${b.items.map(i=>`<li>${i.name} x${i.qty} ($${i.price*i.qty})</li>`).join('')}</ul>
+      <button class="confirm-btn" onclick="confirmBooking('${b.id}')">Confirm ✅</button>
+      <button class="cancel-btn" onclick="cancelBooking('${b.id}')">Cancel ❌</button>
+      <span class="status-badge status-${b.status}">${b.status}</span>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// Confirm Booking
+function confirmBooking(id){
+  const booking = bookings.find(b=>b.id===id);
+  if(booking){
+    booking.status='Confirmed';
+    localStorage.setItem('gERP_bookings',JSON.stringify(bookings));
+    alert(`Booking ${id} confirmed!`);
+    renderBookings();
+  }
+}
+
+// Cancel Booking
+function cancelBooking(id){
+  const booking = bookings.find(b=>b.id===id);
+  if(booking){
+    booking.status='Cancelled';
+    alert(`Booking ${id} cancelled! Product not available.`);
+    localStorage.setItem('gERP_bookings',JSON.stringify(bookings));
+    renderBookings();
+  }
+}
+
+// Theme toggle
+function toggleTheme(){
+  if(document.documentElement.getAttribute('data-theme')==='dark'){
+    document.documentElement.removeAttribute('data-theme');
+  } else { document.documentElement.setAttribute('data-theme','dark'); }
+}
+
+renderBookings();
+</script>
+
+</body>
+</html>

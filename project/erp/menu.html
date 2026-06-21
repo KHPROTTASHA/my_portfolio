@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GourmetERP - Menu</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --primary:#2c3e50; --secondary:#c9902c; --light:#f5f7fa; --dark:#1e272e;
+  --success:#27ae60; --warning:#f39c12; --danger:#e74c3c; --gray:#95a5a6;
+}
+[data-theme="dark"]{
+  --light:#1e272e; --dark:#f5f7fa; --primary:#111827; --secondary:#fbbf24; --gray:#9ca3af;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{display:flex;min-height:100vh;background:var(--light);color:var(--dark);transition:0.3s;}
+.sidebar{width:250px;background:var(--primary);color:white;padding:20px 0;display:flex;flex-direction:column;}
+.logo{text-align:center;margin-bottom:20px;}
+.logo h1{color:white;font-size:24px;}
+.menu-item{padding:12px 20px;cursor:pointer;color:#ddd;font-weight:500;transition:all 0.3s;}
+.menu-item:hover{background:rgba(255,255,255,0.1);color:white;border-left:4px solid var(--secondary);}
+.menu-item.active{background:rgba(255,255,255,0.15);color:white;border-left:4px solid var(--secondary);}
+.main-content{flex:1;display:flex;flex-direction:column;padding:20px;gap:20px;}
+.navbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:20px;gap:10px;}
+.navbar input{padding:8px 12px;border-radius:20px;border:1px solid #ccc;width:250px;}
+.navbar button{padding:6px 12px;border:none;background:var(--secondary);color:white;border-radius:6px;cursor:pointer;}
+.category-filter{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.category-filter button{padding:6px 12px;border:none;background:#eee;border-radius:6px;cursor:pointer;}
+.category-filter button.active{background:var(--secondary);color:white;}
+.content{display:flex;gap:20px;flex-wrap:wrap;}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;flex:3;}
+.menu-card{background:white;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.08);overflow:hidden;transition:0.3s;}
+.menu-card img{width:100%;height:150px;object-fit:cover;}
+.menu-card-content{padding:10px;}
+.menu-card-content h3{font-size:18px;margin-bottom:5px;}
+.menu-card-content p.price{color:var(--secondary);font-weight:bold;margin-bottom:10px;}
+.menu-card-content button{padding:6px 12px;border:none;background:var(--primary);color:white;border-radius:6px;cursor:pointer;transition:0.3s;}
+.menu-card-content button:hover{background:var(--secondary);}
+.cart{flex:1;background:white;border-radius:10px;padding:15px;box-shadow:0 4px 12px rgba(0,0,0,0.08);position:sticky;top:20px;min-width:250px;}
+.cart h3{margin-bottom:10px;}
+.cart table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+.cart th, .cart td{padding:8px;font-size:14px;text-align:left;}
+.cart-total{font-weight:bold;margin-bottom:10px;}
+.cart-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.cart-actions button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;}
+.cart-actions .place-order{background:var(--secondary);color:white;}
+[data-theme="dark"] body{background:#1e272e;color:white;}
+[data-theme="dark"] .menu-card{background:#111827;color:white;}
+[data-theme="dark"] .cart{background:#111827;color:white;}
+[data-theme="dark"] .menu-card-content button{background:#2c3e50;}
+[data-theme="dark"] .menu-card-content button:hover{background:#c9902c;}
+[data-theme="dark"] .category-filter button{background:#2c3e50;color:white;}
+[data-theme="dark"] .category-filter button.active{background:#c9902c;color:white;}
+@media(max-width:768px){
+  .content{flex-direction:column;}
+  .cart{position:relative;top:0;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo"><h1>G<span style="color:var(--secondary)">ERP</span></h1></div>
+  <div class="menu-item active">Menu</div>
+  <div class="menu-item" onclick="location.href='chef.html'">Cooking</div>
+  <div class="menu-item" onclick="location.href='dashboard.html'">Dashboard</div>
+</div>
+
+<div class="main-content">
+  <div class="navbar">
+    <input type="text" placeholder="Search items..." id="searchInput">
+    <button onclick="toggleTheme()">🌙 Theme</button>
+    
+  </div>
+  <div class="category-filter" id="categoryFilter"></div>
+  <div class="content">
+    <div class="menu-grid" id="menuGrid"></div>
+    <div class="cart">
+      <h3>Cart</h3>
+      <input type="text" id="customerName" placeholder="Customer Name" style="width:100%;margin-bottom:10px;padding:6px;border-radius:6px;border:1px solid #ccc;">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Qty</th><th>Price</th><th>Remove</th></tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+      <div class="cart-total" id="cartTotal">Total: $0</div>
+      <div class="cart-actions">
+        <button onclick="clearCart()">Clear</button>
+        <button class="place-order" onclick="placeBooking()">Place Booking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======= Menu Items =======
+const menuItems = [
+  {id:'1',name:'Burger',price:5,img:'Burger.jpg',category:'Fast Food'},
+  {id:'2',name:'Pizza',price:8,img:'Pizza.jpg',category:'Fast Food'},
+  {id:'3',name:'Pasta',price:7,img:'Pasta.jpg',category:'Italian'},
+  {id:'4',name:'Salad',price:4,img:'Salad.jpg',category:'Healthy'},
+  {id:'5',name:'Sushi',price:12,img:'Sushi.jpg',category:'Japanese'},
+  {id:'6',name:'Ice Cream',price:3,img:'IceCream.jpg',category:'Dessert'}
+];
+
+let cart = JSON.parse(localStorage.getItem('gERP_cart')||'[]');
+
+// ======= Render Categories =======
+const categoryFilter=document.getElementById('categoryFilter');
+const categories=['All',...new Set(menuItems.map(i=>i.category))];
+categories.forEach(cat=>{
+  const btn=document.createElement('button');
+  btn.innerText=cat;
+  btn.onclick=()=>{ filterCategory(cat); };
+  if(cat==='All') btn.classList.add('active');
+  categoryFilter.appendChild(btn);
+});
+
+let activeCategory='All';
+function filterCategory(cat){
+  activeCategory=cat;
+  document.querySelectorAll('.category-filter button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderMenu();
+}
+
+// ======= Render Menu =======
+const menuGrid = document.getElementById('menuGrid');
+function renderMenu(){
+  menuGrid.innerHTML='';
+  let searchQ=document.getElementById('searchInput').value.toLowerCase();
+  let filtered=menuItems.filter(i=>{
+    return (activeCategory==='All'||i.category===activeCategory) && i.name.toLowerCase().includes(searchQ);
+  });
+  filtered.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='menu-card';
+    card.innerHTML=`
+      <img src="${item.img}" alt="${item.name}">
+      <div class="menu-card-content">
+        <h3>${item.name}</h3>
+        <p class="price">$${item.price}</p>
+        <button onclick="addToCart('${item.id}')">Add to Cart</button>
+      </div>
+    `;
+    menuGrid.appendChild(card);
+  });
+}
+
+// ======= Cart Functions =======
+const cartBody=document.getElementById('cartBody');
+const cartTotal=document.getElementById('cartTotal');
+
+function renderCart(){
+  cartBody.innerHTML='';
+  let total=0;
+  cart.forEach((c,i)=>{
+    const row=cartBody.insertRow();
+    row.insertCell(0).innerText=c.name;
+    row.insertCell(1).innerText=c.qty;
+    row.insertCell(2).innerText='$'+(c.price*c.qty);
+    row.insertCell(3).innerHTML=`<button onclick="removeFromCart(${i})">❌</button>`;
+    total+=c.price*c.qty;
+  });
+  cartTotal.innerText='Total: $'+total;
+  localStorage.setItem('gERP_cart',JSON.stringify(cart));
+}
+
+function addToCart(id){
+  const item=menuItems.find(m=>m.id===id);
+  const exist=cart.find(c=>c.id===id);
+  if(exist) exist.qty+=1;
+  else cart.push({...item,qty:1});
+  renderCart();
+}
+
+function removeFromCart(index){ cart.splice(index,1); renderCart(); }
+
+function clearCart(){ cart=[]; renderCart(); document.getElementById('customerName').value=''; }
+
+// ======= Place Booking =======
+function placeBooking(){
+  if(cart.length===0){ alert('Cart is empty'); return;}
+  const name=document.getElementById('customerName').value;
+  if(!name){ alert('Enter customer name'); return;}
+  const booking={id:'B'+Date.now(),customer:name,date:new Date().toISOString().split('T')[0],items:cart,status:'Pending'};
+  let bookings=JSON.parse(localStorage.getItem('gERP_bookings')||'[]');
+  bookings.push(booking);
+  localStorage.setItem('gERP_bookings',JSON.stringify(bookings));
+  alert('Booking placed successfully! Chef will see it.');
+  clearCart();
+}
+
+// ======= Search =======
+document.getElementById('searchInput').addEventListener('input',()=>{ renderMenu(); });
+
+// ======= Theme Toggle =======
+function toggleTheme(){
+  if(document.documentElement.getAttribute('data-theme')==='dark'){
+    document.documentElement.removeAttribute('data-theme');
+  } else { document.documentElement.setAttribute('data-theme','dark'); }
+}
+
+// ======= Initial Render =======
+renderMenu();
+renderCart();
+</script>
+
+</body>
+</html>

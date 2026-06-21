@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#050510">
+  <link rel="manifest" href="data:application/json,{}">
+  <title>🎮 3D Tic Tac Toe Pro</title>
+  <style>
+    :root {
+      --bg: #050510;
+      --x-color: #00e5ff;
+      --o-color: #ff6b9d;
+      --win: #00ff88;
+      --gold: #ffd700;
+      --card: rgba(18,18,35,0.9);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Segoe UI', 'Poppins', sans-serif;
+      background: var(--bg);
+      overflow: hidden; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      perspective: 800px;
+    }
+
+    .bg-animation {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 20% 20%, rgba(0,229,255,0.06) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(255,107,157,0.06) 0%, transparent 50%);
+    }
+    .particles {
+      position: fixed; inset: 0; z-index: 0; opacity: 0.4;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 35px 35px; animation: particleMove 20s infinite linear;
+    }
+    @keyframes particleMove { 0% { transform: translate(0,0); } 100% { transform: translate(35px,35px); } }
+
+    .container {
+      position: relative; z-index: 1; width: 100%; max-width: 440px;
+      display: flex; flex-direction: column; padding: 8px; gap: 8px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center; padding: 4px 0;
+    }
+    .title {
+      font-size: 1.4rem; font-weight: 800; letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--x-color), var(--o-color), var(--gold));
+      background-size: 200% 200%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shift 3s infinite;
+    }
+    @keyframes shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    /* Score */
+    .score-row {
+      display: flex; gap: 6px; align-items: center;
+    }
+    .p-card {
+      flex: 1; text-align: center; padding: 10px 6px;
+      background: var(--card); backdrop-filter: blur(30px);
+      border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.4s;
+    }
+    .p-card.active { transform: translateY(-4px); }
+    .p-card.you.active { border-color: var(--x-color); box-shadow: 0 8px 25px rgba(0,229,255,0.3); }
+    .p-card.cpu.active { border-color: var(--o-color); box-shadow: 0 8px 25px rgba(255,107,157,0.3); }
+    .p-avatar {
+      width: 36px; height: 36px; border-radius: 50%; margin: 0 auto 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem;
+    }
+    .p-avatar.you { background: rgba(0,229,255,0.2); color: var(--x-color); }
+    .p-avatar.cpu { background: rgba(255,107,157,0.2); color: var(--o-color); }
+    .p-name { color: #777; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
+    .p-score { color: #fff; font-size: 1.2rem; font-weight: 800; }
+    .vs { color: #444; font-weight: 700; font-size: 0.8rem; }
+
+    /* Turn */
+    .turn {
+      text-align: center; padding: 8px; border-radius: 12px;
+      font-weight: 700; font-size: 0.8rem;
+      background: rgba(255,215,0,0.1); color: var(--gold);
+      border: 1px solid rgba(255,215,0,0.2);
+      transition: all 0.3s;
+    }
+    .turn.cpu { background: rgba(255,107,157,0.1); color: var(--o-color); border-color: rgba(255,107,157,0.2); }
+
+    /* 3D Board */
+    .board-wrapper {
+      background: var(--card); backdrop-filter: blur(40px);
+      border-radius: 20px; padding: 12px; border: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .board-3d {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; width: 100%; max-width: 280px;
+      transform: rotateX(8deg) rotateY(-5deg);
+      transform-style: preserve-3d;
+      transition: transform 0.3s;
+    }
+    .cell {
+      aspect-ratio: 1; border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(0,0,0,0.3));
+      border: 2px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; font-weight: 800; cursor: pointer;
+      transition: all 0.2s; position: relative;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .cell:hover:not(.taken) {
+      transform: translateZ(12px) scale(1.06);
+      border-color: rgba(255,255,255,0.3);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+    .cell:active:not(.taken) { transform: translateZ(4px) scale(0.95); }
+    .cell.taken { cursor: default; }
+    .cell.x { color: var(--x-color); border-color: rgba(0,229,255,0.4); text-shadow: 0 0 15px rgba(0,229,255,0.6); animation: pop 0.3s ease-out; }
+    .cell.o { color: var(--o-color); border-color: rgba(255,107,157,0.4); text-shadow: 0 0 15px rgba(255,107,157,0.6); animation: pop 0.3s ease-out; }
+    .cell.win {
+      background: rgba(0,255,136,0.1) !important; border-color: var(--win) !important;
+      animation: winGlow 0.6s infinite; transform: translateZ(16px) !important;
+      box-shadow: 0 0 25px rgba(0,255,136,0.4), 0 12px 30px rgba(0,0,0,0.6) !important;
+    }
+    @keyframes pop { 0% { transform: scale(0.4) translateZ(0); } 60% { transform: scale(1.1) translateZ(10px); } 100% { transform: scale(1) translateZ(4px); } }
+    @keyframes winGlow { 0%,100% { box-shadow: 0 0 15px rgba(0,255,136,0.3), 0 8px 20px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 35px rgba(0,255,136,0.7), 0 12px 30px rgba(0,0,0,0.7); } }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 6px; }
+    .btn {
+      flex: 1; padding: 12px; border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03); color: #ccc;
+      font-weight: 600; font-size: 0.8rem; cursor: pointer;
+      transition: all 0.3s; font-family: inherit;
+      backdrop-filter: blur(10px); text-align: center;
+    }
+    .btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25); }
+    .btn:active { transform: scale(0.95); }
+    .btn.primary { background: rgba(0,229,255,0.15); border-color: rgba(0,229,255,0.4); color: var(--x-color); }
+    .btn.primary:hover { background: rgba(0,229,255,0.25); }
+
+    /* Difficulty */
+    .diff-row { display: flex; gap: 4px; justify-content: center; }
+    .diff {
+      padding: 6px 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1);
+      background: transparent; color: #666; font-size: 0.7rem; font-weight: 600;
+      cursor: pointer; transition: all 0.3s; font-family: inherit;
+    }
+    .diff.active { background: rgba(255,215,0,0.12); border-color: var(--gold); color: var(--gold); }
+    .diff:hover:not(.active) { color: #fff; }
+
+    /* Stats */
+    .stat-row {
+      display: flex; gap: 6px;
+    }
+    .stat {
+      flex: 1; text-align: center; padding: 8px;
+      background: var(--card); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04);
+    }
+    .stat-l { color: #555; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-v { color: #fff; font-weight: 700; font-size: 0.9rem; }
+
+    /* Overlay */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: all 0.5s;
+    }
+    .overlay.show { opacity: 1; pointer-events: all; }
+    .result {
+      background: var(--card); backdrop-filter: blur(50px);
+      border-radius: 24px; padding: 24px 20px; text-align: center;
+      border: 2px solid rgba(255,255,255,0.08);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7); max-width: 320px; width: 90%;
+    }
+    .r-emoji { font-size: 3.5rem; animation: bounce 0.7s infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+    .r-title { font-size: 1.3rem; font-weight: 800; margin: 8px 0; }
+    .r-title.w { color: var(--win); } .r-title.l { color: var(--o-color); } .r-title.d { color: var(--gold); }
+    .r-sub { color: #888; font-size: 0.8rem; margin-bottom: 16px; }
+    .r-btn {
+      padding: 12px 24px; border-radius: 22px; border: none;
+      font-weight: 700; font-size: 0.9rem; cursor: pointer; margin: 3px;
+      transition: all 0.3s; font-family: inherit;
+    }
+    .r-btn.pri { background: var(--x-color); color: #000; box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
+    .r-btn.pri:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,229,255,0.5); }
+    .r-btn.sec { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; }
+    .r-btn.sec:hover { background: rgba(255,255,255,0.06); }
+
+    @media (max-width: 380px) {
+      .container { padding: 4px; gap: 4px; }
+      .board-3d { max-width: 220px; gap: 5px; }
+      .cell { font-size: 1.8rem; border-radius: 10px; }
+      .p-avatar { width: 28px; height: 28px; font-size: 0.9rem; }
+      .p-score { font-size: 1rem; }
+      .btn { padding: 10px; font-size: 0.72rem; }
+      .title { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="particles"></div>
+
+  <div class="container">
+    <div class="header"><div class="title">TIC TAC TOE PRO</div></div>
+
+    <div class="score-row">
+      <div class="p-card you active" id="cardYou">
+        <div class="p-avatar you">X</div><div class="p-name">You</div>
+        <div class="p-score" id="scoreYou">0</div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="p-card cpu" id="cardCpu">
+        <div class="p-avatar cpu">O</div><div class="p-name">CPU</div>
+        <div class="p-score" id="scoreCpu">0</div>
+      </div>
+    </div>
+
+    <div class="turn" id="turn">🎯 Your Turn</div>
+
+    <div class="board-wrapper">
+      <div class="board-3d" id="board"></div>
+    </div>
+
+    <div class="diff-row">
+      <button class="diff active" data-d="easy" onclick="setDiff('easy')">🟢 Easy</button>
+      <button class="diff" data-d="medium" onclick="setDiff('medium')">🟡 Medium</button>
+      <button class="diff" data-d="hard" onclick="setDiff('hard')">🔴 Hard</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" onclick="newGame()">🔄 New Round</button>
+      <button class="btn" onclick="resetAll()">🗑️ Reset</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-l">Games</div><div class="stat-v" id="sGames">0</div></div>
+      <div class="stat"><div class="stat-l">Draws</div><div class="stat-v" id="sDraws">0</div></div>
+      <div class="stat"><div class="stat-l">Win %</div><div class="stat-v" id="sRate">0%</div></div>
+      <div class="stat"><div class="stat-l">Streak</div><div class="stat-v" id="sStreak">0🔥</div></div>
+    </div>
+    <button class="btn" onclick="goToDashboard()">🏠 Back to Hub</button>
+  </div>
+  
+  <div class="overlay" id="overlay">
+    <div class="result">
+      <div class="r-emoji" id="rEmoji">🏆</div>
+      <div class="r-title" id="rTitle">You Win!</div>
+      <div class="r-sub" id="rSub"></div>
+      <button class="r-btn pri" onclick="newGame()">🔄 Play Again</button>
+      <button class="r-btn sec" onclick="document.getElementById('overlay').classList.remove('show')">✕ Close</button>
+    </div>
+    
+  </div>
+
+  <!-- 🔊 Audio Elements (Base64 short sounds) -->
+  <script>
+    // ====== SOUND SYSTEM (Tiny Base64 Sounds) ======
+    function playSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        
+        if (type === 'click') { o.frequency.value = 800; o.type = 'sine'; g.gain.value = 0.15; o.start(); o.stop(ctx.currentTime + 0.08); }
+        else if (type === 'win') { o.frequency.value = 600; o.type = 'triangle'; g.gain.value = 0.2; o.start(); o.frequency.linearRampToValueAtTime(1200, ctx.currentTime + 0.3); o.stop(ctx.currentTime + 0.4); }
+        else if (type === 'lose') { o.frequency.value = 300; o.type = 'sawtooth'; g.gain.value = 0.12; o.start(); o.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.4); o.stop(ctx.currentTime + 0.5); }
+        else if (type === 'draw') { o.frequency.value = 500; o.type = 'sine'; g.gain.value = 0.1; o.start(); o.stop(ctx.currentTime + 0.2); }
+      } catch(e) { /* Silent */ }
+    }
+
+    // ====== GAME STATE ======
+    let board = Array(9).fill("");
+    let current = "X", active = true, diff = "medium";
+    let scores = { X: 0, O: 0, draws: 0, total: 0, streak: 0, best: 0 };
+    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+    // ====== DOM ======
+    const bEl = document.getElementById("board"), turnEl = document.getElementById("turn");
+    const cYou = document.getElementById("cardYou"), cCpu = document.getElementById("cardCpu");
+    const ov = document.getElementById("overlay");
+
+    function load() {
+      const s = JSON.parse(localStorage.getItem("ttt3d") || "{}");
+      scores.X = s.X || 0; scores.O = s.O || 0; scores.draws = s.draws || 0;
+      scores.total = s.total || 0; scores.streak = s.streak || 0; scores.best = s.best || 0;
+      diff = s.diff || "medium";
+      document.querySelectorAll(".diff").forEach(b => b.classList.toggle("active", b.dataset.d === diff));
+      updateUI();
+    }
+    function save() { localStorage.setItem("ttt3d", JSON.stringify({...scores, diff})); }
+
+    function render() {
+      bEl.innerHTML = "";
+      board.forEach((v, i) => {
+        const c = document.createElement("div");
+        c.className = "cell";
+        if (v) { c.textContent = v; c.classList.add(v==="X"?"x":"o", "taken"); }
+        c.addEventListener("click", () => click(i));
+        bEl.appendChild(c);
+      });
+    }
+
+    function updateUI() {
+      document.getElementById("scoreYou").textContent = scores.X;
+      document.getElementById("scoreCpu").textContent = scores.O;
+      document.getElementById("sGames").textContent = scores.total;
+      document.getElementById("sDraws").textContent = scores.draws;
+      document.getElementById("sRate").textContent = (scores.total ? Math.round(scores.X/scores.total*100) : 0) + "%";
+      document.getElementById("sStreak").textContent = scores.streak + "🔥";
+      cYou.classList.toggle("active", current === "X" && active);
+      cCpu.classList.toggle("active", current === "O" && active);
+      if (active) { turnEl.textContent = current==="X"?"🎯 Your Turn":"🤖 CPU Thinking..."; turnEl.classList.toggle("cpu", current==="O"); }
+    }
+
+    function click(i) {
+      if (board[i] || !active || current !== "X") return;
+      playSound('click');
+      place(i, "X");
+      if (active) { current = "O"; updateUI(); render(); setTimeout(cpu, 350 + Math.random() * 250); }
+    }
+
+    function place(i, p) {
+      board[i] = p; render();
+      const w = check(p);
+      if (w) { active = false; highlight(w); setTimeout(() => end(p), 600); return; }
+      if (board.every(c => c)) { active = false; markDraw(); setTimeout(() => end("draw"), 400); }
+    }
+
+    function cpu() {
+      if (!active || current !== "O") return;
+      const m = getMove(); if (m !== -1) place(m, "O");
+      current = "X"; updateUI(); render();
+    }
+
+    function getMove() {
+      const emp = board.map((v,i) => v===""?i:-1).filter(i => i!==-1);
+      if (!emp.length) return -1;
+
+      if (diff === "hard" || (diff === "medium" && Math.random() < 0.75)) {
+        for (let [a,b,c] of wins) {
+          if (board[a]==="O" && board[b]==="O" && board[c]==="") return c;
+          if (board[a]==="O" && board[c]==="O" && board[b]==="") return b;
+          if (board[b]==="O" && board[c]==="O" && board[a]==="") return a;
+        }
+        for (let [a,b,c] of wins) {
+          if (board[a]==="X" && board[b]==="X" && board[c]==="") return c;
+          if (board[a]==="X" && board[c]==="X" && board[b]==="") return b;
+          if (board[b]==="X" && board[c]==="X" && board[a]==="") return a;
+        }
+        if (board[4] === "") return 4;
+        const cor = [0,2,6,8].filter(i => board[i]==="");
+        if (cor.length) return cor[Math.floor(Math.random()*cor.length)];
+      }
+      return emp[Math.floor(Math.random()*emp.length)];
+    }
+
+    function check(p) { for (let w of wins) if (w.every(i => board[i]===p)) return w; return null; }
+    function highlight(w) { const cs = bEl.children; w.forEach(i => cs[i].classList.add("win")); }
+    function markDraw() { [...bEl.children].forEach(c => c.style.opacity = "0.6"); }
+
+    function end(r) {
+      scores.total++;
+      if (r === "X") { scores.X++; scores.streak++; if (scores.streak > scores.best) scores.best = scores.streak;
+        playSound('win'); document.getElementById("rEmoji").textContent = "🏆";
+        document.getElementById("rTitle").textContent = "You Win! 🎉"; document.getElementById("rTitle").className = "r-title w";
+        document.getElementById("rSub").textContent = `Streak: ${scores.streak}🔥 | Best: ${scores.best}🔥`;
+      } else if (r === "O") { scores.O++; scores.streak = 0;
+        playSound('lose'); document.getElementById("rEmoji").textContent = "😢";
+        document.getElementById("rTitle").textContent = "CPU Wins!"; document.getElementById("rTitle").className = "r-title l";
+        document.getElementById("rSub").textContent = "Streak reset. Try again!";
+      } else { scores.draws++; scores.streak = 0;
+        playSound('draw'); document.getElementById("rEmoji").textContent = "🤝";
+        document.getElementById("rTitle").textContent = "Draw!"; document.getElementById("rTitle").className = "r-title d";
+        document.getElementById("rSub").textContent = "So close!";
+      }
+      save(); updateUI(); turnEl.textContent = "Game Over"; turnEl.classList.remove("cpu");
+      ov.classList.add("show");
+    }
+
+    function newGame() {
+      board = Array(9).fill(""); current = "X"; active = true;
+      ov.classList.remove("show"); render(); updateUI(); turnEl.classList.remove("cpu");
+    }
+    function resetAll() { scores = { X:0,O:0,draws:0,total:0,streak:0,best:0 }; save(); newGame(); }
+    function setDiff(d) { diff = d; document.querySelectorAll(".diff").forEach(b => b.classList.toggle("active", b.dataset.d === d)); save(); }
+
+    document.addEventListener("keydown", e => { if (e.key==="n"||e.key==="N") newGame(); if (e.key==="Escape") ov.classList.remove("show"); });
+    function goToDashboard() {
+  window.location.href = 'login.html';
+}
+
+    load(); newGame();
+  </script>
+</body>
+</html>

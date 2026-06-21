@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
+  <title>⚙️ HRM Enterprise Suite</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+  </script>
+  <style>
+    :root {
+      --bg: #06060f;
+      --glass: rgba(20, 20, 40, 0.75);
+      --gold: #ffd700;
+      --p1: #ff2d75;
+      --p2: #00e5ff;
+      --sidebar-w: 280px;
+      --accent: #00e5ff;
+      --text: #eee;
+      --muted: #888;
+      --card-radius: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      height: 100vh; height: 100dvh;
+      display: flex;
+      font-family: 'Segoe UI', 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 30% 20%, rgba(255,45,117,0.06) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 80%, rgba(0,229,255,0.06) 0%, transparent 50%);
+    }
+    .dots {
+      position: fixed; inset: 0; z-index: 0; opacity: 0.2;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 35px 35px;
+    }
+    /* ============ DRAGGABLE HOME BUTTON ============ */
+    .home-btn {
+    position:fixed;
+    top:25px;
+    left:25px;
+    z-index:99999;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    background:rgba(10,10,10,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    color:var(--gold);
+    font-size:20px;
+    cursor:grab;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.3s;
+    text-decoration:none;
+    font-family:'Inter',sans-serif;
+    touch-action:none;
+    user-select:none;
+}
+.home-btn:active {
+    cursor:grabbing;
+    transform:scale(1.1);
+}
+.home-btn:hover {
+    background:var(--gold);
+    color:#000;
+    box-shadow:0 0 30px rgba(201,169,110,0.5);
+}
+@media(max-width:950px){
+    .home-btn{width:44px;height:44px;font-size:18px;}
+}
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: rgba(10,10,20,0.9);
+      backdrop-filter: blur(25px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column;
+      padding: 20px 0;
+      z-index: 20;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      text-align: center; font-size: 1.6rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--p2), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 20px; letter-spacing: 1px;
+    }
+    .nav-link {
+      padding: 10px 20px; margin: 3px 10px; border-radius: 10px;
+      cursor: pointer; font-weight: 600; font-size: 0.85rem;
+      color: #aaa; transition: 0.3s;
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255,255,255,0.05); color: #fff;
+    }
+    .nav-link.active {
+      background: rgba(0,229,255,0.1); color: var(--p2);
+      border-left: 3px solid var(--p2);
+    }
+    .parent-item {
+      margin: 5px 10px; border-radius: 10px; overflow: hidden; transition: background 0.3s;
+    }
+    .parent-header {
+      padding: 10px 20px; font-weight: 600; font-size: 0.85rem;
+      color: #aaa; cursor: pointer; display: flex; align-items: center;
+      gap: 8px; justify-content: space-between; transition: 0.3s;
+    }
+    .parent-header:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .parent-header .arrow { font-size: 0.8rem; transition: transform 0.3s; }
+    .parent-item.open > .parent-header .arrow { transform: rotate(90deg); }
+    .parent-children {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
+    }
+    .parent-item.open > .parent-children { max-height: 600px; }
+    .child-item {
+      padding: 8px 20px 8px 35px; margin: 2px 5px; border-radius: 8px;
+      cursor: pointer; font-weight: 600; font-size: 0.8rem; color: #888;
+      transition: 0.3s; display: flex; align-items: center; gap: 6px;
+    }
+    .child-item:hover, .child-item.active {
+      background: rgba(255,255,255,0.05); color: #fff;
+    }
+    .child-item.active {
+      background: rgba(0,229,255,0.1); color: var(--p2);
+      border-left: 3px solid var(--p2);
+    }
+    /* .hub-link {
+      margin: auto 15px 15px; padding: 10px 20px; border-radius: 10px;
+      cursor: pointer; font-weight: 600; font-size: 0.85rem; color: #aaa;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.3s; display: flex; align-items: center; gap: 8px; text-decoration: none;
+    } */
+    /* .hub-link:hover { background: rgba(255,255,255,0.08); color: #fff; } */
+
+    /* MAIN */
+    .main {
+      flex: 1; padding: 25px; overflow-y: auto; z-index: 1;
+      display: flex; flex-direction: column; gap: 20px; position: relative;
+    }
+    .page-title {
+      font-size: 1.7rem; font-weight: 700;
+      background: linear-gradient(135deg, #fff, #ccc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+    .card {
+      background: var(--glass); backdrop-filter: blur(25px);
+      border-radius: var(--card-radius); border: 1px solid rgba(255,255,255,0.08);
+      padding: 20px; box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+    .stat-box { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+    .stat-box .number { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--p2), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-box .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+    .charts-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .chart-wrap {
+      background: var(--glass); backdrop-filter: blur(25px);
+      border-radius: var(--card-radius); padding: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+    .chart-wrap canvas { width: 100% !important; height: auto !important; max-height: 300px; }
+    .btn { padding: 10px 20px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; }
+    .btn.primary { background: var(--p2); color: #000; border: none; box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
+    .btn.danger { background: var(--p1); color: #fff; border: none; }
+    .btn.small { padding: 5px 12px; font-size: 0.75rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+    th { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+    .badge.success { background: rgba(34,197,94,0.2); color: #22c55e; }
+    .badge.warning { background: rgba(245,158,11,0.2); color: #f59e0b; }
+    .badge.danger { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .badge.info { background: rgba(0,229,255,0.2); color: #00e5ff; }
+    input, select, textarea {
+      background: rgba(10,10,20,0.8); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; padding: 12px; color: #fff; font-family: inherit;
+      width: 100%; margin: 8px 0; outline: none; font-size: 0.9rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--p2); box-shadow: 0 0 12px rgba(0,229,255,0.2);
+    }
+    .search-box {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(10,10,20,0.7); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 10px 15px;
+    }
+    .search-box input {
+      background: transparent; border: none; padding: 0; margin: 0; flex: 1; outline: none;
+      color: #fff; font-size: 0.9rem;
+    }
+    .search-box .icon { color: var(--muted); font-size: 1.1rem; }
+    .avatar-sm {
+      width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+      background: rgba(255,255,255,0.1); display: inline-block; vertical-align: middle; margin-right: 5px;
+    }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .overlay.show { opacity: 1; pointer-events: all; }
+    .modal { background: var(--glass); backdrop-filter: blur(30px); border-radius: 24px; padding: 30px; border: 1px solid rgba(255,255,255,0.1); max-width: 500px; width: 90%; box-shadow: 0 40px 80px rgba(0,0,0,0.7); max-height: 90vh; overflow-y: auto; }
+    .toast { position: fixed; bottom: 30px; right: 30px; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 40px; z-index: 200; opacity: 0; transform: translateY(20px); transition: 0.3s; pointer-events: none; font-weight: 600; box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 25; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 1.5rem; width: 44px; height: 44px; border-radius: 12px; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(20px); }
+    @media (max-width: 850px) {
+      .sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .menu-toggle { display: flex; }
+      .charts-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+    <a href="../../index.html" class="home-btn" id="homeBtn" title="Drag me anywhere! ⌂"><i class="fas fa-home"></i></a>
+  <div class="bg"></div><div class="dots"></div>
+  <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">HRM Suite</div>
+    <div id="sidebarMenu"></div>
+    <!-- <a class="hub-link" href="login.html">🏠 Back to Hub</a> -->
+  </div>
+
+  <div class="main" id="mainContent"></div>
+  <div class="toast" id="toast"></div>
+  <div class="overlay" id="overlay"><div class="modal" id="modalContent"></div></div>
+
+  <script>
+    // ============ DRAGGABLE HOME BUTTON ============
+const homeBtn = document.getElementById('homeBtn');
+let isDragging = false, startX, startY, startLeft, startTop;
+
+homeBtn.addEventListener('mousedown', function(e) {
+    if(e.button !== 0) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+    startTop = parseInt(window.getComputedStyle(homeBtn).top);
+    homeBtn.style.cursor = 'grabbing';
+    homeBtn.style.transition = 'none';
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+    if(!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+    homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+});
+
+document.addEventListener('mouseup', function() {
+    if(isDragging) {
+        isDragging = false;
+        homeBtn.style.cursor = 'grab';
+        homeBtn.style.transition = '0.3s';
+    }
+});
+
+// Touch support for mobile
+let moved = false;
+
+homeBtn.addEventListener('touchstart', function(e) {
+    isDragging = true;
+    moved = false;
+
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+
+    startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+    startTop = parseInt(window.getComputedStyle(homeBtn).top);
+
+    homeBtn.style.transition = 'none';
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+
+    moved = true;
+
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    homeBtn.style.left =
+        Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+
+    homeBtn.style.top =
+        Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+}, { passive: true });
+
+document.addEventListener('touchend', function() {
+    isDragging = false;
+    homeBtn.style.transition = '0.3s';
+});
+
+homeBtn.addEventListener('click', function(e) {
+    if (moved) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('touchmove', function(e) {
+    if(!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + dx)) + 'px';
+    homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy)) + 'px';
+}, {passive: false});
+
+document.addEventListener('touchend', function() {
+    if(isDragging) {
+        isDragging = false;
+        homeBtn.style.transition = '0.3s';
+    }
+});
+
+// Prevent click when dragging
+homeBtn.addEventListener('click', function(e) {
+    if(Math.abs(parseInt(homeBtn.style.left) - startLeft) > 5 || Math.abs(parseInt(homeBtn.style.top) - startTop) > 5) {
+        e.preventDefault();
+    }
+});
+    // ========== DATA ENGINE ==========
+    const STORAGE = "hrm_ent";
+    let DB = {
+      employees: [],
+      attendance: [],
+      leaves: [],
+      departments: ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance'],
+      designations: ['Manager', 'Team Lead', 'Developer', 'Analyst'],
+      transfers: [], promotions: [], separations: [],
+      jobPostings: [], candidates: [], courses: [], assets: [],
+      expenses: [], loans: [], surveys: [], meetings: [],
+      exitInterviews: [], helpdesk: [], salaryStructures: []
+    };
+
+    function loadDB() {
+      const raw = localStorage.getItem(STORAGE);
+      if (raw) { try { DB = JSON.parse(raw); } catch(e) { resetDB(); } } else resetDB();
+      DB.employees.forEach(e => {
+        if (!e.phone) e.phone = '';
+        if (!e.email) e.email = '';
+        if (!e.dob) e.dob = '';
+        if (!e.address) e.address = '';
+        if (!e.avatar) e.avatar = null;
+      });
+      saveDB();
+    }
+    function saveDB() { localStorage.setItem(STORAGE, JSON.stringify(DB)); }
+    function resetDB() {
+      DB = {
+        employees: [], attendance: [], leaves: [],
+        departments: ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance'],
+        designations: ['Manager', 'Team Lead', 'Developer', 'Analyst'],
+        transfers: [], promotions: [], separations: [],
+        jobPostings: [], candidates: [], courses: [], assets: [],
+        expenses: [], loans: [], surveys: [], meetings: [],
+        exitInterviews: [], helpdesk: [], salaryStructures: []
+      };
+      saveDB();
+    }
+
+    function toast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg; t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    // ========== SIDEBAR ACCORDION ==========
+    const sidebarConfig = [
+      { type: 'link', label: '📊 Dashboard', page: 'dashboard' },
+      {
+        type: 'parent', label: 'Core HR', children: [
+          { label: '👥 Employee Master', page: 'employees' },
+          { label: '📈 Org Chart', page: 'orgchart' },
+          { label: '🏢 Departments', page: 'departments' },
+          { label: '💼 Designations', page: 'designations' },
+          { label: '🔄 Transfer', page: 'transfer' },
+          { label: '⬆️ Promotion', page: 'promotion' },
+          { label: '🔚 Separation', page: 'separation' }
+        ]
+      },
+      {
+        type: 'parent', label: 'ESS Portal', children: [
+          { label: '🏠 My Dashboard', page: 'ess_dashboard' },
+          { label: '📅 My Attendance', page: 'ess_attendance' },
+          { label: '✈️ My Leaves', page: 'ess_leaves' },
+          { label: '🧾 Payslip', page: 'ess_payslip' },
+          { label: '💻 My Assets', page: 'ess_assets' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Attendance', children: [
+          { label: '🕒 Attendance Log', page: 'attendance' },
+          { label: '🖐️ Biometric', page: 'biometric' },
+          { label: '📱 QR Attendance', page: 'qr_attendance' },
+          { label: '📍 GPS Tracking', page: 'gps_attendance' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Payroll', children: [
+          { label: '💰 Payroll Run', page: 'payroll' },
+          { label: '📊 Salary Structure', page: 'salary_structure' },
+          { label: '💳 Loans', page: 'loans' },
+          { label: '🎁 Bonus/Commission', page: 'bonus' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Leaves', children: [
+          { label: '📝 Leave Requests', page: 'leaves' },
+          { label: '📅 Holidays', page: 'holidays' },
+          { label: '📜 Policies', page: 'leave_policies' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Recruitment', children: [
+          { label: '🎯 ATS Dashboard', page: 'recruitment' },
+          { label: '📰 Job Postings', page: 'job_postings' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Performance', children: [
+          { label: '📈 KPIs/OKRs', page: 'performance' },
+          { label: '🔄 360° Feedback', page: 'feedback' }
+        ]
+      },
+      {
+        type: 'parent', label: 'LMS', children: [
+          { label: '🎓 Courses', page: 'lms' },
+          { label: '🧠 Skill Matrix', page: 'skill_matrix' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Assets', children: [
+          { label: '💼 Asset Tracking', page: 'assets' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Expenses', children: [
+          { label: '💳 Expense Claims', page: 'expenses' }
+        ]
+      },
+      {
+        type: 'parent', label: 'AI Features', children: [
+          { label: '🤖 AI Screening', page: 'ai_screening' },
+          { label: '💬 AI Chatbot', page: 'ai_chatbot' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Executive', children: [
+          { label: '📊 Exec Dashboard', page: 'executive' }
+        ]
+      },
+      {
+        type: 'parent', label: 'Extras', children: [
+          { label: '📅 Meeting Rooms', page: 'meeting_rooms' },
+          { label: '📋 Surveys', page: 'surveys' },
+          { label: '👋 Exit Interviews', page: 'exit_interview' },
+          { label: '🎫 Help Desk', page: 'helpdesk' }
+        ]
+      }
+    ];
+
+    const sidebarMenu = document.getElementById("sidebarMenu");
+    let currentPage = 'dashboard';
+    const allNavItems = [];
+
+    function buildSidebar() {
+      sidebarMenu.innerHTML = '';
+      sidebarConfig.forEach((item, index) => {
+        if (item.type === 'link') {
+          const link = document.createElement('div');
+          link.className = 'nav-link';
+          link.dataset.page = item.page;
+          link.innerHTML = item.label;
+          link.addEventListener('click', (e) => { e.stopPropagation(); navigateTo(item.page); });
+          sidebarMenu.appendChild(link);
+          allNavItems.push(link);
+        } else if (item.type === 'parent') {
+          const parentDiv = document.createElement('div');
+          parentDiv.className = 'parent-item';
+          parentDiv.dataset.parent = index;
+          const header = document.createElement('div');
+          header.className = 'parent-header';
+          header.innerHTML = `${item.label} <span class="arrow">▶</span>`;
+          header.addEventListener('click', (e) => { e.stopPropagation(); toggleParent(parentDiv); });
+          const childrenContainer = document.createElement('div');
+          childrenContainer.className = 'parent-children';
+          item.children.forEach(child => {
+            const childEl = document.createElement('div');
+            childEl.className = 'child-item';
+            childEl.dataset.page = child.page;
+            childEl.innerHTML = child.label;
+            childEl.addEventListener('click', (e) => { e.stopPropagation(); navigateTo(child.page); });
+            childrenContainer.appendChild(childEl);
+            allNavItems.push(childEl);
+          });
+          parentDiv.appendChild(header);
+          parentDiv.appendChild(childrenContainer);
+          sidebarMenu.appendChild(parentDiv);
+        }
+      });
+    }
+
+    function toggleParent(parentDiv) {
+      const isOpen = parentDiv.classList.contains('open');
+      document.querySelectorAll('.parent-item.open').forEach(p => { if (p !== parentDiv) p.classList.remove('open'); });
+      if (!isOpen) parentDiv.classList.add('open');
+      else parentDiv.classList.remove('open');
+    }
+
+    function navigateTo(page) {
+      allNavItems.forEach(el => el.classList.remove('active'));
+      const activeEl = document.querySelector(`[data-page="${page}"]`);
+      if (activeEl) activeEl.classList.add('active');
+      document.querySelectorAll('.parent-item').forEach(parent => {
+        const child = parent.querySelector(`[data-page="${page}"]`);
+        if (child) parent.classList.add('open');
+        else parent.classList.remove('open');
+      });
+      currentPage = page;
+      renderPage();
+      if (window.innerWidth <= 850) document.getElementById("sidebar").classList.remove("open");
+    }
+
+    // ========== ROUTER ==========
+    const mainContent = document.getElementById("mainContent");
+
+    function renderPage() {
+      switch (currentPage) {
+        case "dashboard": renderDashboard(); break;
+        case "employees": renderEmployees(); break;
+        case "orgchart": renderOrgChart(); break;
+        case "departments": renderDepartments(); break;
+        case "designations": renderDesignations(); break;
+        case "transfer": renderTransfer(); break;
+        case "promotion": renderPromotion(); break;
+        case "separation": renderSeparation(); break;
+        case "ess_dashboard": renderEssDashboard(); break;
+        case "ess_attendance": renderEssAttendance(); break;
+        case "ess_leaves": renderEssLeaves(); break;
+        case "ess_payslip": renderEssPayslip(); break;
+        case "ess_assets": renderEssAssets(); break;
+        case "attendance": renderAttendancePage(); break;
+        case "biometric": renderBiometric(); break;
+        case "qr_attendance": renderQrAttendance(); break;
+        case "gps_attendance": renderGpsAttendance(); break;
+        case "payroll": renderPayroll(); break;
+        case "salary_structure": renderSalaryStructure(); break;
+        case "loans": renderLoans(); break;
+        case "bonus": renderBonus(); break;
+        case "leaves": renderLeaves(); break;
+        case "holidays": renderHolidays(); break;
+        case "leave_policies": renderLeavePolicies(); break;
+        case "recruitment": renderRecruitment(); break;
+        case "job_postings": renderJobPostings(); break;
+        case "performance": renderPerformance(); break;
+        case "feedback": renderFeedback(); break;
+        case "lms": renderLms(); break;
+        case "skill_matrix": renderSkillMatrix(); break;
+        case "assets": renderAssets(); break;
+        case "expenses": renderExpenses(); break;
+        case "ai_screening": renderAiScreening(); break;
+        case "ai_chatbot": renderAiChatbot(); break;
+        case "executive": renderExecutive(); break;
+        case "meeting_rooms": renderMeetingRooms(); break;
+        case "surveys": renderSurveys(); break;
+        case "exit_interview": renderExitInterview(); break;
+        case "helpdesk": renderHelpdesk(); break;
+        default: renderDashboard();
+      }
+    }
+
+    // ================== PERFECT CHARTS ==================
+    function createPerfectGradient(ctx, color1, color2) {
+      const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+      gradient.addColorStop(0, color1);
+      gradient.addColorStop(1, color2);
+      return gradient;
+    }
+
+    // ================== DASHBOARD ==================
+    function renderDashboard() {
+      const empCount = DB.employees.length;
+      const today = new Date().toISOString().split('T')[0];
+      const presentToday = DB.attendance.filter(a => a.date === today).length;
+      const pendingLeaves = DB.leaves.filter(l => l.status === 'pending').length;
+      mainContent.innerHTML = `
+        <div class="page-title">📊 Dashboard</div>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="number">${empCount}</div><div class="label">Total Employees</div></div>
+          <div class="stat-box"><div class="number">${presentToday}</div><div class="label">Present Today</div></div>
+          <div class="stat-box"><div class="number">${pendingLeaves}</div><div class="label">Pending Leaves</div></div>
+        </div>
+        <div class="charts-row">
+          <div class="chart-wrap"><canvas id="dashAttChart"></canvas></div>
+          <div class="chart-wrap"><canvas id="dashLeaveChart"></canvas></div>
+        </div>
+      `;
+      // Attendance chart
+      const ctx1 = document.getElementById("dashAttChart")?.getContext("2d");
+      if(ctx1) {
+        const days = [], counts = [];
+        for(let i=6; i>=0; i--) {
+          const d = new Date(); d.setDate(d.getDate()-i);
+          const ds = d.toISOString().split('T')[0];
+          days.push(ds.slice(5));
+          counts.push(DB.attendance.filter(a => a.date === ds).length);
+        }
+        const grad = createPerfectGradient(ctx1, 'rgba(0,229,255,0.9)', 'rgba(0,229,255,0.1)');
+        new Chart(ctx1, {
+          type:'bar',
+          data:{
+            labels:days,
+            datasets:[{
+              data:counts,
+              backgroundColor: grad,
+              borderRadius: 10,
+              borderColor: '#00e5ff',
+              borderWidth: 1
+            }]
+          },
+          options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              tooltip:{backgroundColor:'rgba(0,0,0,0.8)', titleColor:'#00e5ff', bodyColor:'#fff', cornerRadius:8}
+            },
+            scales:{
+              y:{beginAtZero:true, ticks:{color:'#888'}, grid:{color:'rgba(255,255,255,0.05)'}},
+              x:{ticks:{color:'#888'}, grid:{display:false}}
+            },
+            animation:{duration:1000, easing:'easeOutBounce'}
+          }
+        });
+      }
+      // Leave doughnut chart
+      const ctx2 = document.getElementById("dashLeaveChart")?.getContext("2d");
+      if(ctx2) {
+        const app = DB.leaves.filter(l => l.status==='approved').length;
+        const pen = DB.leaves.filter(l => l.status==='pending').length;
+        const rej = DB.leaves.filter(l => l.status==='rejected').length;
+        new Chart(ctx2, {
+          type:'doughnut',
+          data:{
+            labels:['Approved','Pending','Rejected'],
+            datasets:[{
+              data:[app,pen,rej],
+              backgroundColor: ['#22c55e','#f59e0b','#ef4444'],
+              borderColor: 'rgba(0,0,0,0.3)',
+              borderWidth: 2,
+              hoverBorderColor: '#fff',
+              hoverBorderWidth: 3
+            }]
+          },
+          options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            cutout:'65%',
+            plugins:{
+              legend:{position:'bottom', labels:{color:'#ccc', padding:15, usePointStyle:true}},
+              tooltip:{backgroundColor:'rgba(0,0,0,0.8)', bodyColor:'#fff', cornerRadius:8}
+            },
+            animation:{animateRotate:true, duration:1200}
+          }
+        });
+      }
+    }
+
+    // ================== EMPLOYEES ==================
+    function renderEmployees() {
+      mainContent.innerHTML = `
+        <div class="page-title">👥 Employee Master</div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+            <div class="search-box" style="flex:1; max-width:350px;">
+              <span class="icon">🔍</span>
+              <input type="text" id="empSearch" placeholder="Search by name, dept, phone..." oninput="filterEmployeeTable()">
+            </div>
+            <button class="btn primary" onclick="showEmployeeForm()">➕ Add Employee</button>
+          </div>
+          <table id="employeeTable">
+            <thead><tr><th>Avatar</th><th>Name</th><th>Dept</th><th>Desig</th><th>Phone</th><th>Email</th><th>Actions</th></tr></thead>
+            <tbody id="empTableBody"></tbody>
+          </table>
+        </div>`;
+      filterEmployeeTable();
+    }
+
+    function filterEmployeeTable() {
+      const searchTerm = document.getElementById("empSearch")?.value.toLowerCase() || '';
+      const filtered = DB.employees.filter(e =>
+        e.name.toLowerCase().includes(searchTerm) ||
+        e.department.toLowerCase().includes(searchTerm) ||
+        e.designation.toLowerCase().includes(searchTerm) ||
+        (e.phone && e.phone.includes(searchTerm)) ||
+        (e.email && e.email.toLowerCase().includes(searchTerm))
+      );
+      const tbody = document.getElementById("empTableBody");
+      if (!tbody) return;
+      tbody.innerHTML = filtered.map(e => `
+        <tr>
+          <td>${e.avatar ? `<img src="${e.avatar}" class="avatar-sm">` : '<div class="avatar-sm" style="display:inline-block; background:#333; text-align:center; line-height:32px;">👤</div>'}</td>
+          <td>${e.name}</td>
+          <td>${e.department}</td>
+          <td>${e.designation}</td>
+          <td>${e.phone || '-'}</td>
+          <td>${e.email || '-'}</td>
+          <td>
+            <button class="btn small" onclick="editEmployee('${e.id}')">✏️</button>
+            <button class="btn small danger" onclick="deleteEmployee('${e.id}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+      if (filtered.length === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#888;">No employees found</td></tr>';
+    }
+
+    function showEmployeeForm(emp = null) {
+      const isEdit = emp !== null;
+      document.getElementById("modalContent").innerHTML = `
+        <h3>${isEdit ? 'Edit' : 'Add'} Employee</h3>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <label style="color:#888; font-size:0.8rem;">Profile Picture</label>
+          <input type="file" id="eAvatar" accept="image/*" style="padding:8px;">
+          <div id="avatarPreview" style="margin:5px 0;">${emp?.avatar ? `<img src="${emp.avatar}" style="width:60px; height:60px; border-radius:50%; object-fit:cover;">` : ''}</div>
+          <input id="eName" placeholder="Full Name *" value="${emp?.name || ''}">
+          <select id="eDept">${DB.departments.map(d => `<option ${emp?.department === d ? 'selected' : ''}>${d}</option>`).join('')}</select>
+          <select id="eDesig">${DB.designations.map(d => `<option ${emp?.designation === d ? 'selected' : ''}>${d}</option>`).join('')}</select>
+          <input id="ePhone" placeholder="Phone Number" value="${emp?.phone || ''}">
+          <input id="eEmail" placeholder="Email Address" value="${emp?.email || ''}">
+          <input type="date" id="eDob" value="${emp?.dob || ''}" label="Date of Birth">
+          <textarea id="eAddress" placeholder="Address" rows="2">${emp?.address || ''}</textarea>
+          <button class="btn primary" id="saveEmp">💾 Save</button>
+        </div>`;
+      document.getElementById("overlay").classList.add("show");
+
+      document.getElementById("saveEmp").onclick = () => {
+        const name = document.getElementById("eName").value.trim();
+        if (!name) return alert("Name required");
+        const fileInput = document.getElementById("eAvatar");
+        const processData = (avatarData) => {
+          const newEmp = {
+            id: emp ? emp.id : Date.now().toString(36),
+            name,
+            department: document.getElementById("eDept").value,
+            designation: document.getElementById("eDesig").value,
+            phone: document.getElementById("ePhone").value.trim(),
+            email: document.getElementById("eEmail").value.trim(),
+            dob: document.getElementById("eDob").value,
+            address: document.getElementById("eAddress").value.trim(),
+            avatar: avatarData || emp?.avatar || null
+          };
+          if (isEdit) {
+            const idx = DB.employees.findIndex(e => e.id === emp.id);
+            if (idx !== -1) DB.employees[idx] = newEmp;
+          } else {
+            DB.employees.push(newEmp);
+          }
+          saveDB();
+          closeModal();
+          renderPage();
+          toast(isEdit ? "Employee updated" : "Employee added");
+        };
+
+        if (fileInput.files && fileInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => processData(e.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        } else {
+          processData(null);
+        }
+      };
+    }
+
+    function editEmployee(id) { const emp = DB.employees.find(e => e.id === id); if (emp) showEmployeeForm(emp); }
+    function deleteEmployee(id) {
+      if (confirm("Delete this employee and all related records?")) {
+        DB.employees = DB.employees.filter(e => e.id !== id);
+        DB.attendance = DB.attendance.filter(a => a.empId !== id);
+        DB.leaves = DB.leaves.filter(l => l.empId !== id);
+        saveDB(); renderPage(); toast("Employee deleted");
+      }
+    }
+
+    // ================== DEPARTMENTS ==================
+    function renderDepartments() {
+      mainContent.innerHTML = `<div class="page-title">🏢 Departments</div><div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <span>${DB.departments.length} departments</span>
+          <button class="btn primary" onclick="addDept()">➕ Add</button>
+        </div>
+        <table><thead><tr><th>Department Name</th><th>Action</th></tr></thead>
+        <tbody>${DB.departments.map(d => `<tr><td>${d}</td><td><button class="btn small danger" onclick="deleteDept('${d}')">🗑️</button></td></tr>`).join('')}</tbody></table>
+      </div>`;
+    }
+    function addDept() { const d = prompt("Department name:"); if (d && !DB.departments.includes(d)) { DB.departments.push(d); saveDB(); renderPage(); toast("Added"); } }
+    function deleteDept(name) { DB.departments = DB.departments.filter(d => d !== name); saveDB(); renderPage(); }
+
+    // ================== DESIGNATIONS ==================
+    function renderDesignations() {
+      mainContent.innerHTML = `<div class="page-title">💼 Designations</div><div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <span>${DB.designations.length} designations</span>
+          <button class="btn primary" onclick="addDesig()">➕ Add</button>
+        </div>
+        <table><thead><tr><th>Designation</th><th>Action</th></tr></thead>
+        <tbody>${DB.designations.map(d => `<tr><td>${d}</td><td><button class="btn small danger" onclick="deleteDesig('${d}')">🗑️</button></td></tr>`).join('')}</tbody></table>
+      </div>`;
+    }
+    function addDesig() { const d = prompt("Designation:"); if (d && !DB.designations.includes(d)) { DB.designations.push(d); saveDB(); renderPage(); toast("Added"); } }
+    function deleteDesig(name) { DB.designations = DB.designations.filter(d => d !== name); saveDB(); renderPage(); }
+
+    // ================== ATTENDANCE ==================
+    function renderAttendancePage() {
+      const today = new Date().toISOString().split('T')[0];
+      mainContent.innerHTML = `
+        <div class="page-title">🕒 Attendance Log</div>
+        <div class="card">
+          <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
+            <input type="date" id="attDate" value="${today}" onchange="refreshAttTable()" style="width:auto;">
+            <div class="search-box" style="flex:1; max-width:300px;">
+              <span class="icon">🔍</span>
+              <input type="text" id="attSearch" placeholder="Search employee..." oninput="refreshAttTable()">
+            </div>
+            <button class="btn primary" onclick="clockInOutModal()">⏱️ Clock</button>
+          </div>
+          <table><thead><tr><th>Employee</th><th>Status</th><th>In</th><th>Out</th></tr></thead><tbody id="attBody"></tbody></table>
+        </div>`;
+      refreshAttTable();
+    }
+    function refreshAttTable() {
+      const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
+      const search = document.getElementById("attSearch")?.value.toLowerCase() || '';
+      const tbody = document.getElementById("attBody");
+      if(!tbody) return;
+      tbody.innerHTML = DB.employees.filter(emp => emp.name.toLowerCase().includes(search)).map(emp => {
+        const rec = DB.attendance.find(a => a.empId === emp.id && a.date === date);
+        const status = rec ? (rec.clockOut ? '<span class="badge success">Done</span>' : '<span class="badge warning">Working</span>') : '<span class="badge danger">Absent</span>';
+        return `<tr><td>${emp.name}</td><td>${status}</td><td>${rec?.clockIn || '-'}</td><td>${rec?.clockOut || '-'}</td></tr>`;
+      }).join('');
+    }
+    function clockInOutModal() {
+      const date = document.getElementById("attDate")?.value || new Date().toISOString().split('T')[0];
+      document.getElementById("modalContent").innerHTML = `
+        <h3>Clock In/Out (${date})</h3>
+        <select id="attEmpSelect">${DB.employees.map(e => `<option value="${e.id}">${e.name}</option>`).join('')}</select>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+          <button class="btn primary" id="clockInBtn">🔴 Clock In</button>
+          <button class="btn" id="clockOutBtn">🟢 Clock Out</button>
+        </div>`;
+      document.getElementById("overlay").classList.add("show");
+      document.getElementById("clockInBtn").onclick = () => {
+        const empId = document.getElementById("attEmpSelect").value;
+        const now = new Date().toLocaleTimeString();
+        let rec = DB.attendance.find(a => a.empId === empId && a.date === date);
+        if (!rec) { rec = { empId, date, clockIn: now, clockOut: null }; DB.attendance.push(rec); }
+        else rec.clockIn = now;
+        saveDB(); closeModal(); renderPage(); toast("Clocked In");
+      };
+      document.getElementById("clockOutBtn").onclick = () => {
+        const empId = document.getElementById("attEmpSelect").value;
+        const rec = DB.attendance.find(a => a.empId === empId && a.date === date);
+        if (rec) { rec.clockOut = new Date().toLocaleTimeString(); saveDB(); closeModal(); renderPage(); toast("Clocked Out"); }
+        else alert("Clock in first");
+      };
+    }
+
+    // ================== LEAVES ==================
+    function renderLeaves() {
+      mainContent.innerHTML = `
+        <div class="page-title">📝 Leave Requests</div>
+        <div class="card">
+          <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
+            <button class="btn primary" onclick="applyLeaveModal()">➕ Apply</button>
+            <div class="search-box" style="flex:1; max-width:300px;">
+              <span class="icon">🔍</span>
+              <input type="text" id="leaveSearch" placeholder="Search by employee..." oninput="refreshLeaveTable()">
+            </div>
+          </div>
+          <table><thead><tr><th>Employee</th><th>Date</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead><tbody id="leaveTableBody"></tbody></table>
+        </div>`;
+      refreshLeaveTable();
+    }
+    function refreshLeaveTable() {
+      const search = document.getElementById("leaveSearch")?.value.toLowerCase() || '';
+      const tbody = document.getElementById("leaveTableBody");
+      if (!tbody) return;
+      const filtered = DB.leaves.filter(leave => {
+        const emp = DB.employees.find(e => e.id === leave.empId);
+        return emp && emp.name.toLowerCase().includes(search);
+      }).reverse();
+      tbody.innerHTML = filtered.map(leave => {
+        const emp = DB.employees.find(e => e.id === leave.empId);
+        return `<tr>
+          <td>${emp?.name || '?'}</td>
+          <td>${leave.date}</td>
+          <td>${leave.reason}</td>
+          <td><span class="badge ${leave.status==='approved'?'success':leave.status==='pending'?'warning':'danger'}">${leave.status}</span></td>
+          <td>${leave.status==='pending' ? `<button class="btn small" onclick="updateLeave('${leave.id}','approved')">✅</button><button class="btn small danger" onclick="updateLeave('${leave.id}','rejected')">❌</button>` : '-'}</td>
+        </tr>`;
+      }).join('');
+      if (filtered.length===0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No leave requests found</td></tr>';
+    }
+    function applyLeaveModal() {
+      document.getElementById("modalContent").innerHTML = `
+        <h3>Apply Leave</h3>
+        <select id="lEmp">${DB.employees.map(e => `<option value="${e.id}">${e.name}</option>`).join('')}</select>
+        <input type="date" id="lDate">
+        <input id="lReason" placeholder="Reason">
+        <button class="btn primary" id="subLeave">Submit</button>`;
+      document.getElementById("overlay").classList.add("show");
+      document.getElementById("subLeave").onclick = () => {
+        const empId = document.getElementById("lEmp").value;
+        const date = document.getElementById("lDate").value;
+        const reason = document.getElementById("lReason").value.trim();
+        if (!date || !reason) return alert("Fill all fields");
+        DB.leaves.push({ id: Date.now().toString(36), empId, date, reason, status: 'pending' });
+        saveDB(); closeModal(); renderPage(); toast("Leave applied");
+      };
+    }
+    function updateLeave(id, status) {
+      const leave = DB.leaves.find(l => l.id === id);
+      if (leave) { leave.status = status; saveDB(); renderPage(); toast(`Leave ${status}`); }
+    }
+
+    // ================== ASSETS ==================
+    function renderAssets() {
+      mainContent.innerHTML = `<div class="page-title">💼 Asset Tracking</div><div class="card">
+        <div class="search-box" style="max-width:300px; margin-bottom:15px;">
+          <span class="icon">🔍</span>
+          <input type="text" placeholder="Search assets..." oninput="refreshAssets()" id="assetSearch">
+        </div>
+        <div id="assetList">No assets recorded yet.</div></div>`;
+    }
+    function refreshAssets() { document.getElementById("assetList").innerHTML = 'Asset management UI (demo)'; }
+
+    // ================== EXPENSES ==================
+    function renderExpenses() {
+      mainContent.innerHTML = `<div class="page-title">💳 Expense Claims</div><div class="card">
+        <div class="search-box" style="max-width:300px; margin-bottom:15px;">
+          <span class="icon">🔍</span>
+          <input type="text" placeholder="Search expenses..." id="expSearch">
+        </div>
+        <div id="expList">No expense claims.</div></div>`;
+    }
+
+    // ================== EXECUTIVE DASHBOARD WITH ADVANCED CHARTS ==================
+    function renderExecutive() {
+      mainContent.innerHTML = `
+        <div class="page-title">📊 Executive Dashboard</div>
+        <div class="charts-row">
+          <div class="chart-wrap"><canvas id="execLineChart"></canvas></div>
+          <div class="chart-wrap"><canvas id="execBarChart"></canvas></div>
+          <div class="chart-wrap"><canvas id="execPieChart"></canvas></div>
+          <div class="chart-wrap"><canvas id="execRadarChart"></canvas></div>
+        </div>`;
+      setTimeout(()=>{
+        const ctx1 = document.getElementById("execLineChart")?.getContext("2d");
+        if(ctx1) {
+          const grad = createPerfectGradient(ctx1, 'rgba(255,45,117,0.6)', 'rgba(255,45,117,0.05)');
+          new Chart(ctx1, {
+            type:'line',
+            data:{
+              labels:['Jan','Feb','Mar','Apr','May','Jun'],
+              datasets:[{
+                label:'Attrition Rate',
+                data:[5, 4, 3, 6, 2, 4],
+                borderColor:'#ff2d75',
+                backgroundColor:grad,
+                fill:true,
+                tension:0.4,
+                pointBackgroundColor:'#fff',
+                pointBorderColor:'#ff2d75',
+                pointRadius:5,
+                pointHoverRadius:8
+              }]
+            },
+            options:{
+              responsive:true,
+              maintainAspectRatio:false,
+              plugins:{
+                legend:{labels:{color:'#ccc'}},
+                tooltip:{backgroundColor:'rgba(0,0,0,0.8)', cornerRadius:8}
+              },
+              scales:{
+                y:{beginAtZero:true, ticks:{color:'#888'}, grid:{color:'rgba(255,255,255,0.05)'}},
+                x:{ticks:{color:'#888'}}
+              }
+            }
+          });
+        }
+        const ctx2 = document.getElementById("execBarChart")?.getContext("2d");
+        if(ctx2) {
+          const grad2 = createPerfectGradient(ctx2, 'rgba(0,229,255,0.8)', 'rgba(0,229,255,0.1)');
+          new Chart(ctx2, {
+            type:'bar',
+            data:{
+              labels:['Hired','Left','Promoted','Transfers'],
+              datasets:[{
+                data:[15, 5, 8, 3],
+                backgroundColor:grad2,
+                borderRadius:10,
+                borderColor:'#00e5ff',
+                borderWidth:1
+              }]
+            },
+            options:{
+              responsive:true,
+              maintainAspectRatio:false,
+              plugins:{legend:{display:false}},
+              scales:{
+                y:{beginAtZero:true, ticks:{color:'#888'}, grid:{color:'rgba(255,255,255,0.05)'}},
+                x:{ticks:{color:'#888'}}
+              }
+            }
+          });
+        }
+        const ctx3 = document.getElementById("execPieChart")?.getContext("2d");
+        if(ctx3) {
+          new Chart(ctx3, {
+            type:'pie',
+            data:{
+              labels:['Engineering','Marketing','Sales','HR','Finance'],
+              datasets:[{
+                data:[40, 25, 20, 10, 5],
+                backgroundColor:['#00e5ff','#ff2d75','#ffd700','#22c55e','#f59e0b'],
+                borderColor:'rgba(0,0,0,0.3)'
+              }]
+            },
+            options:{
+              responsive:true,
+              maintainAspectRatio:false,
+              plugins:{
+                legend:{position:'bottom', labels:{color:'#ccc', padding:12}}
+              }
+            }
+          });
+        }
+        const ctx4 = document.getElementById("execRadarChart")?.getContext("2d");
+        if(ctx4) {
+          new Chart(ctx4, {
+            type:'radar',
+            data:{
+              labels:['Attendance','Productivity','Quality','Teamwork','Innovation'],
+              datasets:[{
+                label:'Performance',
+                data:[85, 78, 90, 88, 82],
+                backgroundColor:'rgba(0,229,255,0.2)',
+                borderColor:'#00e5ff',
+                borderWidth:2,
+                pointBackgroundColor:'#00e5ff',
+                pointBorderColor:'#fff',
+                pointHoverRadius:6
+              }]
+            },
+            options:{
+              responsive:true,
+              maintainAspectRatio:false,
+              plugins:{legend:{labels:{color:'#ccc'}}},
+              scales:{r:{ticks:{color:'#888', backdropColor:'transparent'}, grid:{color:'rgba(255,255,255,0.1)'}, pointLabels:{color:'#ccc'}}}
+            }
+          });
+        }
+      }, 100);
+    }
+
+    // ================== ALL OTHER PAGES ==================
+    function renderOrgChart() { mainContent.innerHTML = `<div class="page-title">📈 Org Chart</div><div class="card">Organizational chart (coming soon).</div>`; }
+    function renderTransfer() { mainContent.innerHTML = `<div class="page-title">🔄 Transfer</div><div class="card">Employee transfer management.</div>`; }
+    function renderPromotion() { mainContent.innerHTML = `<div class="page-title">⬆️ Promotion</div><div class="card">Promotion workflow.</div>`; }
+    function renderSeparation() { mainContent.innerHTML = `<div class="page-title">🔚 Separation</div><div class="card">Exit process management.</div>`; }
+    function renderEssDashboard() { mainContent.innerHTML = `<div class="page-title">🏠 My Dashboard</div><div class="card">Welcome! Your personal HR portal.</div>`; }
+    function renderEssAttendance() { mainContent.innerHTML = `<div class="page-title">📅 My Attendance</div><div class="card">Your attendance history.</div>`; }
+    function renderEssLeaves() { mainContent.innerHTML = `<div class="page-title">✈️ My Leaves</div><div class="card">Your leave requests.</div>`; }
+    function renderEssPayslip() { mainContent.innerHTML = `<div class="page-title">🧾 Payslip</div><div class="card">Download your payslips.</div>`; }
+    function renderEssAssets() { mainContent.innerHTML = `<div class="page-title">💻 My Assets</div><div class="card">Laptop assigned: MacBook Pro</div>`; }
+    function renderBiometric() { mainContent.innerHTML = `<div class="page-title">🖐️ Biometric</div><div class="card">Integration with ZKTeco / HID (simulated).</div>`; }
+    function renderQrAttendance() { mainContent.innerHTML = `<div class="page-title">📱 QR Attendance</div><div class="card">QR code generation and scanning.</div>`; }
+    function renderGpsAttendance() { mainContent.innerHTML = `<div class="page-title">📍 GPS Tracking</div><div class="card">Real-time employee location map.</div>`; }
+    function renderPayroll() { mainContent.innerHTML = `<div class="page-title">💰 Payroll Run</div><div class="card">Process payroll for current month.</div>`; }
+    function renderSalaryStructure() { mainContent.innerHTML = `<div class="page-title">📊 Salary Structure</div><div class="card">Define salary heads (Basic, HRA, etc.).</div>`; }
+    function renderLoans() { mainContent.innerHTML = `<div class="page-title">💳 Loans</div><div class="card">Loan requests and tracking.</div>`; }
+    function renderBonus() { mainContent.innerHTML = `<div class="page-title">🎁 Bonus/Commission</div><div class="card">Manage bonus and incentive policies.</div>`; }
+    function renderHolidays() { mainContent.innerHTML = `<div class="page-title">📅 Holidays</div><div class="card">Public holiday calendar.</div>`; }
+    function renderLeavePolicies() { mainContent.innerHTML = `<div class="page-title">📜 Leave Policies</div><div class="card">Accrual, carry forward, encashment rules.</div>`; }
+    function renderRecruitment() { mainContent.innerHTML = `<div class="page-title">🎯 ATS Dashboard</div><div class="card">Candidate pipeline and CV parsing.</div>`; }
+    function renderJobPostings() { mainContent.innerHTML = `<div class="page-title">📰 Job Postings</div><div class="card">Manage job openings.</div>`; }
+    function renderPerformance() { mainContent.innerHTML = `<div class="page-title">📈 KPIs/OKRs</div><div class="card">Set and track performance goals.</div>`; }
+    function renderFeedback() { mainContent.innerHTML = `<div class="page-title">🔄 360° Feedback</div><div class="card">Feedback cycle management.</div>`; }
+    function renderLms() { mainContent.innerHTML = `<div class="page-title">🎓 Courses</div><div class="card">Online training modules.</div>`; }
+    function renderSkillMatrix() { mainContent.innerHTML = `<div class="page-title">🧠 Skill Matrix</div><div class="card">Employee skills mapping.</div>`; }
+    function renderAiScreening() { mainContent.innerHTML = `<div class="page-title">🤖 AI Resume Screening</div><div class="card">Upload resume for AI analysis (demo).</div>`; }
+    function renderAiChatbot() { mainContent.innerHTML = `<div class="page-title">💬 AI Chatbot</div><div class="card"><p>HR Assistant: How can I help?</p><input placeholder="Ask something..." disabled></div>`; }
+    function renderMeetingRooms() { mainContent.innerHTML = `<div class="page-title">📅 Meeting Rooms</div><div class="card">Booking system demo.</div>`; }
+    function renderSurveys() { mainContent.innerHTML = `<div class="page-title">📋 Surveys</div><div class="card">Create & analyze employee surveys.</div>`; }
+    function renderExitInterview() { mainContent.innerHTML = `<div class="page-title">👋 Exit Interviews</div><div class="card">Manage exit feedback.</div>`; }
+    function renderHelpdesk() { mainContent.innerHTML = `<div class="page-title">🎫 Help Desk</div><div class="card">Ticketing system.</div>`; }
+
+    // Modal close
+    function closeModal() { document.getElementById("overlay").classList.remove("show"); }
+    document.getElementById("overlay").addEventListener("click", (e) => { if(e.target === e.currentTarget) closeModal(); });
+
+    // Init
+    loadDB();
+    buildSidebar();
+    navigateTo('dashboard');
+  </script>
+</body>
+</html>

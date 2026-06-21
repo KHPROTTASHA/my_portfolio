@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
+  <title>🧩 Premium Memory Path</title>
+  <style>
+    :root {
+      --bg: #0a0a14;
+      --card: rgba(18, 18, 35, 0.85);
+      --gold: #ffd700;
+      --p2: #00e5ff;
+      --correct: #3b82f6;
+      --wrong: #ef4444;
+      --show: #22c55e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Segoe UI', 'Poppins', sans-serif;
+      background: var(--bg);
+      overflow: hidden; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(0,229,255,0.05) 0%, transparent 60%),
+                  radial-gradient(ellipse at 50% 80%, rgba(255,215,0,0.03) 0%, transparent 60%);
+    }
+    .dots {
+      position: fixed; inset: 0; z-index: 0; opacity: 0.2;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 500px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 15px;
+      padding: 10px;
+    }
+
+    /* Title */
+    .title {
+      font-size: 1.8rem; font-weight: 800; letter-spacing: 1px;
+      background: linear-gradient(135deg, var(--p2), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+
+    /* Glass card */
+    .card {
+      background: var(--card); backdrop-filter: blur(30px);
+      border-radius: 24px; padding: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 15px;
+    }
+
+    .level-badge {
+      background: rgba(255,215,0,0.1);
+      padding: 6px 20px; border-radius: 20px;
+      font-weight: 700; color: var(--gold);
+      font-size: 1rem;
+      border: 1px solid rgba(255,215,0,0.2);
+      box-shadow: 0 0 15px rgba(255,215,0,0.15);
+    }
+
+    .progress-wrap {
+      width: 100%; height: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--p2), var(--gold));
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0,229,255,0.5);
+      transition: width 0.3s ease;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: #1a1a35;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.3);
+      border: 1.5px solid rgba(255,255,255,0.06);
+    }
+    .cell:active { transform: scale(0.92); }
+
+    .cell.show {
+      background: radial-gradient(circle at 35% 35%, #5effa0, var(--show));
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+      border-color: rgba(34, 197, 94, 0.6);
+      animation: pulseShow 0.4s ease-out;
+    }
+    @keyframes pulseShow {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .cell.correct {
+      background: radial-gradient(circle at 35% 35%, #93c5fd, var(--correct));
+      box-shadow: 0 0 18px rgba(59,130,246,0.7);
+      border-color: rgba(59,130,246,0.6);
+    }
+    .cell.wrong {
+      background: radial-gradient(circle at 35% 35%, #fca5a5, var(--wrong));
+      box-shadow: 0 0 20px rgba(239,68,68,0.8);
+      border-color: rgba(239,68,68,0.6);
+      animation: shake 0.4s ease-in-out;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-4px); }
+      40% { transform: translateX(4px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+
+    .btn-row {
+      display: flex; gap: 10px; width: 100%;
+    }
+    .btn {
+      flex: 1; padding: 12px; border-radius: 14px;
+      border: none; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; transition: all 0.3s; font-family: inherit;
+    }
+    .btn.primary {
+      background: var(--p2);
+      color: #000;
+      box-shadow: 0 4px 15px rgba(0,229,255,0.3);
+    }
+    .btn.primary:hover {
+      box-shadow: 0 6px 25px rgba(0,229,255,0.5);
+      transform: translateY(-1px);
+    }
+    .btn.secondary {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: #ccc;
+    }
+    .btn.secondary:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex; gap: 8px; width: 100%;
+    }
+    .stat-box {
+      flex: 1; text-align: center; padding: 10px;
+      background: rgba(255,255,255,0.02); border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .stat-label { color: #666; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-value { color: #fff; font-weight: 700; font-size: 1rem; }
+
+    /* Hub button */
+    .hub-btn {
+      width: 100%; padding: 12px; border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03); color: #ccc;
+      font-weight: 600; font-size: 0.85rem; cursor: pointer;
+      transition: all 0.3s; font-family: inherit;
+      margin-top: 5px;
+    }
+    .hub-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .overlay.show { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--card); backdrop-filter: blur(30px);
+      border-radius: 24px; padding: 25px; text-align: center;
+      border: 2px solid rgba(255,255,255,0.08);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+      max-width: 320px; width: 90%;
+    }
+    .modal-emoji { font-size: 3.5rem; margin-bottom: 8px; animation: bounce 0.8s infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    .modal-title { font-size: 1.3rem; font-weight: 800; margin: 5px 0; }
+    .modal-title.win { color: #00ff88; } .modal-title.lose { color: var(--wrong); }
+    .modal-sub { color: #888; font-size: 0.85rem; margin-bottom: 18px; }
+    .modal-btn {
+      padding: 12px 25px; border-radius: 20px; border: none;
+      font-weight: 700; font-size: 0.9rem; cursor: pointer;
+      background: var(--p2); color: #000;
+      box-shadow: 0 6px 20px rgba(0,229,255,0.3);
+      transition: all 0.3s; font-family: inherit;
+    }
+    .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,229,255,0.5); }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="dots"></div>
+
+  <div class="container">
+    <div class="title">🧩 Memory Path</div>
+
+    <div class="card">
+      <div class="level-badge" id="levelDisplay">Level 1</div>
+
+      <div class="progress-wrap">
+        <div class="progress-fill" id="progressBar"></div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="actionBtn">▶ Start Level</button>
+        <button class="btn secondary" id="resetBtn">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-label">Highest Level</div>
+        <div class="stat-value" id="highLevel">1</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="completedCount">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Streak</div>
+        <div class="stat-value" id="streakCount">0🔥</div>
+      </div>
+    </div>
+
+    <button class="hub-btn" onclick="goToDashboard()">🏠 Back to Hub</button>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modal-emoji" id="modalEmoji">🎉</div>
+      <div class="modal-title win" id="modalTitle">Level Complete!</div>
+      <div class="modal-sub" id="modalSub"></div>
+      <button class="modal-btn" id="modalBtn">Continue</button>
+    </div>
+  </div>
+
+  <script>
+    // ========== DOM elements ==========
+    const gridEl = document.getElementById("grid");
+    const levelDisplay = document.getElementById("levelDisplay");
+    const progressBar = document.getElementById("progressBar");
+    const actionBtn = document.getElementById("actionBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const highLevelEl = document.getElementById("highLevel");
+    const completedCountEl = document.getElementById("completedCount");
+    const streakCountEl = document.getElementById("streakCount");
+    const overlay = document.getElementById("overlay");
+    const modalEmoji = document.getElementById("modalEmoji");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSub = document.getElementById("modalSub");
+    const modalBtn = document.getElementById("modalBtn");
+
+    // ========== Game state ==========
+    let level = 1;
+    let sequence = [];
+    let playerSequence = [];
+    let canPlay = false;
+    let stats = {
+      highLevel: 1,
+      completed: 0,
+      streak: 0
+    };
+
+    // ========== Audio for tap (premium touch) ==========
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTap(freq = 800, duration = 0.1) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // ========== Build grid ==========
+    for (let i = 0; i < 25; i++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.dataset.index = i;
+      cell.addEventListener("click", () => handleCellClick(i));
+      gridEl.appendChild(cell);
+    }
+
+    // ========== Load / Save stats ==========
+    function loadStats() {
+      const saved = JSON.parse(localStorage.getItem("premiumMemoryPath") || "{}");
+      stats.highLevel = saved.highLevel || 1;
+      stats.completed = saved.completed || 0;
+      stats.streak = saved.streak || 0;
+    }
+    function saveStats() {
+      localStorage.setItem("premiumMemoryPath", JSON.stringify(stats));
+    }
+    function updateStatsUI() {
+      highLevelEl.textContent = stats.highLevel;
+      completedCountEl.textContent = stats.completed;
+      streakCountEl.textContent = stats.streak + "🔥";
+    }
+
+    // ========== Game functions ==========
+    function startGame() {
+      canPlay = false;
+      playerSequence = [];
+      sequence = [];
+      const count = Math.min(level + 2, 12);
+      while (sequence.length < count) {
+        const r = Math.floor(Math.random() * 25);
+        if (!sequence.includes(r)) sequence.push(r);
+      }
+
+      // Reset cells visual
+      document.querySelectorAll(".cell").forEach(c => c.className = "cell");
+      progressBar.style.width = "0%";
+      actionBtn.textContent = "⏳ Memorizing...";
+      actionBtn.disabled = true;
+
+      // Show sequence with glowing effect
+      sequence.forEach((index, i) => {
+        setTimeout(() => {
+          document.querySelectorAll(".cell")[index].classList.add("show");
+          playTap(600 + i * 50, 0.15);
+          setTimeout(() => {
+            document.querySelectorAll(".cell")[index].classList.remove("show");
+          }, 550);
+        }, i * 750);
+      });
+
+      setTimeout(() => {
+        canPlay = true;
+        actionBtn.textContent = "🔁 Replay Level";
+        actionBtn.disabled = false;
+        progressBar.style.width = "0%"; // reset progress
+      }, sequence.length * 750 + 400);
+    }
+
+    function handleCellClick(index) {
+      if (!canPlay) return;
+      if (playerSequence.includes(index)) return;
+
+      playTap(1000, 0.1);
+      playerSequence.push(index);
+      const cells = document.querySelectorAll(".cell");
+
+      if (sequence.includes(index)) {
+        cells[index].classList.add("correct");
+        // Update progress bar
+        const progress = (playerSequence.length / sequence.length) * 100;
+        progressBar.style.width = progress + "%";
+      } else {
+        // Wrong move
+        cells[index].classList.add("wrong");
+        canPlay = false;
+        actionBtn.disabled = false;
+        actionBtn.textContent = "😞 Try Again";
+
+        // Update stats: streak resets, high level updates if current level > high
+        if (level > stats.highLevel) {
+          stats.highLevel = level;
+        }
+        stats.streak = 0;
+        saveStats();
+        updateStatsUI();
+
+        setTimeout(() => {
+          showModal("😞", "Game Over", "lose", `Reached Level ${level}. Keep training!`, () => {
+            level = 1;
+            levelDisplay.textContent = "Level " + level;
+            startGame();
+          });
+        }, 350);
+        return;
+      }
+
+      // Check if level completed
+      if (playerSequence.length === sequence.length) {
+        canPlay = false;
+        stats.completed++;
+        stats.streak++;
+        if (level > stats.highLevel) {
+          stats.highLevel = level;
+        }
+        saveStats();
+        updateStatsUI();
+
+        setTimeout(() => {
+          showModal("🎉", "Level Complete!", "win", `Level ${level} mastered!`, () => {
+            level++;
+            levelDisplay.textContent = "Level " + level;
+            startGame();
+          });
+        }, 400);
+      }
+    }
+
+    // Overlay handling
+    function showModal(emoji, title, titleClass, sub, callback) {
+      modalEmoji.textContent = emoji;
+      modalTitle.textContent = title;
+      modalTitle.className = "modal-title " + titleClass;
+      modalSub.textContent = sub;
+      overlay.classList.add("show");
+
+      modalBtn.onclick = () => {
+        overlay.classList.remove("show");
+        if (callback) callback();
+      };
+    }
+
+    function resetGame() {
+      level = 1;
+      stats.streak = 0;
+      saveStats();
+      updateStatsUI();
+      levelDisplay.textContent = "Level 1";
+      startGame();
+    }
+
+    // Button listeners
+    actionBtn.addEventListener("click", startGame);
+    resetBtn.addEventListener("click", resetGame);
+
+    // ========== Init ==========
+    loadStats();
+    updateStatsUI();
+    startGame(); // Auto-start first level
+
+    // ========== Back to Hub (same as Connect 4) ==========
+    function goToDashboard() {
+      // Replace with your actual dashboard/hub page
+      window.location.href = 'login.html'; // or index.html / dashboard.html
+    }
+  </script>
+</body>
+</html>

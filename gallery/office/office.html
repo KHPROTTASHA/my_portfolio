@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Year‑End Gala 2027 | Premium Experience & Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #a78bfa;
+      --primary-dark: #7c3aed;
+      --bg: #05050a;
+      --surface: rgba(255, 255, 255, 0.03);
+      --border-light: rgba(255, 255, 255, 0.08);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --gold: #d4af37;
+      --gold-light: #f5e7c8;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      cursor: default;
+    }
+
+ /* ============ DRAGGABLE HOME BUTTON ============ */
+.home-btn {
+    position:fixed;
+    top:25px;
+    left:25px;
+    z-index:99999;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    background:rgba(10,10,10,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    color:var(--gold);
+    font-size:20px;
+    cursor:grab;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.3s;
+    text-decoration:none;
+    font-family:'Inter',sans-serif;
+    touch-action:none;
+    user-select:none;
+}
+.home-btn:active {
+    cursor:grabbing;
+    transform:scale(1.1);
+}
+.home-btn:hover {
+    background:var(--gold);
+    color:#000;
+    box-shadow:0 0 30px rgba(201,169,110,0.5);
+}
+@media(max-width:950px){
+    .home-btn{width:44px;height:44px;font-size:18px;}
+}
+
+
+    /* Custom Cursor */
+    .cursor {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(167, 139, 250, 0.7);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, border-color 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: #c084fc;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.05s ease;
+    }
+
+    h1, h2, h3, .countdown-number, .logo, .days-number, .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+
+    #preloader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+    .loader {
+      width: 64px;
+      height: 64px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #particleCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .promo-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(124,58,237,0.9), rgba(167,139,250,0.9));
+      color: white;
+      text-align: center;
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .promo-banner span {
+      background: rgba(255,255,255,0.15);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
+    .promo-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+      margin-left: 15px;
+    }
+    .promo-close:hover { opacity: 1; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 40px;
+      position: fixed;
+      width: 100%;
+      top: 50px;
+      z-index: 1000;
+      backdrop-filter: blur(30px);
+      background: rgba(5, 5, 10, 0.75);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.3s;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--primary); }
+    nav a {
+      margin-left: 36px;
+      color: #d1d5db;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s, text-shadow 0.3s;
+      font-size: 0.95rem;
+      position: relative;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s;
+      border-radius: 4px;
+    }
+    nav a:hover {
+      color: #e9d5ff;
+      text-shadow: 0 0 8px rgba(167,139,250,0.5);
+    }
+    nav a:hover::after { width: 100%; }
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 160px 24px 80px;
+      text-align: center;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 920px; }
+    .hero-badge {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50px;
+      padding: 10px 28px;
+      display: inline-block;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+      color: #d8b4fe;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: 700;
+      line-height: 1.08;
+      margin-bottom: 28px;
+      color: white;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #e9d5ff, #a78bfa, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: #b0b7c3;
+      max-width: 640px;
+      margin: 0 auto 42px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Countdown */
+    .countdown-progress {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 50px 0 25px;
+    }
+    .progress-ring {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin-bottom: 24px;
+    }
+    .progress-ring svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 20px rgba(124,58,237,0.3));
+    }
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 9;
+      stroke-linecap: round;
+    }
+    .bg-circle { stroke: rgba(255,255,255,0.06); }
+    .progress-circle {
+      stroke: url(#gradient);
+      stroke-dasharray: 628.32;
+      stroke-dashoffset: 628.32;
+      transition: stroke-dashoffset 1.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .days-left-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .days-number {
+      font-size: 4rem;
+      font-weight: 700;
+      background: linear-gradient(to bottom, #ffffff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(167,139,250,0.5);
+    }
+    .days-label {
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      color: #a78bfa;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .live-countdown {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .countdown-box {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 22px;
+      padding: 18px 26px;
+      min-width: 90px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .countdown-box:hover { transform: translateY(-5px); }
+    .countdown-number {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 0 15px rgba(167,139,250,0.6);
+    }
+    .countdown-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #a78bfa;
+      margin-top: 4px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      border: none;
+      padding: 15px 38px;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.35s ease;
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.5);
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+    }
+    .btn-primary:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 40px rgba(124, 58, 237, 0.8);
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      padding: 15px 38px;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.35s ease;
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(255,255,255,0.1);
+    }
+
+    section {
+      padding: 110px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .section-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    .section-subtitle {
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 60px;
+      font-size: 1.1rem;
+    }
+    .text-center { text-align: center; }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+    .about-image {
+      background: linear-gradient(135deg, #2e1065, #4c1d95);
+      border-radius: 40px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-image::after {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: rgba(167,139,250,0.15);
+      filter: blur(50px);
+      border-radius: 50%;
+      top: 20%;
+      right: 10%;
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+    }
+    .schedule-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      padding: 32px 24px;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .schedule-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .schedule-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(167,139,250,0.35);
+      box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+    }
+    .schedule-card:hover::before { opacity: 1; }
+    .schedule-time { color: #c084fc; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 12px; }
+    .schedule-card h3 { font-size: 1.4rem; margin-bottom: 10px; color: white; }
+
+    .speakers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 35px;
+    }
+    .speaker-card {
+      text-align: center;
+      background: rgba(255,255,255,0.02);
+      border-radius: 30px;
+      padding: 35px 20px 25px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: 0.4s;
+      backdrop-filter: blur(10px);
+    }
+    .speaker-card:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(167,139,250,0.3);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+    }
+    .speaker-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      border-radius: 50%;
+      margin: 0 auto 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      border: 3px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 25px rgba(124,58,237,0.4);
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      background: rgba(255,255,255,0.01);
+    }
+    .gallery-masonry {
+      columns: 4 280px;
+      column-gap: 24px;
+      padding: 0 24px 30px;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+    .gallery-card {
+      break-inside: avoid;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      background: #0d0d14;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1), box-shadow 0.4s;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.7s ease forwards;
+      animation-delay: calc(0.05s * var(--i, 0));
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .gallery-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(212, 175, 55, 0.4);
+      z-index: 2;
+    }
+    .gallery-card img {
+      width: 100%;
+      display: block;
+      transition: transform 0.7s ease, filter 0.5s;
+      filter: brightness(0.9);
+    }
+    .gallery-card:hover img {
+      transform: scale(1.08);
+      filter: brightness(1.05);
+    }
+    .card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+      padding: 24px 18px;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .gallery-card:hover .card-overlay { opacity: 1; }
+    .card-category {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+    .card-caption { font-weight: 500; font-size: 0.95rem; color: #fff; }
+
+    /* Gallery Filter */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 40px auto 50px;
+    }
+    .filter-btn {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: #b0b0c0;
+      padding: 10px 26px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(12px);
+      background: rgba(20,20,28,0.5);
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: rgba(167,139,250,0.15);
+      border-color: var(--primary);
+      color: #f5e7c8;
+      box-shadow: 0 0 20px rgba(124,58,237,0.3);
+      transform: translateY(-2px);
+    }
+
+    .registration-wrapper {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 36px;
+      padding: 55px 50px;
+      max-width: 620px;
+      margin: 0 auto;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .form-group { margin-bottom: 24px; text-align: left; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #d1d5db; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 15px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 20px rgba(167,139,250,0.25);
+    }
+    .full-width-btn { width: 100%; margin-top: 8px; }
+
+    footer {
+      text-align: center;
+      padding: 45px 24px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(45px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5,5,10,0.96);
+      backdrop-filter: blur(25px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      flex-direction: column;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox-image-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+    .lightbox img { max-width: 100%; max-height: 80vh; transition: transform 0.3s; }
+    .lightbox-caption {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #d1d1d1;
+      letter-spacing: 0.5px;
+      font-family: 'Playfair Display', serif;
+    }
+    .close-lightbox {
+      position: absolute;
+      top: 25px;
+      right: 35px;
+      font-size: 2.8rem;
+      color: #fff;
+      cursor: pointer;
+      background: none;
+      border: none;
+      z-index: 2001;
+      transition: all 0.3s;
+    }
+    .close-lightbox:hover { color: var(--gold); transform: rotate(90deg); }
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2.2rem;
+      color: #fff;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.15);
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+      backdrop-filter: blur(10px);
+      z-index: 2001;
+    }
+    .nav-btn:hover { background: rgba(167,139,250,0.3); border-color: var(--primary); }
+    .prev-btn { left: 30px; }
+    .next-btn { right: 30px; }
+    .image-counter {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #999;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .about-grid { gap: 40px; }
+    }
+    @media (max-width: 768px) {
+      .promo-banner { font-size: 0.8rem; padding: 10px 15px; flex-wrap: wrap; }
+      header { top: 48px; padding: 15px 20px; }
+      nav { display: none; }
+      .mobile-menu-btn { display: block; }
+      .hero { padding-top: 170px; padding-bottom: 60px; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero p { font-size: 1rem; }
+      .countdown-progress .progress-ring { width: 170px; height: 170px; }
+      .days-number { font-size: 2.8rem; }
+      .live-countdown { gap: 12px; }
+      .countdown-box { padding: 14px 18px; min-width: 75px; }
+      .countdown-number { font-size: 1.8rem; }
+      .about-grid { grid-template-columns: 1fr; text-align: center; }
+      .about-image { height: 280px; order: -1; }
+      .section-title { font-size: 2rem; }
+      .schedule-grid, .speakers-grid { grid-template-columns: 1fr; }
+      .registration-wrapper { padding: 35px 25px; border-radius: 28px; }
+      .cursor, .cursor-dot { display: none; }
+      .gallery-masonry { columns: 2 200px; column-gap: 16px; }
+      .nav-btn { width: 40px; height: 40px; font-size: 1.6rem; }
+      .prev-btn { left: 12px; }
+      .next-btn { right: 12px; }
+    }
+    @media (max-width: 480px) {
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-outline { width: 80%; text-align: center; }
+      .promo-banner span { display: block; margin: 4px 0; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#" class="home-btn" id="homeBtn" title="Drag me anywhere! ⌂"><i class="fas fa-home"></i></a>
+
+  <div id="preloader"><div class="loader"></div></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="promo-banner" id="promoBanner">
+    <span>🎉 EARLY BIRD</span> Register before March 2027 and get <strong>30% OFF</strong> — Limited seats!
+    <button class="promo-close" id="closeBanner"><i class="fas fa-times"></i></button>
+  </div>
+
+  <header>
+    <div class="logo">Gala<span>Pro</span></div>
+    <nav id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#speakers">Speakers</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#register">Register</a>
+    </nav>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="far fa-calendar-alt"></i> December 31, 2027 • Grand Ballroom</div>
+      <h1>Year‑End <span class="gradient-text">Gala 2027</span></h1>
+      <p>Celebrate the year's milestones with an unforgettable night of inspiration, entertainment, and networking. Step into the future together.</p>
+      <div class="countdown-progress">
+        <div class="progress-ring">
+          <svg viewBox="0 0 220 220">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#e9d5ff"/>
+                <stop offset="50%" stop-color="#a78bfa"/>
+                <stop offset="100%" stop-color="#7c3aed"/>
+              </linearGradient>
+            </defs>
+            <circle class="bg-circle" cx="110" cy="110" r="100"/>
+            <circle class="progress-circle" id="progressCircle" cx="110" cy="110" r="100"/>
+          </svg>
+          <div class="days-left-text">
+            <span class="days-number" id="daysRemaining">0</span>
+            <div class="days-label" id="daysLabel">DAYS LEFT</div>
+          </div>
+        </div>
+      </div>
+      <div class="live-countdown" id="countdown">
+        <div class="countdown-box"><div class="countdown-number" id="hours">00</div><div class="countdown-label">Hours</div></div>
+        <div class="countdown-box"><div class="countdown-number" id="minutes">00</div><div class="countdown-label">Minutes</div></div>
+        <div class="countdown-box"><div class="countdown-number" id="seconds">00</div><div class="countdown-label">Seconds</div></div>
+      </div>
+      <div class="hero-buttons" style="margin-top:35px;">
+        <a href="#register" class="btn-primary"><i class="fas fa-ticket-alt"></i> Grab Your Invitation</a>
+        <a href="#about" class="btn-outline"><i class="far fa-compass"></i> Explore Event</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid fade-up">
+        <div>
+          <h2 class="section-title">An Evening of <span class="gradient-text">Elegance</span></h2>
+          <p style="margin-bottom:22px;">This isn't just another office event – it's a grand celebration of our collective achievements. The Year‑End Gala brings together the entire organization for a night filled with recognition, live performances, gourmet dining, and spectacular surprises.</p>
+          <p>Dress to impress, connect with leaders, and dance into the new year. We promise an immersive premium experience that will be talked about for years.</p>
+          <a href="#register" class="btn-primary" style="margin-top:24px;">Secure Your Seat</a>
+        </div>
+        <div class="about-image"><i class="fas fa-champagne-glasses"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule -->
+  <section id="schedule" style="background: rgba(255,255,255,0.01);">
+    <div class="container text-center">
+      <h2 class="section-title fade-up">Gala <span class="gradient-text">Itinerary</span></h2>
+      <p class="section-subtitle fade-up">A meticulously planned evening to delight every guest.</p>
+      <div class="schedule-grid fade-up">
+        <div class="schedule-card"><div class="schedule-time">06:00 PM - 07:00 PM</div><h3>Red Carpet & Cocktails</h3><p>Arrive in style, enjoy signature drinks and photo moments.</p></div>
+        <div class="schedule-card"><div class="schedule-time">07:00 PM - 08:00 PM</div><h3>Opening Ceremony & CEO Keynote</h3><p>Reflecting on 2027 and vision for the new year.</p></div>
+        <div class="schedule-card"><div class="schedule-time">08:00 PM - 09:30 PM</div><h3>Gourmet Dinner & Live Music</h3><p>Five‑course meal accompanied by a string quartet.</p></div>
+        <div class="schedule-card"><div class="schedule-time">09:30 PM - 10:30 PM</div><h3>Awards & Recognition</h3><p>Honoring outstanding contributions and achievements.</p></div>
+        <div class="schedule-card"><div class="schedule-time">10:30 PM - 11:30 PM</div><h3>Fireside Chat with Industry Icons</h3><p>Inspiring stories and future trends.</p></div>
+        <div class="schedule-card"><div class="schedule-time">11:30 PM - 01:00 AM</div><h3>Grand After‑Party & Countdown</h3><p>Dance floor, DJ, and the midnight celebration.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speakers -->
+  <section id="speakers">
+    <div class="container text-center">
+      <h2 class="section-title fade-up">Distinguished <span class="gradient-text">Speakers</span></h2>
+      <p class="section-subtitle fade-up">Voices that inspire and lead.</p>
+      <div class="speakers-grid fade-up">
+        <div class="speaker-card"><div class="speaker-avatar"><i class="fas fa-user-tie"></i></div><h3>Sarah Johnson</h3><p style="color:#a78bfa;">CEO, InnovateCorp</p></div>
+        <div class="speaker-card"><div class="speaker-avatar"><i class="fas fa-user-astronaut"></i></div><h3>David Chen</h3><p style="color:#a78bfa;">AI Futurist</p></div>
+        <div class="speaker-card"><div class="speaker-avatar"><i class="fas fa-user-graduate"></i></div><h3>Emily Roberts</h3><p style="color:#a78bfa;">Leadership Coach</p></div>
+        <div class="speaker-card"><div class="speaker-avatar"><i class="fas fa-microphone-alt"></i></div><h3>Michael Lee</h3><p style="color:#a78bfa;">Creative Director</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="gallery-section">
+    <div class="container text-center">
+      <h2 class="section-title fade-up">Event <span class="gradient-text">Gallery</span></h2>
+      <p class="section-subtitle fade-up">Relive the magic from our previous galas.</p>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Frames</button>
+        <button class="filter-btn" data-filter="team">Team</button>
+        <button class="filter-btn" data-filter="awards">Awards</button>
+        <button class="filter-btn" data-filter="celebration">Celebration</button>
+        <button class="filter-btn" data-filter="candid">Candid</button>
+      </div>
+    </div>
+    <div class="gallery-masonry" id="galleryContainer">
+      <div class="gallery-card" data-category="team" style="--i:1;">
+        <img src="https://picsum.photos/seed/team1/600/750" alt="Team collaboration">
+        <div class="card-overlay"><div class="card-category">Team</div><div class="card-caption">Morning huddle</div></div>
+      </div>
+      <div class="gallery-card" data-category="awards" style="--i:2;">
+        <img src="https://picsum.photos/seed/award1/600/500" alt="Award ceremony">
+        <div class="card-overlay"><div class="card-category">Awards</div><div class="card-caption">Star performer</div></div>
+      </div>
+      <div class="gallery-card" data-category="celebration" style="--i:3;">
+        <img src="https://picsum.photos/seed/party1/600/800" alt="Celebration toast">
+        <div class="card-overlay"><div class="card-category">Celebration</div><div class="card-caption">Champagne wishes</div></div>
+      </div>
+      <div class="gallery-card" data-category="candid" style="--i:4;">
+        <img src="https://picsum.photos/seed/candid1/600/600" alt="Candid laugh">
+        <div class="card-overlay"><div class="card-category">Candid</div><div class="card-caption">Pure joy</div></div>
+      </div>
+      <div class="gallery-card" data-category="team" style="--i:5;">
+        <img src="https://picsum.photos/seed/team2/600/650" alt="Team activity">
+        <div class="card-overlay"><div class="card-category">Team</div><div class="card-caption">Workshop synergy</div></div>
+      </div>
+      <div class="gallery-card" data-category="awards" style="--i:6;">
+        <img src="https://picsum.photos/seed/award2/600/700" alt="Award speech">
+        <div class="card-overlay"><div class="card-category">Awards</div><div class="card-caption">Inspirational words</div></div>
+      </div>
+      <div class="gallery-card" data-category="celebration" style="--i:7;">
+        <img src="https://picsum.photos/seed/party2/600/550" alt="Dance moment">
+        <div class="card-overlay"><div class="card-category">Celebration</div><div class="card-caption">Dance floor magic</div></div>
+      </div>
+      <div class="gallery-card" data-category="candid" style="--i:8;">
+        <img src="https://picsum.photos/seed/candid2/600/720" alt="Group selfie">
+        <div class="card-overlay"><div class="card-category">Candid</div><div class="card-caption">Memory lane</div></div>
+      </div>
+      <div class="gallery-card" data-category="team" style="--i:9;">
+        <img src="https://picsum.photos/seed/team3/600/580" alt="Team building">
+        <div class="card-overlay"><div class="card-category">Team</div><div class="card-caption">Stronger together</div></div>
+      </div>
+      <div class="gallery-card" data-category="awards" style="--i:10;">
+        <img src="https://picsum.photos/seed/award3/600/620" alt="Trophy moment">
+        <div class="card-overlay"><div class="card-category">Awards</div><div class="card-caption">Top achiever</div></div>
+      </div>
+      <div class="gallery-card" data-category="celebration" style="--i:11;">
+        <img src="https://picsum.photos/seed/party3/600/850" alt="Confetti">
+        <div class="card-overlay"><div class="card-category">Celebration</div><div class="card-caption">Confetti dreams</div></div>
+      </div>
+      <div class="gallery-card" data-category="candid" style="--i:12;">
+        <img src="https://picsum.photos/seed/candid3/600/530" alt="Behind the scenes">
+        <div class="card-overlay"><div class="card-category">Candid</div><div class="card-caption">Unfiltered smiles</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registration -->
+  <section id="register" style="background: rgba(255,255,255,0.01);">
+    <div class="container text-center">
+      <h2 class="section-title fade-up">Claim Your <span class="gradient-text">Invitation</span></h2>
+      <p class="section-subtitle fade-up">Early bird pricing ends soon. Reserve your spot at the most awaited night of the year.</p>
+      <div class="registration-wrapper fade-up">
+        <form id="registrationForm">
+          <div class="form-group"><label>Full Name</label><input type="text" placeholder="John Doe" required></div>
+          <div class="form-group"><label>Email Address</label><input type="email" placeholder="john@company.com" required></div>
+          <div class="form-group"><label>Department</label><select required><option value="">Select department</option><option>Engineering</option><option>Marketing</option><option>Design</option><option>HR</option><option>Finance</option><option>Other</option></select></div>
+          <button type="submit" class="btn-primary full-width-btn">Complete Registration <i class="fas fa-arrow-right"></i></button>
+        </form>
+        <p style="margin-top:18px; font-size:0.85rem; color:#9ca3af;">* You’ll receive a digital pass with a unique QR code.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2027 Year‑End Gala. Crafted with passion for the entire team.</p>
+  </footer>
+
+  <!-- Lightbox for Gallery -->
+  <div class="lightbox" id="lightbox">
+    <button class="close-lightbox" id="closeLightbox">&times;</button>
+    <button class="nav-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+    <button class="nav-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+    <div class="lightbox-image-wrapper">
+      <img src="" alt="" id="lightboxImg">
+    </div>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <div class="image-counter" id="imageCounter"></div>
+  </div>
+
+  <script>
+    // --- Draggable Home Button ---
+    const homeBtn = document.getElementById('homeBtn');
+    let isDragging = false, startX, startY, startLeft, startTop;
+    homeBtn.addEventListener('mousedown', function(e) {
+      if(e.button !== 0) return;
+      isDragging = true;
+      startX = e.clientX; startY = e.clientY;
+      startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+      startTop = parseInt(window.getComputedStyle(homeBtn).top);
+      homeBtn.style.cursor = 'grabbing';
+      homeBtn.style.transition = 'none';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+      if(!isDragging) return;
+      homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + (e.clientX - startX))) + 'px';
+      homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + (e.clientY - startY))) + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+      if(isDragging) { isDragging = false; homeBtn.style.cursor = 'grab'; homeBtn.style.transition = '0.3s'; }
+    });
+    homeBtn.addEventListener('touchstart', (e) => {
+      isDragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+      startLeft = parseInt(window.getComputedStyle(homeBtn).left);
+      startTop = parseInt(window.getComputedStyle(homeBtn).top);
+      homeBtn.style.transition = 'none';
+    }, {passive: true});
+    document.addEventListener('touchmove', (e) => {
+      if(!isDragging) return;
+      homeBtn.style.left = Math.max(0, Math.min(window.innerWidth - 50, startLeft + (e.touches[0].clientX - startX))) + 'px';
+      homeBtn.style.top = Math.max(0, Math.min(window.innerHeight - 50, startTop + (e.touches[0].clientY - startY))) + 'px';
+    });
+    document.addEventListener('touchend', () => { isDragging = false; homeBtn.style.transition = '0.3s'; });
+
+    // --- Preloader ---
+    window.addEventListener('load', () => {
+      document.getElementById('preloader').style.opacity = '0';
+      document.getElementById('preloader').style.visibility = 'hidden';
+    });
+
+    // --- Promo banner ---
+    document.getElementById('closeBanner').addEventListener('click', () => {
+      document.getElementById('promoBanner').style.display = 'none';
+      document.querySelector('header').style.top = '0';
+    });
+
+    // --- Custom cursor ---
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursorDot');
+    if (window.innerWidth > 768) {
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX - 12 + 'px';
+        cursor.style.top = e.clientY - 12 + 'px';
+        cursorDot.style.left = e.clientX - 3 + 'px';
+        cursorDot.style.top = e.clientY - 3 + 'px';
+      });
+    }
+
+    // --- Mobile menu ---
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+    mobileBtn.addEventListener('click', () => {
+      if (navLinks.style.display === 'flex') {
+        navLinks.style.display = 'none';
+      } else {
+        navLinks.style.display = 'flex';
+        navLinks.style.flexDirection = 'column';
+        navLinks.style.position = 'absolute';
+        navLinks.style.top = '70px';
+        navLinks.style.left = '0';
+        navLinks.style.width = '100%';
+        navLinks.style.background = 'rgba(5,5,10,0.96)';
+        navLinks.style.backdropFilter = 'blur(30px)';
+        navLinks.style.padding = '25px';
+        navLinks.style.gap = '18px';
+        navLinks.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+      }
+    });
+
+    // --- Smooth scroll ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          if (window.innerWidth <= 768) navLinks.style.display = 'none';
+        }
+      });
+    });
+
+    // --- Countdown ---
+    const eventDate = new Date('2027-12-31T18:00:00').getTime();
+    const progressCircle = document.getElementById('progressCircle');
+    const daysRemainingEl = document.getElementById('daysRemaining');
+    const daysLabelEl = document.getElementById('daysLabel');
+    const circumference = 2 * Math.PI * 100;
+
+    function update100DaysProgress() {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+      const totalDaysRemaining = Math.max(0, Math.floor(distance / (1000 * 60 * 60 * 24)));
+      let progress = totalDaysRemaining <= 100 ? 1 - (totalDaysRemaining / 100) : 0;
+      progressCircle.style.strokeDashoffset = circumference * (1 - progress);
+      daysRemainingEl.textContent = totalDaysRemaining;
+      daysLabelEl.textContent = totalDaysRemaining === 0 ? "TONIGHT!" : "DAYS LEFT";
+    }
+
+    function updateLiveCountdown() {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+      if (distance < 0) {
+        document.getElementById('hours').innerText = '00';
+        document.getElementById('minutes').innerText = '00';
+        document.getElementById('seconds').innerText = '00';
+        return;
+      }
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById('hours').innerText = hours < 10 ? '0'+hours : hours;
+      document.getElementById('minutes').innerText = minutes < 10 ? '0'+minutes : minutes;
+      document.getElementById('seconds').innerText = seconds < 10 ? '0'+seconds : seconds;
+    }
+
+    update100DaysProgress();
+    updateLiveCountdown();
+    setInterval(() => { update100DaysProgress(); updateLiveCountdown(); }, 1000);
+
+    // --- Registration form ---
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('🎉 You are on the list! Check your email for the digital invitation. (Demo)');
+      this.reset();
+    });
+
+    // --- Scroll animations ---
+    const fadeElements = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    fadeElements.forEach(el => observer.observe(el));
+
+    // --- Particle Canvas ---
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    const maxParticles = 80;
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.size = Math.random() * 2.2 + 0.5;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(167, 139, 250, 0.22)';
+        ctx.fill();
+      }
+    }
+    function initParticles() { particles = []; for(let i=0;i<maxParticles;i++) particles.push(new Particle()); }
+    initParticles();
+    function connectParticles() {
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < 130){
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(167, 139, 250, ${0.09 * (1 - dist/130)})`;
+            ctx.lineWidth = 0.7;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+    function animateParticles() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      connectParticles();
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+    window.addEventListener('resize', initParticles);
+
+    // --- Gallery Filtering & Lightbox ---
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const galleryCards = document.querySelectorAll('.gallery-card');
+    let currentFilter = 'all';
+    let visibleCards = Array.from(galleryCards);
+    let currentIndex = 0;
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+        galleryCards.forEach(card => {
+          const cat = card.getAttribute('data-category');
+          if(currentFilter === 'all' || cat === currentFilter) {
+            card.style.display = 'block';
+            card.style.animation = 'none';
+            card.offsetHeight;
+            card.style.animation = 'fadeInUp 0.7s ease forwards';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        updateVisibleCards();
+        currentIndex = 0;
+      });
+    });
+
+    function updateVisibleCards() {
+      visibleCards = Array.from(galleryCards).filter(card => card.style.display !== 'none');
+    }
+    updateVisibleCards();
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const imageCounter = document.getElementById('imageCounter');
+
+    function openLightbox(index) {
+      updateVisibleCards();
+      if(visibleCards.length === 0) return;
+      currentIndex = index;
+      const card = visibleCards[currentIndex];
+      lightboxImg.src = card.querySelector('img').src;
+      lightboxCaption.textContent = card.querySelector('.card-caption')?.innerText || '';
+      imageCounter.textContent = `${currentIndex + 1} / ${visibleCards.length}`;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    galleryCards.forEach(card => {
+      card.addEventListener('click', () => {
+        updateVisibleCards();
+        const idx = visibleCards.indexOf(card);
+        if(idx !== -1) openLightbox(idx);
+      });
+    });
+
+    document.getElementById('closeLightbox').addEventListener('click', () => {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    lightbox.addEventListener('click', (e) => { if(e.target === lightbox) { lightbox.classList.remove('active'); document.body.style.overflow = ''; } });
+    document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); if(visibleCards.length) { currentIndex = (currentIndex - 1 + visibleCards.length) % visibleCards.length; openLightbox(currentIndex); } });
+    document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); if(visibleCards.length) { currentIndex = (currentIndex + 1) % visibleCards.length; openLightbox(currentIndex); } });
+    document.addEventListener('keydown', (e) => {
+      if(!lightbox.classList.contains('active')) return;
+      if(e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+      if(e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+      if(e.key === 'Escape') { lightbox.classList.remove('active'); document.body.style.overflow = ''; }
+    });
+  </script>
+</body>
+</html>

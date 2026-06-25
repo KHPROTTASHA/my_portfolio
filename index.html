@@ -6,6 +6,8 @@
 <title>Md Kamrul Hasan | Senior Programmer & Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * {
   margin: 0;
@@ -95,8 +97,9 @@ body {
 
 /* WOW 3D LOGO BADGE */
 .logo-badge {
-  width: 46px;
-  height: 46px;
+  font-family:'Bodoni Moda', serif;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,6 +157,7 @@ body {
 
 /* LOGO HOVER WOW EFFECTS */
 .logo-badge:hover {
+  font-family:'Great Vibes', cursive;
   transform: translateY(-4px) scale(1.1) rotateY(15deg);
   box-shadow: 0 15px 30px rgba(192, 132, 87, 0.4),
     0 0 20px rgba(192, 132, 87, 0.6);
@@ -785,9 +789,9 @@ h2 span {
 }
 
 .name {
-  font-family: 'Poppins', sans-serif;
+  font-family:'Bodoni Moda', serif;
   font-size: clamp(18px, 4vw, 28px);
-  font-weight: 500;
+  font-weight: 900;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #ddd;
@@ -1986,7 +1990,290 @@ p {
     width: 100%;
   }
 }
+/* ---------------------project-------------------- */
+/* =========================
+   PREMIUM PROJECT MODAL
+========================= */
 
+.project-modal{
+    position:fixed;
+    inset:0;
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+
+    background:rgba(0,0,0,.45);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    animation:fadeIn .35s ease;
+}
+
+/* MODAL BOX */
+
+.modal-box{
+
+    position:relative;
+
+    width:650px;
+    max-width:92%;
+
+    background:var(--modal-bg);
+
+    border:1px solid var(--hero-border);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:
+    0 20px 80px rgba(0,0,0,.18),
+    0 0 0 1px rgba(255,255,255,.04) inset;
+
+    overflow:hidden;
+}
+
+/* ALL CONTENT ABOVE GLOW */
+
+.modal-box > *{
+    position:relative;
+    z-index:2;
+}
+
+/* TOP GLOW */
+
+.modal-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-150px;
+    right:-150px;
+
+    width:300px;
+    height:300px;
+
+    border-radius:50%;
+
+    background:var(--hero-gradient);
+
+    opacity:.12;
+
+    filter:blur(80px);
+
+    pointer-events:none;
+
+    z-index:0;
+}
+
+/* BOTTOM GLOW */
+
+.modal-box::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-120px;
+    left:-120px;
+
+    width:240px;
+    height:240px;
+
+    border-radius:50%;
+
+    background:var(--hero-gradient);
+
+    opacity:.08;
+
+    filter:blur(70px);
+
+    pointer-events:none;
+
+    z-index:0;
+}
+
+/* TITLE */
+
+.modal-box h2{
+
+    color:var(--hero-text);
+
+    font-size:32px;
+    font-weight:700;
+
+    margin-bottom:25px;
+}
+
+.modal-box h2::after{
+
+    content:"";
+
+    display:block;
+
+    width:70px;
+    height:4px;
+
+    margin-top:10px;
+
+    border-radius:50px;
+
+    background:var(--hero-gradient);
+}
+
+/* CLOSE BUTTON */
+
+.modal-close{
+
+    position:absolute;
+
+    right:20px;
+    top:20px;
+
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:var(--form-input-bg);
+
+    color:var(--hero-text);
+
+    border:1px solid var(--hero-border);
+
+    font-size:22px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+
+    z-index:999999;
+}
+
+.modal-close:hover{
+
+    background:var(--hero-accent);
+
+    color:#fff;
+
+    transform:rotate(90deg);
+}
+
+/* WEBSITE LIST */
+
+.modal-links{
+
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+/* WEBSITE CARD */
+
+.modal-links a{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:18px 20px;
+
+    border-radius:18px;
+
+    background:var(--form-input-bg);
+
+    border:1px solid var(--hero-border);
+
+    text-decoration:none;
+
+    color:var(--hero-text);
+
+    font-weight:600;
+
+    transition:.35s ease;
+}
+
+.modal-links a:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--hero-accent);
+
+    background:var(--card-bg);
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,.08);
+}
+
+.modal-links a i{
+
+    font-size:18px;
+
+    background:var(--hero-gradient);
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* OPEN ANIMATION */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .project-modal{
+        padding:20px;
+    }
+
+    .modal-box{
+
+        width:100%;
+        max-width:100%;
+
+        padding:25px;
+    }
+
+    .modal-box h2{
+
+        font-size:24px;
+    }
+
+    .modal-links a{
+
+        padding:15px;
+        font-size:15px;
+    }
+
+    .modal-close{
+
+        width:38px;
+        height:38px;
+
+        font-size:20px;
+    }
+}
+/* ----------------------------------------- */
 /* Premium WhatsApp Widget - Messenger Style */
 .wa {
   position: fixed;
@@ -2512,7 +2799,7 @@ p {
     <div class="brand">
 
       <div class="logo-badge">
-        <span class="logo-text">MK</span>
+        <span class="logo-text">KHp</span>
       </div>
   
       <div class="brand-info">
@@ -2929,10 +3216,63 @@ p {
         <button class="filter-btn" data-filter="ml">ML/AI</button>
       </div>
       <div class="projects-grid" id="projectsGrid">
-        <div class="project-item show" data-cat="web"><div class="project-img"><i class="fas fa-shopping-cart"></i></div><div class="project-info"><h3>E-commerce Platform</h3><p>Full stack e-commerce with React & Node.js</p><span class="project-cat">Web</span></div></div>
-        <div class="project-item show" data-cat="erp"><div class="project-img"><i class="fas fa-chart-line"></i></div><div class="project-info"><h3>ERP Suite</h3><p>Complete ERP solution for knitwear industry</p><span class="project-cat">ERP</span></div></div>
-        <div class="project-item show" data-cat="ml"><div class="project-img"><i class="fas fa-brain"></i></div><div class="project-info"><h3>CNN Image Recognition</h3><p>Deep learning model for color image classification</p><span class="project-cat">ML/AI</span></div></div>
-        <div class="project-item show" data-cat="web"><div class="project-img"><i class="fas fa-mobile-alt"></i></div><div class="project-info"><h3>Inventory Management</h3><p>Real-time inventory tracking system</p><span class="project-cat">Web</span></div></div>
+
+        <div class="project-item show" data-cat="web" data-modal="ecommerceModal">
+      
+          <div class="project-img">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+      
+          <div class="project-info">
+            <h3>E-commerce Platform</h3>
+            <p>Full stack e-commerce with React & Node.js</p>
+            <span class="project-cat">Web</span>
+          </div>
+      
+        </div>
+      
+        <div class="project-item show" data-cat="erp" data-modal="erpModal">
+      
+          <div class="project-img">
+            <i class="fas fa-chart-line"></i>
+          </div>
+      
+          <div class="project-info">
+            <h3>ERP Suite</h3>
+            <p>Complete ERP solution for knitwear industry</p>
+            <span class="project-cat">ERP</span>
+          </div>
+      
+        </div>
+      
+        <div class="project-item show" data-cat="ml" data-modal="mlModal">
+      
+          <div class="project-img">
+            <i class="fas fa-brain"></i>
+          </div>
+      
+          <div class="project-info">
+            <h3>CNN Image Recognition</h3>
+            <p>Deep learning model for color image classification</p>
+            <span class="project-cat">ML/AI</span>
+          </div>
+      
+        </div>
+      
+        <div class="project-item show" data-cat="web" data-modal="inventoryModal">
+      
+          <div class="project-img">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+      
+          <div class="project-info">
+            <h3>Inventory Management</h3>
+            <p>Real-time inventory tracking system</p>
+            <span class="project-cat">inventory</span>
+          </div>
+      
+        </div>
+      
       </div>
   
       <!-- Testimonials -->
@@ -3076,6 +3416,173 @@ p {
         <div class="badge">!</div>
     </a>
 </div>
+<!-- -------------------project Modal------------------ -->
+<!-- -------------------WEB Modal------------------ -->
+<div class="project-modal" id="ecommerceModal">
+
+  <div class="modal-box">
+
+      <span class="modal-close">&times;</span>
+
+      <h2>E-commerce Projects</h2>
+
+      <div class="modal-links">
+
+          <a href="khp10w/khindex.html" target="_blank">
+              Fashion Store
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khp10w/khindex.html" target="_blank">
+              Electronics Store
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khp10w/khindex.html" target="_blank">
+              Grocery Platform
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khp10w/khindex.html" target="_blank">
+              Furniture Store
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+      </div>
+
+  </div>
+
+</div>
+<!-- -------------------ERP Modal------------------ -->
+<div class="project-modal" id="erpModal">
+
+  <div class="modal-box">
+
+      <span class="modal-close">&times;</span>
+
+      <h2>ERP Projects</h2>
+
+      <div class="modal-links">
+
+          <a href="https://erp-demo-1.com" target="_blank">
+              Garments ERP
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://erp-demo-2.com" target="_blank">
+              Production ERP
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://erp-demo-3.com" target="_blank">
+              HR & Payroll ERP
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://erp-demo-4.com" target="_blank">
+              Supply Chain ERP
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://erp-demo-5.com" target="_blank">
+              Knitwear ERP Suite
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+      </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- -------------------AI Modal------------------ -->
+<div class="project-modal" id="mlModal">
+
+  <div class="modal-box">
+
+      <span class="modal-close">&times;</span>
+
+      <h2>ML / AI Projects</h2>
+
+      <div class="modal-links">
+
+          <a href="khpcnncolor.docx.pdf" target="_blank">
+              CNN Image Recognition
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khpcnncolor.docx.pdf" target="_blank">
+              Face Detection AI
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khpcnncolor.docx.pdf" target="_blank">
+              Object Detection Model
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khpcnncolor.docx.pdf" target="_blank">
+              NLP Chatbot
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="khpcnncolor.docx.pdf" target="_blank">
+              Recommendation Engine
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+      </div>
+
+  </div>
+
+</div>
+
+<!-- -------------------HRM Modal------------------ -->
+<div class="project-modal" id="inventoryModal">
+
+  <div class="modal-box">
+
+      <span class="modal-close">&times;</span>
+
+      <h2>Inventory Systems</h2>
+
+      <div class="modal-links">
+
+          <a href="https://inventory-demo-1.com" target="_blank">
+              Inventory Management
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://inventory-demo-2.com" target="_blank">
+              Warehouse Tracking
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://inventory-demo-3.com" target="_blank">
+              POS Inventory
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://inventory-demo-4.com" target="_blank">
+              Stock Monitoring
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+          <a href="https://inventory-demo-5.com" target="_blank">
+              Barcode Inventory
+              <i class="fas fa-arrow-right"></i>
+          </a>
+
+      </div>
+
+  </div>
+
+</div>
+
+<!-- ----------------------------- -->
+
   <div id="toast" class="toast">Message sent successfully!</div>
 
  <script>
@@ -3699,7 +4206,39 @@ p {
       }
     });
   });
+//---------------project---------------------
+document.querySelectorAll('.project-item').forEach(item => {
 
+item.addEventListener('click', () => {
+
+    const modalId = item.dataset.modal;
+
+    document.getElementById(modalId).style.display = 'flex';
+
+});
+
+});
+
+document.querySelectorAll('.modal-close').forEach(close => {
+
+close.addEventListener('click', () => {
+
+    close.closest('.project-modal').style.display = 'none';
+
+});
+
+});
+
+window.addEventListener('click', (e) => {
+
+if(e.target.classList.contains('project-modal')){
+
+    e.target.style.display = 'none';
+
+}
+
+});
+//-------------------------------------
   // ── ESC key to close modals ──
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
